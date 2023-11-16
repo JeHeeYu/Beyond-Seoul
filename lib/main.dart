@@ -2,6 +2,8 @@ import 'package:beyond_seoul/routes/routes.dart';
 import 'package:beyond_seoul/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 
+import 'app.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -16,8 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: RoutesName.homeScreen,
-      onGenerateRoute: Routes.generateRoute,
+      home: App(),
     );
   }
 }
