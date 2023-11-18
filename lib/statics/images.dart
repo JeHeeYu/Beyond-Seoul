@@ -7,4 +7,7 @@ class Images {
   static const String recordDisable = "assets/images/record_disable.png";
   static const String profileEnable = "assets/images/profile_enable.png";
   static const String profileDisable = "assets/images/profile_disable.png";
+  static const String bus = "assets/images/bus.png";
+  static const String goodStamp = "assets/images/good_stamp.png";
+  static const String emptyStamp = "assets/images/empty_stamp.png";
 }
