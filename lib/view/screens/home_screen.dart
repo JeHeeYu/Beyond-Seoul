@@ -285,9 +285,72 @@ class _HomeScreenState extends State<HomeScreen> {
               Stack(
                 children: [
                   bgRectangle(214, 12),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: ScreenUtil().setHeight(20),
+                      left: ScreenUtil().setWidth(7),
+                      bottom: ScreenUtil().setHeight(7),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            bgTextRectangle(71, 22, 8, Strings.dailyChallenge,
+                                const Color(UserColors.enable), 12),
+                            SizedBox(width: ScreenUtil().setWidth(12)),
+                            const Text(
+                              '0 / 3',
+                              style: TextStyle(
+                                fontFamily: "Pretendard",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: ScreenUtil().setHeight(23)),
+                        Row(
+                          children: [
+                            Image.asset(Images.checkBox),
+                            SizedBox(width: ScreenUtil().setWidth(9)),
+                            const FlexibleText(
+                              text: '해운대에서 모래찜질해운대에서 모래찜질해운대에서 모래찜질',
+                              textSize: 16,
+                              textWeight: FontWeight.w700,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: ScreenUtil().setHeight(28)),
+                        Row(
+                          children: [
+                            Image.asset(Images.checkBox),
+                            SizedBox(width: ScreenUtil().setWidth(9)),
+                            const FlexibleText(
+                              text: '해운대에서 모래찜질해운대에서 모래찜질해운대에서 모래찜질',
+                              textSize: 16,
+                              textWeight: FontWeight.w700,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: ScreenUtil().setHeight(28)),
+                        Row(
+                          children: [
+                            Image.asset(Images.checkBox),
+                            SizedBox(width: ScreenUtil().setWidth(9)),
+                            const FlexibleText(
+                              text: '해운대에서 모래찜질해운대에서 모래찜질해운대에서 모래찜질',
+                              textSize: 16,
+                              textWeight: FontWeight.w700,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(height: 74),
+              SizedBox(height: ScreenUtil().setHeight(73)),
             ],
           ),
         ),

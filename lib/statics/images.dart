@@ -46,4 +46,6 @@ class Images {
   static const String andongDisable = "assets/images/andong_disable.png";
   static const String kwangjuEnable = "assets/images/kwangju_enable.png";
   static const String kwangjuDisable = "assets/images/kwangju_disable.png";
+  static const String checkBox = "assets/images/check_box.png";
+  static const String uncheckBox = "assets/images/uncheck_box.png";
 }
