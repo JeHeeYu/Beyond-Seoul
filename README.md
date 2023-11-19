@@ -18,4 +18,5 @@ samples, guidance on mobile development, and a full API reference.
 ```
 flutter pub add flutter_screenutil
 flutter pub add intl
+flutter pub add http
 ```

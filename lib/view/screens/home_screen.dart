@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
+import '../../network/network_manager.dart';
 import '../../routes/routes_name.dart';
 import '../../statics/colors.dart';
 import '../../statics/images.dart';
@@ -21,6 +22,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    NetworkManager.instance.get("http://10.0.2.2:8080/get/home");
+  }
+
   Widget bgRectangle(double height, double radius) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
@@ -291,14 +299,35 @@ class _HomeScreenState extends State<HomeScreen> {
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: ScreenUtil().setWidth(12)),
-                          child: const InfinityButton(
-                            height: 40,
-                            radius: 4,
-                            backgroundColor: Color(UserColors.disable),
-                            text: Strings.findFriend,
-                            textSize: 16,
-                            textWeight: FontWeight.w700,
-                            textColor: Colors.white,
+                          child: GestureDetector(
+                            onTap: () async {
+                              Map<String, dynamic> data = {
+                                "age" : "Jehee",
+                                "birth" : "1234",
+                                "lang" : "Jehee",
+                                "uid" : "1234",
+                                "travelWith" : "Jehee",
+                                "travelStartDate" : "1234",
+                                "travelEndDate" : "Jehee",
+                                "transport" : "1234",
+                                "themaId" : "Jehee",
+                                "destination" : "1234",
+                              };
+
+                              //NetworkManager.instance.get("http://10.0.2.2:8080/get/");
+                              NetworkManager.instance.get("http://10.0.2.2:8080/get/home");
+                              //NetworkManager.instance.post("http://10.0.2.2:8080/post/user", userData);
+                              //NetworkManager.instance.post("http://10.0.2.2:8080/post/onboard/complete", data);
+                            },
+                            child: const InfinityButton(
+                              height: 40,
+                              radius: 4,
+                              backgroundColor: Color(UserColors.disable),
+                              text: Strings.findFriend,
+                              textSize: 16,
+                              textWeight: FontWeight.w700,
+                              textColor: Colors.white,
+                            ),
                           ),
                         ),
                       ],
