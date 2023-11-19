@@ -250,33 +250,37 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  bgRectangle(54, 8),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: ScreenUtil().setWidth(12)),
-                    child: Row(
-                      children: [
-                        bgTextRectangle(61, 22, 8, Strings.personalMission,
-                            const Color(UserColors.enable), 12),
-                        SizedBox(width: ScreenUtil().setWidth(12)),
-                        const FlexibleText(
-                          text: '해운대에서 모래찜질해운대에서 모래찜질해운대에서 모래찜질',
-                          textSize: 16,
-                          textWeight: FontWeight.w700,
-                        ),
-                        SizedBox(width: ScreenUtil().setWidth(24)),
-                        const Icon(
-                          Icons.arrow_forward_ios,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(width: ScreenUtil().setWidth(12)),
-                      ],
+              SizedBox(
+                width: double.infinity,
+                height: ScreenUtil().setHeight(64),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    bgRectangle(64, 8),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: ScreenUtil().setWidth(12)),
+                      child: Row(
+                        children: [
+                          bgTextRectangle(61, 22, 8, Strings.personalMission,
+                              const Color(UserColors.enable), 12),
+                          SizedBox(width: ScreenUtil().setWidth(12)),
+                          const FlexibleText(
+                            text: '해운대에서 모래찜질해운대에서 모래찜질해운대에서 모래찜질',
+                            textSize: 16,
+                            textWeight: FontWeight.w700,
+                          ),
+                          SizedBox(width: ScreenUtil().setWidth(24)),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(width: ScreenUtil().setWidth(12)),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Stack(
                 children: [
