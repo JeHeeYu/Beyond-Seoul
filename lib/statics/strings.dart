@@ -44,4 +44,10 @@ class Strings {
   static const String pleaseDestinationGuide = "선택한 테마를 기반으로 추천하는 3곳의 여행지입니다.";
   static const String leaveHere = "여기로 떠날래요";
   static const String withText = "WITH";
+  static const String myProfileGuild = "다른 곳에서의 여행을 시작해도 전 여행의 기록은 언제나 남아있습니다.";
+  static const String startOtherTravel = "다른 곳의 여행을 시작할게요";
+  static const String busHistory = "버스 내역";
+  static const String showBusHistory = "예약한 버스 내역 보기";
+  static const String travelInformation = "여행 정보";
+  static const String editTravelInformation = "여행 정보 수정하기";
 }

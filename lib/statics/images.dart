@@ -49,4 +49,5 @@ class Images {
   static const String checkBox = "assets/images/check_box.png";
   static const String uncheckBox = "assets/images/uncheck_box.png";
   static const String add = "assets/images/add.png";
+  static const String travelIcon = "assets/images/travel_icon.png";
 }
