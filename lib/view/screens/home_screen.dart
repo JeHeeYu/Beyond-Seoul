@@ -85,17 +85,73 @@ class _HomeScreenState extends State<HomeScreen> {
               Stack(
                 children: [
                   bgRectangle(94, 12),
-                  Container(
-                    width: ScreenUtil().setWidth(42),
-                    height: ScreenUtil().setHeight(42),
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: ScreenUtil().setHeight(16),
+                      left: ScreenUtil().setWidth(16),
                     ),
-                    child: ClipOval(
-                      child: Image.network(
-                        "https://www.urbanbrush.net/web/wp-content/uploads/edd/2022/11/urbanbrush-20221108214712319041.jpg",
-                        fit: BoxFit.cover,
-                      ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: ScreenUtil().setWidth(42),
+                          height: ScreenUtil().setHeight(42),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: ClipOval(
+                            child: Image.asset(
+                              Images.goodStamp,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: ScreenUtil().setWidth(12)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                                  "안녕하세요, 최정아님",
+                                  style: TextStyle(
+                                    fontFamily: "Pretendard",
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const Text(
+                                  "부산 여행 중",
+                                  style: TextStyle(
+                                    fontFamily: "Pretendard",
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const Text(
+                                  "2023-1109 ~ 2023-1116",
+                                  style: TextStyle(
+                                    fontFamily: "Pretendard",
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                          ],
+                        ),
+                        SizedBox(width: ScreenUtil().setWidth(80)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                                  Strings.withText,
+                                  style: TextStyle(
+                                    color: Color(UserColors.guideText),
+                                    fontFamily: "Pretendard",
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Image.asset(Images.add),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ],

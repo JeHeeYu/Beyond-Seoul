@@ -43,4 +43,5 @@ class Strings {
   static const String pleaseDestination = "최종 여행지를 선택해주세요!";
   static const String pleaseDestinationGuide = "선택한 테마를 기반으로 추천하는 3곳의 여행지입니다.";
   static const String leaveHere = "여기로 떠날래요";
+  static const String withText = "WITH";
 }
