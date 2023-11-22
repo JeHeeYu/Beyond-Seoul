@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../models/travel_model.dart';
+import '../models/home/home_screen_model.dart';
+import '../models/home/travel_model.dart';
 import '../network/api_response.dart';
 import '../repository/home_repository.dart';
 
 class HomeViewModel with ChangeNotifier {
   final _homeRepo = HomeRepository();
 
-  ApiResponse<TravelData> travelList = ApiResponse.loading();
+  ApiResponse<HomeScreenModel> travelList = ApiResponse.loading();
 
-  void setTravelList(ApiResponse<TravelData> response) {
+  void setTravelList(ApiResponse<HomeScreenModel> response) {
     travelList = response;
     notifyListeners();
   }

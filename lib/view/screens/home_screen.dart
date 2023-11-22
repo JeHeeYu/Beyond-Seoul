@@ -150,7 +150,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         ),
                                         Text(
-                                          value.travelList.data?.data.travelDate ?? 'No Date',
+                                          "",
+                                          //value.travelList.data?.data.travelDate ?? 'No Date',
                                           style: TextStyle(
                                             fontFamily: "Pretendard",
                                             fontSize: 11,
