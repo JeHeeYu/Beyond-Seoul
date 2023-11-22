@@ -13,20 +13,18 @@ class NetworkManager {
 
   static NetworkManager get instance => _instance;
 
-  Future<String> get(String serverUrl) async {
-    print("Get Test");
+  Future<dynamic> get(String serverUrl) async {
+    dynamic responseJson;
 
     try {
-      final response = await http.get(
-        Uri.parse(serverUrl),
-        headers: commonHeaders,
-      );
+      final response = await http.get(Uri.parse(serverUrl));
+      responseJson = returnResponse(response);
 
-      String responseBody = utf8.decode(response.bodyBytes);
+      responseJson = utf8.decode(response.bodyBytes);
 
-      print("responseBody : ${responseBody}");
+      print("responseJson : ${responseJson.toString()}");
 
-      return responseBody;
+      return responseJson;
     } catch (error) {
       print("에러 발생: $error");
       return "";
@@ -34,8 +32,6 @@ class NetworkManager {
   }
 
   Future<void> post(String serverUrl, Map<String, dynamic> userData) async {
-    print("Jehee Post Test");
-
     try {
       String jsonData = jsonEncode(userData);
 
@@ -45,8 +41,6 @@ class NetworkManager {
         body: jsonData,
       );
 
-      print("Jehee : ${response.body}");
-
       if (response.statusCode == 200) {
         print("POST 성공: ${response.body}");
       } else {
@@ -54,6 +48,14 @@ class NetworkManager {
       }
     } catch (error) {
       print("에러 발생: $error");
+    }
+  }
+
+  dynamic returnResponse(http.Response response) {
+    switch (response.statusCode) {
+      case 200:
+      default:
+        return response.body;
     }
   }
 }
