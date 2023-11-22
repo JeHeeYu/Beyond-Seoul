@@ -50,4 +50,8 @@ class Strings {
   static const String showBusHistory = "예약한 버스 내역 보기";
   static const String travelInformation = "여행 정보";
   static const String editTravelInformation = "여행 정보 수정하기";
+
+  static String helloName(String name) {
+    return "안녕하세요, $name님";
+  }
 }

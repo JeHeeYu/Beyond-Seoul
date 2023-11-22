@@ -8,15 +8,15 @@ import '../repository/home_repository.dart';
 class HomeViewModel with ChangeNotifier {
   final _homeRepo = HomeRepository();
 
-  ApiResponse<HomeScreenModel> travelList = ApiResponse.loading();
+  ApiResponse<HomeScreenModel> homeData = ApiResponse.loading();
 
   void setTravelList(ApiResponse<HomeScreenModel> response) {
-    travelList = response;
+    homeData = response;
     notifyListeners();
   }
 
   Future<void> fetchTravelListApi() async {
-    await _homeRepo.getTravel().then((value) {
+    await _homeRepo.getHomeScreenData().then((value) {
       setTravelList(ApiResponse.complete(value));
     }).onError((error, stackTrace) {
       setTravelList(ApiResponse.error(error.toString()));

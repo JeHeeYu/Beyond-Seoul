@@ -83,6 +83,352 @@ class _HomeScreenState extends State<HomeScreen> {
     return today;
   }
 
+  Widget _buildMissionComplete(int index, int complete) {
+    String mission = "";
+
+    if (index == 0) {
+      mission = Strings.personalMission;
+    } else if (index == 1) {
+      mission = Strings.teamMission;
+    } else {
+      mission = Strings.dailyChallenge;
+    }
+
+    return Column(
+      children: [
+        complete == 0
+            ? Column(
+                children: [
+                  Image.asset(Images.emptyStamp),
+                  SizedBox(height: ScreenUtil().setHeight(16)),
+                ],
+              )
+            : Image.asset(Images.goodStamp),
+        Text(
+          mission,
+          style: const TextStyle(
+            fontFamily: "Pretendard",
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDailyChallengeContent(bool complete, String challenge) {
+    return Row(
+      children: [
+        complete == true
+            ? Image.asset(Images.checkBox)
+            : Image.asset(Images.uncheckBox),
+        SizedBox(width: ScreenUtil().setWidth(9)),
+        FlexibleText(
+          text: challenge,
+          textSize: 16,
+          textWeight: FontWeight.w700,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHomeContent() {
+    return ChangeNotifierProvider<HomeViewModel>(
+      create: (BuildContext context) => homeViewModel,
+      child: Consumer<HomeViewModel>(
+        builder: (context, value, _) {
+          switch (value.homeData.status) {
+            case Status.loading:
+              return _buildLoadingWidget();
+            case Status.error:
+              return const Text("에러");
+            case Status.complete:
+              return _buildCompleteWidget(value);
+            default:
+              return const Text("오류");
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildLoadingWidget() {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildCompleteWidget(HomeViewModel value) {
+    return Column(
+      children: [
+        _buildUserInfoWidget(value),
+        _buildBusInfoWidget(value),
+        _buildPersonalMissionWidget(value),
+        _buildTeamMissionWidget(value),
+        _buildDailyChallengeWidget(value),
+      ],
+    );
+  }
+
+  Widget _buildUserInfoWidget(HomeViewModel value) {
+    return Stack(
+      children: [
+        bgRectangle(94, 12),
+        Padding(
+          padding: EdgeInsets.only(
+            top: ScreenUtil().setHeight(16),
+            left: ScreenUtil().setWidth(16),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: ScreenUtil().setWidth(42),
+                height: ScreenUtil().setHeight(42),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: ClipOval(
+                  child: Image.network(
+                    value.homeData.data?.data.profile.userImage ?? "",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(width: ScreenUtil().setWidth(12)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    Strings.helloName(
+                        value.homeData.data?.data.profile.userName ?? ""),
+                    style: const TextStyle(
+                      fontFamily: "Pretendard",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    value.homeData.data?.data.travel.travelName ?? "",
+                    style: const TextStyle(
+                      fontFamily: "Pretendard",
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    value.homeData.data?.data.travel.travelDate ?? "",
+                    style: const TextStyle(
+                      fontFamily: "Pretendard",
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(width: ScreenUtil().setWidth(80)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    Strings.withText,
+                    style: TextStyle(
+                      color: Color(UserColors.guideText),
+                      fontFamily: "Pretendard",
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Image.asset(Images.add),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBusInfoWidget(HomeViewModel value) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        bgRectangle(63, 16),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(8)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Image.asset(Images.bus),
+              const FlexibleText(
+                text: '부산행/BUSAN',
+                textSize: 14,
+                textWeight: FontWeight.w600,
+                textColor: Color(UserColors.enable),
+              ),
+              const FlexibleText(
+                text: '2023/11/09',
+                textSize: 11,
+                textWeight: FontWeight.w600,
+              ),
+              const FlexibleText(
+                text: 'AM 10:42',
+                textSize: 11,
+                textWeight: FontWeight.w600,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTeamMissionWidget(HomeViewModel value) {
+    return SizedBox(
+      width: double.infinity,
+      height: ScreenUtil().setHeight(134),
+      child: Stack(
+        children: [
+          bgRectangle(134, 12),
+          Column(
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: ScreenUtil().setHeight(7),
+                    left: ScreenUtil().setWidth(7),
+                    bottom: ScreenUtil().setHeight(7),
+                  ),
+                  child: bgTextRectangle(71, 22, 8, Strings.togetherMission,
+                      const Color(UserColors.enable), 12),
+                ),
+              ),
+              Text(
+                value.homeData.data?.data.mission.teamMission?.title ?? "",
+                style: const TextStyle(
+                  fontFamily: "Pretendard",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: ScreenUtil().setHeight(8)),
+              Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12)),
+                child: GestureDetector(
+                  onTap: () async {},
+                  child: const InfinityButton(
+                    height: 40,
+                    radius: 4,
+                    backgroundColor: Color(UserColors.disable),
+                    text: Strings.findFriend,
+                    textSize: 16,
+                    textWeight: FontWeight.w700,
+                    textColor: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPersonalMissionWidget(HomeViewModel value) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        bgRectangle(152, 12),
+        Column(
+          children: [
+            const Text(
+              Strings.missionProgress,
+              style: TextStyle(
+                fontFamily: "Pretendard",
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: ScreenUtil().setHeight(10)),
+            Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(25)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildMissionComplete(
+                      0,
+                      value.homeData.data?.data.mission.missionComplete
+                              ?.person ??
+                          0),
+                  _buildMissionComplete(
+                      1,
+                      value.homeData.data?.data.mission.missionComplete?.team ??
+                          0),
+                  _buildMissionComplete(
+                      2,
+                      value.homeData.data?.data.mission.missionComplete
+                              ?.daily ??
+                          0),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDailyChallengeWidget(HomeViewModel value) {
+    return Stack(
+      children: [
+        bgRectangle(214, 12),
+        Padding(
+          padding: EdgeInsets.only(
+            top: ScreenUtil().setHeight(20),
+            left: ScreenUtil().setWidth(7),
+            bottom: ScreenUtil().setHeight(7),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  bgTextRectangle(71, 22, 8, Strings.dailyChallenge,
+                      const Color(UserColors.enable), 12),
+                  SizedBox(width: ScreenUtil().setWidth(12)),
+                  Text(
+                    value.homeData.data?.data.mission.dailyMissionCount ?? "",
+                    style: const TextStyle(
+                      fontFamily: "Pretendard",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: ScreenUtil().setHeight(23)),
+              _buildDailyChallengeContent(
+                false,
+                value.homeData.data?.data.mission.dailyMissions?[0].title ?? "",
+              ),
+              SizedBox(height: ScreenUtil().setHeight(28)),
+              _buildDailyChallengeContent(
+                true,
+                value.homeData.data?.data.mission.dailyMissions?[1].title ?? "",
+              ),
+              SizedBox(height: ScreenUtil().setHeight(28)),
+              _buildDailyChallengeContent(
+                true,
+                value.homeData.data?.data.mission.dailyMissions?[2].title ?? "",
+              ),
+              SizedBox(height: ScreenUtil().setHeight(28)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,382 +438,10 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12)),
           child: Column(
             children: [
-              ChangeNotifierProvider<HomeViewModel>(
-                  create: (BuildContext context) => homeViewModel,
-                  child: Consumer<HomeViewModel>(builder: (context, value, _) {
-                    switch (value.travelList.status) {
-                      case Status.loading:
-                        return const Center(child: CircularProgressIndicator());
-                      case Status.error:
-                        return const Text("error");
-                      case Status.complete:
-                        return Column(children: [
-                          SizedBox(
-                              height: ScreenUtil().statusBarHeight +
-                                  ScreenUtil().setHeight(20)),
-                          Stack(
-                            children: [
-                              bgRectangle(94, 12),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  top: ScreenUtil().setHeight(16),
-                                  left: ScreenUtil().setWidth(16),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: ScreenUtil().setWidth(42),
-                                      height: ScreenUtil().setHeight(42),
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: ClipOval(
-                                        child: Image.asset(
-                                          Images.goodStamp,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: ScreenUtil().setWidth(12)),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          "안녕하세요, 최정아님",
-                                          style: TextStyle(
-                                            fontFamily: "Pretendard",
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        const Text(
-                                          "부산 여행 중",
-                                          style: TextStyle(
-                                            fontFamily: "Pretendard",
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        Text(
-                                          "",
-                                          //value.travelList.data?.data.travelDate ?? 'No Date',
-                                          style: TextStyle(
-                                            fontFamily: "Pretendard",
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(width: ScreenUtil().setWidth(80)),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          Strings.withText,
-                                          style: TextStyle(
-                                            color: Color(UserColors.guideText),
-                                            fontFamily: "Pretendard",
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        Image.asset(Images.add),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              bgRectangle(63, 16),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: ScreenUtil().setWidth(8)),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Image.asset(Images.bus),
-                                    const FlexibleText(
-                                      text: '부산행/BUSAN',
-                                      textSize: 14,
-                                      textWeight: FontWeight.w600,
-                                      textColor: Color(UserColors.enable),
-                                    ),
-                                    const FlexibleText(
-                                      text: '2023/11/09',
-                                      textSize: 11,
-                                      textWeight: FontWeight.w600,
-                                    ),
-                                    const FlexibleText(
-                                      text: 'AM 10:42',
-                                      textSize: 11,
-                                      textWeight: FontWeight.w600,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              bgRectangle(152, 12),
-                              Column(
-                                children: [
-                                  const Text(
-                                    Strings.missionProgress,
-                                    style: TextStyle(
-                                      fontFamily: "Pretendard",
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: ScreenUtil().setWidth(25)),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Image.asset(Images.goodStamp),
-                                            const Text(
-                                              Strings.personalMission,
-                                              style: TextStyle(
-                                                fontFamily: "Pretendard",
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          children: [
-                                            Image.asset(Images.goodStamp),
-                                            const Text(
-                                              Strings.teamMission,
-                                              style: TextStyle(
-                                                fontFamily: "Pretendard",
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          children: [
-                                            Image.asset(Images.goodStamp),
-                                            const Text(
-                                              Strings.dailyChallenge,
-                                              style: TextStyle(
-                                                fontFamily: "Pretendard",
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            height: ScreenUtil().setHeight(134),
-                            child: Stack(
-                              children: [
-                                bgRectangle(134, 12),
-                                Column(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                          top: ScreenUtil().setHeight(7),
-                                          left: ScreenUtil().setWidth(7),
-                                          bottom: ScreenUtil().setHeight(7),
-                                        ),
-                                        child: bgTextRectangle(
-                                            71,
-                                            22,
-                                            8,
-                                            Strings.togetherMission,
-                                            const Color(UserColors.enable),
-                                            12),
-                                      ),
-                                    ),
-                                    const Text(
-                                      '해운대에서 모래찜질',
-                                      style: TextStyle(
-                                        fontFamily: "Pretendard",
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    SizedBox(height: ScreenUtil().setHeight(8)),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              ScreenUtil().setWidth(12)),
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                        },
-                                        child: const InfinityButton(
-                                          height: 40,
-                                          radius: 4,
-                                          backgroundColor:
-                                              Color(UserColors.disable),
-                                          text: Strings.findFriend,
-                                          textSize: 16,
-                                          textWeight: FontWeight.w700,
-                                          textColor: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            height: ScreenUtil().setHeight(64),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                bgRectangle(64, 8),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: ScreenUtil().setWidth(12)),
-                                  child: Row(
-                                    children: [
-                                      bgTextRectangle(
-                                          61,
-                                          22,
-                                          8,
-                                          Strings.personalMission,
-                                          const Color(UserColors.enable),
-                                          12),
-                                      SizedBox(
-                                          width: ScreenUtil().setWidth(12)),
-                                      const FlexibleText(
-                                        text: '해운대에서 모래찜질해운대에서 모래찜질해운대에서 모래찜질',
-                                        textSize: 16,
-                                        textWeight: FontWeight.w700,
-                                      ),
-                                      SizedBox(
-                                          width: ScreenUtil().setWidth(24)),
-                                      const Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: Colors.grey,
-                                      ),
-                                      SizedBox(
-                                          width: ScreenUtil().setWidth(12)),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Stack(
-                            children: [
-                              bgRectangle(214, 12),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  top: ScreenUtil().setHeight(20),
-                                  left: ScreenUtil().setWidth(7),
-                                  bottom: ScreenUtil().setHeight(7),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        bgTextRectangle(
-                                            71,
-                                            22,
-                                            8,
-                                            Strings.dailyChallenge,
-                                            const Color(UserColors.enable),
-                                            12),
-                                        SizedBox(
-                                            width: ScreenUtil().setWidth(12)),
-                                        const Text(
-                                          '0 / 3',
-                                          style: TextStyle(
-                                            fontFamily: "Pretendard",
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                        height: ScreenUtil().setHeight(23)),
-                                    Row(
-                                      children: [
-                                        Image.asset(Images.checkBox),
-                                        SizedBox(
-                                            width: ScreenUtil().setWidth(9)),
-                                        const FlexibleText(
-                                          text:
-                                              '해운대에서 모래찜질해운대에서 모래찜질해운대에서 모래찜질',
-                                          textSize: 16,
-                                          textWeight: FontWeight.w700,
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                        height: ScreenUtil().setHeight(28)),
-                                    Row(
-                                      children: [
-                                        Image.asset(Images.checkBox),
-                                        SizedBox(
-                                            width: ScreenUtil().setWidth(9)),
-                                        const FlexibleText(
-                                          text:
-                                              '해운대에서 모래찜질해운대에서 모래찜질해운대에서 모래찜질',
-                                          textSize: 16,
-                                          textWeight: FontWeight.w700,
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                        height: ScreenUtil().setHeight(28)),
-                                    Row(
-                                      children: [
-                                        Image.asset(Images.checkBox),
-                                        SizedBox(
-                                            width: ScreenUtil().setWidth(9)),
-                                        const FlexibleText(
-                                          text:
-                                              '해운대에서 모래찜질해운대에서 모래찜질해운대에서 모래찜질',
-                                          textSize: 16,
-                                          textWeight: FontWeight.w700,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ]);
-                      default:
-                        return const Text("Hata");
-                    }
-                  })),
+              SizedBox(
+                  height: ScreenUtil().statusBarHeight +
+                      ScreenUtil().setHeight(20)),
+              _buildHomeContent(),
               SizedBox(height: ScreenUtil().setHeight(73)),
             ],
           ),
