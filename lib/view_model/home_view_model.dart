@@ -12,8 +12,15 @@ class HomeViewModel with ChangeNotifier {
 
   void setTravelList(ApiResponse<HomeScreenModel> response) {
     homeData = response;
+    
     notifyListeners();
   }
+
+  ApiResponse<HomeScreenModel> getTravelList() {
+    return homeData;
+  }
+
+  ApiResponse<HomeScreenModel> get getHomeData => homeData;
 
   Future<void> fetchTravelListApi() async {
     await _homeRepo.getHomeScreenData().then((value) {

@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHomeContent() {
+  Widget _buildMainContent() {
     return ChangeNotifierProvider<HomeViewModel>(
       create: (BuildContext context) => homeViewModel,
       child: Consumer<HomeViewModel>(
@@ -441,7 +441,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                   height: ScreenUtil().statusBarHeight +
                       ScreenUtil().setHeight(20)),
-              _buildHomeContent(),
+              _buildMainContent(),
               SizedBox(height: ScreenUtil().setHeight(73)),
             ],
           ),
