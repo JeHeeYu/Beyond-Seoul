@@ -50,4 +50,6 @@ class Images {
   static const String uncheckBox = "assets/images/uncheck_box.png";
   static const String add = "assets/images/add.png";
   static const String travelIcon = "assets/images/travel_icon.png";
+  static const String beforeTravelIcon = "assets/images/before_travel_icon.png";
+  static const String afterTravelIcon = "assets/images/after_travel_icon.png";
 }

@@ -29,11 +29,13 @@ class HomeScreenModel {
 class HomeScreenModelData {
   Profile profile;
   Mission mission;
+  String travelStatus;
   Travel travel;
 
   HomeScreenModelData({
     required this.profile,
     required this.mission,
+    required this.travelStatus,
     required this.travel,
   });
 
@@ -41,6 +43,7 @@ class HomeScreenModelData {
     return HomeScreenModelData(
       profile: Profile.fromJson(json['profile'] ?? {}),
       mission: Mission.fromJson(json['mission'] ?? {}),
+      travelStatus: json['travelStatus'] ?? '',
       travel: Travel.fromJson(json['travel'] ?? {}),
     );
   }

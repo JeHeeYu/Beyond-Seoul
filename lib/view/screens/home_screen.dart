@@ -156,7 +156,37 @@ class _HomeScreenState extends State<HomeScreen> {
     return const Center(child: CircularProgressIndicator());
   }
 
+  Widget _buildBeforeTravelWidget(HomeViewModel value) {
+    return Column(
+      children: [
+        _buildUserInfoWidget(value),
+        _buildBeforeBodyWidget(value),
+      ],
+    );
+  }
+
+  Widget _buildAfterTravelWidget(HomeViewModel value) {
+    return Column(
+      children: [
+        _buildUserInfoWidget(value),
+        _buildAfterBodyWidget(value),
+      ],
+    );
+  }
+
   Widget _buildCompleteWidget(HomeViewModel value) {
+    switch (value.homeData.data?.data.travelStatus) {
+      case "BEFORE_TRAVEL_START":
+        return _buildBeforeTravelWidget(value);
+      case "DURING_TRAVEL":
+        return _buildCompleteWidget(value);
+      case "AFTER_TRAVEL":
+      default:
+        return _buildAfterTravelWidget(value);
+    }
+  }
+
+  Widget _buildDuringTravelWidget(HomeViewModel value) {
     return Column(
       children: [
         _buildUserInfoWidget(value),
@@ -408,21 +438,66 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: ScreenUtil().setHeight(23)),
               _buildDailyChallengeContent(
-                value.homeData.data?.data.mission.dailyMissions?[0].status ?? "",
+                value.homeData.data?.data.mission.dailyMissions?[0].status ??
+                    "",
                 value.homeData.data?.data.mission.dailyMissions?[0].title ?? "",
               ),
               SizedBox(height: ScreenUtil().setHeight(28)),
               _buildDailyChallengeContent(
-                value.homeData.data?.data.mission.dailyMissions?[1].status ?? "",
+                value.homeData.data?.data.mission.dailyMissions?[1].status ??
+                    "",
                 value.homeData.data?.data.mission.dailyMissions?[1].title ?? "",
               ),
               SizedBox(height: ScreenUtil().setHeight(28)),
               _buildDailyChallengeContent(
-                value.homeData.data?.data.mission.dailyMissions?[2].status ?? "",
+                value.homeData.data?.data.mission.dailyMissions?[2].status ??
+                    "",
                 value.homeData.data?.data.mission.dailyMissions?[2].title ?? "",
               ),
               SizedBox(height: ScreenUtil().setHeight(28)),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBeforeBodyWidget(HomeViewModel value) {
+    return Column(
+      children: [
+        Image.asset(Images.beforeTravelIcon),
+        SizedBox(height: ScreenUtil().setHeight(40)),
+        Padding(
+          padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(77)),
+          child: const InfinityButton(
+            height: 40,
+            radius: 4,
+            backgroundColor: Color(UserColors.disable),
+            text: Strings.findFriend,
+            textSize: 16,
+            textWeight: FontWeight.w700,
+            textColor: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAfterBodyWidget(HomeViewModel value) {
+    return Column(
+      children: [
+        Image.asset(Images.afterTravelIcon),
+        SizedBox(height: ScreenUtil().setHeight(40)),
+        Padding(
+          padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(77)),
+          child: const InfinityButton(
+            height: 40,
+            radius: 4,
+            backgroundColor: Color(UserColors.disable),
+            text: Strings.findFriend,
+            textSize: 16,
+            textWeight: FontWeight.w700,
+            textColor: Colors.white,
           ),
         ),
       ],
