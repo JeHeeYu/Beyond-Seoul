@@ -99,16 +99,19 @@ class PersonMission {
 class DailyMission {
   int id;
   String title;
+  String status;
 
   DailyMission({
     required this.id,
     required this.title,
+    required this.status,
   });
 
   factory DailyMission.fromJson(Map<String, dynamic> json) {
     return DailyMission(
       id: json['id'],
       title: json['title'],
+      status: json['status'],
     );
   }
 }

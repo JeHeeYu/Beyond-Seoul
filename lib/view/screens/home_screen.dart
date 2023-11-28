@@ -116,10 +116,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildDailyChallengeContent(bool complete, String challenge) {
+  Widget _buildDailyChallengeContent(String complete, String challenge) {
     return Row(
       children: [
-        complete == true
+        complete == "SUCCESS"
             ? Image.asset(Images.checkBox)
             : Image.asset(Images.uncheckBox),
         SizedBox(width: ScreenUtil().setWidth(9)),
@@ -408,17 +408,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: ScreenUtil().setHeight(23)),
               _buildDailyChallengeContent(
-                false,
+                value.homeData.data?.data.mission.dailyMissions?[0].status ?? "",
                 value.homeData.data?.data.mission.dailyMissions?[0].title ?? "",
               ),
               SizedBox(height: ScreenUtil().setHeight(28)),
               _buildDailyChallengeContent(
-                true,
+                value.homeData.data?.data.mission.dailyMissions?[1].status ?? "",
                 value.homeData.data?.data.mission.dailyMissions?[1].title ?? "",
               ),
               SizedBox(height: ScreenUtil().setHeight(28)),
               _buildDailyChallengeContent(
-                true,
+                value.homeData.data?.data.mission.dailyMissions?[2].status ?? "",
                 value.homeData.data?.data.mission.dailyMissions?[2].title ?? "",
               ),
               SizedBox(height: ScreenUtil().setHeight(28)),
