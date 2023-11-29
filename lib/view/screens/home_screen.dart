@@ -192,8 +192,8 @@ class _HomeScreenState extends State<HomeScreen> {
         _buildUserInfoWidget(value),
         _buildBusInfoWidget(value),
         _buildMissionProgressWidget(value),
-        _buildPersonalMissionWidget(value),
         _buildTeamMissionWidget(value),
+        _buildPersonalMissionWidget(value),
         _buildDailyChallengeWidget(value),
       ],
     );
