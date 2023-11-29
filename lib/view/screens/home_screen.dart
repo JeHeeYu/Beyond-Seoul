@@ -191,6 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         _buildUserInfoWidget(value),
         _buildBusInfoWidget(value),
+        _buildMissionProgressWidget(value),
         _buildPersonalMissionWidget(value),
         _buildTeamMissionWidget(value),
         _buildDailyChallengeWidget(value),
@@ -363,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildPersonalMissionWidget(HomeViewModel value) {
+  Widget _buildMissionProgressWidget(HomeViewModel value) {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -403,6 +404,36 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPersonalMissionWidget(HomeViewModel value) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        bgRectangle(54, 8),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12)),
+          child: Row(
+            children: [
+              bgTextRectangle(61, 22, 8, Strings.personalMission,
+                  const Color(UserColors.enable), 12),
+              SizedBox(width: ScreenUtil().setWidth(12)),
+              FlexibleText(
+                text: value.homeData.data?.data.mission.personMission?.title ?? "",
+                textSize: 16,
+                textWeight: FontWeight.w700,
+              ),
+              SizedBox(width: ScreenUtil().setWidth(24)),
+              const Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.grey,
+              ),
+              SizedBox(width: ScreenUtil().setWidth(12)),
+            ],
+          ),
         ),
       ],
     );
