@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case "BEFORE_TRAVEL_START":
         return _buildBeforeTravelWidget(value);
       case "DURING_TRAVEL":
-        return _buildCompleteWidget(value);
+        return _buildDuringTravelWidget(value);
       case "AFTER_TRAVEL":
       default:
         return _buildAfterTravelWidget(value);
