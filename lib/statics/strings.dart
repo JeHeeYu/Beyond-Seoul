@@ -52,6 +52,8 @@ class Strings {
   static const String editTravelInformation = "여행 정보 수정하기";
   static const String missionComplete = "미션 완료하기";
   static const String photoUploadHint = "미션과 사진에 대한 코멘트를 함께 남겨주세요!";
+  static const String isReader = "리더에요!";
+  static const String togetherMage = "메이트에요!";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";
