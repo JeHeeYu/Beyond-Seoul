@@ -414,7 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-          context!,
+          context,
           MaterialPageRoute(builder: (context) => MissionDetailScreen(title: value.homeData.data?.data.mission.personMission?.title)),
         );
       },

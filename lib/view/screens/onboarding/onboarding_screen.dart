@@ -809,7 +809,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: GestureDetector(
                     onTap: () {
                       Navigator.push(
-                        context!,
+                        context,
                         MaterialPageRoute(builder: (context) => const App()),
                       );
                     },
