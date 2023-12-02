@@ -10,8 +10,8 @@ import '../../statics/strings.dart';
 import '../widgets/flexible_text.dart';
 import '../widgets/infinity_button.dart';
 
-class MissionDetail extends StatefulWidget {
-  const MissionDetail({
+class MissionDetailScreen extends StatefulWidget {
+  const MissionDetailScreen({
     Key? key,
     required this.title,
   }) : super(key: key);
@@ -19,10 +19,10 @@ class MissionDetail extends StatefulWidget {
   final title;
 
   @override
-  State<MissionDetail> createState() => _MissionDetailState();
+  State<MissionDetailScreen> createState() => _MissionDetailScreenState();
 }
 
-class _MissionDetailState extends State<MissionDetail> {
+class _MissionDetailScreenState extends State<MissionDetailScreen> {
   final _commentController = TextEditingController();
   XFile? uploadImage;
   final ImagePicker picker = ImagePicker();
