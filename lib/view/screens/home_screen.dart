@@ -17,6 +17,7 @@ import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
 import '../widgets/flexible_text.dart';
 import '../widgets/infinity_button.dart';
+import 'mate_registration_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -268,7 +269,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Image.asset(Images.add),
+                  GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const MateRegistrationScreen()),
+                        );
+                      },
+                      child: Image.asset(Images.add)),
                 ],
               ),
             ],
@@ -415,7 +425,10 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => MissionDetailScreen(title: value.homeData.data?.data.mission.personMission?.title)),
+          MaterialPageRoute(
+              builder: (context) => MissionDetailScreen(
+                  title:
+                      value.homeData.data?.data.mission.personMission?.title)),
         );
       },
       child: Stack(

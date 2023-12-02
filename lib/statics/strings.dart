@@ -54,6 +54,12 @@ class Strings {
   static const String photoUploadHint = "미션과 사진에 대한 코멘트를 함께 남겨주세요!";
   static const String isReader = "리더에요!";
   static const String togetherMage = "메이트에요!";
+  static const String mateRegistration = "여행메이트 등록하기";
+  static const String mateRegistrationGuide = "여행을 같이 할 메이트들에게 아래 코드를 공유하고,\n함께 새로운 경험을 즐겨보세요!";
+  static const String codeValidGuide = "위 코드는 30분간만 유효합니다.";
+  static const String newCode = "코드 새로 받기";
+  static const String codeExpire = "코드가 만료되었습니다.";
+  static const String complete = "완료";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";
