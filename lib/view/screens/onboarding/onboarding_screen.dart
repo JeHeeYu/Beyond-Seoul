@@ -1,7 +1,9 @@
 import 'package:beyond_seoul/network/network_manager.dart';
 import 'package:beyond_seoul/view/widgets/infinity_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 import '../../../app.dart';
 import '../../../network/api_url.dart';
@@ -96,12 +98,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "gender": _gender,
       "age": "20",
       "uid": "0",
-      "birth": _birthdayController.text,
+      "birth": _birthdayController.text.toString(),
       "lang": "EN",
       "travelWith": _withTravel,
       "role": _role,
-      "travelStartDate": _travelStartDateController,
-      "travelEndDate": _travelStartDateController,
+      "travelStartDate": _travelStartDateController.text.toString(),
+      "travelEndDate": _travelEndDateController.text.toString(),
       "thema": _thema,
       "transport": _airport,
       "destination": _destination,
@@ -110,13 +112,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     NetworkManager.instance.post(ApiUrl.onboardingComplete, data);
   }
 
-  void _nextClickEvent(int pageIndex) {
+  void _nextClickEvent(int pageIndex) async {
     _selectedIndex = -1;
 
-    _pageController.nextPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
     FocusManager.instance.primaryFocus?.unfocus();
 
     switch (pageIndex) {
@@ -142,12 +140,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
         sendOnboardingComplete();
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const App()),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const App()),
+        // );
         break;
     }
+
+    _pageController.nextPage(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   _buildAgeBirthdayPage() {
@@ -214,6 +217,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 BorderRadius.circular(ScreenUtil().setWidth(4)),
                             borderSide: BorderSide.none),
                       ),
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(6),
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      onChanged: (text) {
+                        setState(() {
+                          if (_birthdayController.text.isNotEmpty) {
+                            print("Jehee");
+                          }
+                        });
+                      },
                     ),
                   ],
                 ),
@@ -228,10 +242,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: InfinityButton(
                     height: 40,
                     radius: 4,
-                    backgroundColor:
-                        (_gender == "" || _birthdayController.text.isEmpty)
-                            ? const Color(UserColors.disable)
-                            : const Color(UserColors.enable),
+                    backgroundColor: (_selectedIndex == -1 ||
+                            _birthdayController.text.isEmpty)
+                        ? const Color(UserColors.disable)
+                        : const Color(UserColors.enable),
                     text: Strings.next,
                     textColor: Colors.white,
                     textSize: 16,
@@ -527,6 +541,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 BorderRadius.circular(ScreenUtil().setWidth(4)),
                             borderSide: BorderSide.none),
                       ),
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(6),
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
                     ),
                     SizedBox(height: ScreenUtil().setHeight(75)),
                     const Text(
@@ -557,6 +575,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 BorderRadius.circular(ScreenUtil().setWidth(4)),
                             borderSide: BorderSide.none),
                       ),
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(6),
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
                     ),
                   ],
                 ),
