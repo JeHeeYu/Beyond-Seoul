@@ -52,4 +52,5 @@ class Images {
   static const String travelIcon = "assets/images/travel_icon.png";
   static const String beforeTravelIcon = "assets/images/before_travel_icon.png";
   static const String afterTravelIcon = "assets/images/after_travel_icon.png";
+  static const String photoUpload = "assets/images/photo_upload.png";
 }
