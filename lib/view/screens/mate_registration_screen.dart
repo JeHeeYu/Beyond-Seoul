@@ -25,8 +25,8 @@ class MateRegistrationScreen extends StatefulWidget {
 class _MateRegistrationScreenState extends State<MateRegistrationScreen> {
   HomeViewModel homeViewModel = HomeViewModel();
 
-  int _second = 3;
-  int _minute = 0;
+  int _second = 0;
+  int _minute = 30;
   late Timer _timer;
 
   @override
