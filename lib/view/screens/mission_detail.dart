@@ -82,6 +82,59 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     );
   }
 
+  Widget _buildMainContent() {
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(22)),
+          child: Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                    onTap: () async {
+                      getImage(ImageSource.gallery);
+                    },
+                    child: _buildPhotoArea()),
+                SizedBox(height: ScreenUtil().setHeight(19)),
+                const Divider(thickness: 1),
+                SizedBox(height: ScreenUtil().setHeight(19)),
+                Container(
+                  height: ScreenUtil().setHeight(150),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: const Color(0xFFDEDEDE),
+                      width: 1.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: TextField(
+                    controller: _commentController,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontFamily: "Pretendard",
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Color(UserColors.mainBackGround),
+                      hintText: Strings.photoUploadHint,
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,57 +147,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                 height:
                     ScreenUtil().statusBarHeight + ScreenUtil().setHeight(20)),
             _buildAppBarWidget(),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: ScreenUtil().setHeight(22)),
-                  child: Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                            onTap: () async {
-                              getImage(ImageSource.gallery);
-                            },
-                            child: _buildPhotoArea()),
-                        SizedBox(height: ScreenUtil().setHeight(19)),
-                        const Divider(thickness: 1),
-                        SizedBox(height: ScreenUtil().setHeight(19)),
-                        Container(
-                          height: ScreenUtil().setHeight(150),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: const Color(0xFFDEDEDE),
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: TextField(
-                            controller: _commentController,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontFamily: "Pretendard",
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
-                            ),
-                            decoration: const InputDecoration(
-                              filled: true,
-                              fillColor: Color(UserColors.mainBackGround),
-                              hintText: Strings.photoUploadHint,
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 15),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            _buildMainContent(),
             Padding(
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: const InfinityButton(
