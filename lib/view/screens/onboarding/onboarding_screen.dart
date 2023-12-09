@@ -48,7 +48,7 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _pageController = PageController(initialPage: 3);
+  final PageController _pageController = PageController(initialPage: 0);
   int _selectedIndex = -1;
   String _birthday = "";
   String _gender = "";
@@ -278,99 +278,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     radius: 4,
                     backgroundColor: (_selectedIndex == -1 ||
                             _birthday.isEmpty)
-                        ? const Color(UserColors.disable)
-                        : const Color(UserColors.enable),
-                    text: Strings.next,
-                    textColor: Colors.white,
-                    textSize: 16,
-                    textWeight: FontWeight.w700),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLanguageSelectPage() {
-    return Scaffold(
-      backgroundColor: const Color(UserColors.mainBackGround),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: ScreenUtil().setHeight(64)),
-                    Align(
-                        alignment: Alignment.center,
-                        child: Image.asset(Images.onboardingProgress2)),
-                    SizedBox(height: ScreenUtil().setHeight(65)),
-                    const Text(
-                      Strings.pleaseLanguage,
-                      style: TextStyle(
-                        fontFamily: "Pretendard",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(32)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildOnboardingButton(
-                            0, Strings.korean, ScreenUtil().setHeight(78)),
-                        buildOnboardingButton(
-                            1, Strings.english, ScreenUtil().setHeight(78)),
-                      ],
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(20)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildOnboardingButton(
-                            2, Strings.chinese, ScreenUtil().setHeight(78)),
-                        buildOnboardingButton(
-                            3, Strings.japanese, ScreenUtil().setHeight(78)),
-                      ],
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(20)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildOnboardingButton(
-                            4, Strings.german, ScreenUtil().setHeight(78)),
-                        buildOnboardingButton(
-                            5, Strings.spanish, ScreenUtil().setHeight(78)),
-                      ],
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(20)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildOnboardingButton(
-                            6, Strings.french, ScreenUtil().setHeight(78)),
-                        buildOnboardingButton(
-                            7, Strings.vietnamese, ScreenUtil().setHeight(78)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
-              child: GestureDetector(
-                onTap: () {
-                  _nextClickEvent(1);
-                },
-                child: InfinityButton(
-                    height: 40,
-                    radius: 4,
-                    backgroundColor: _selectedIndex == -1
                         ? const Color(UserColors.disable)
                         : const Color(UserColors.enable),
                     text: Strings.next,
@@ -672,89 +579,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  _buildAirportPage() {
-    return Scaffold(
-      backgroundColor: const Color(UserColors.mainBackGround),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: ScreenUtil().setHeight(64)),
-                    Align(
-                        alignment: Alignment.center,
-                        child: Image.asset(Images.onboardingProgress6)),
-                    SizedBox(height: ScreenUtil().setHeight(65)),
-                    const Text(
-                      Strings.pleaseAirport,
-                      style: TextStyle(
-                        fontFamily: "Pretendard",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(32)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildOnboardingButton(0, Strings.incheonAirport,
-                            ScreenUtil().setHeight(78)),
-                        buildOnboardingButton(1, Strings.kimpoAirport,
-                            ScreenUtil().setHeight(78)),
-                      ],
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(20)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildOnboardingButton(2, Strings.kimhaeAirport,
-                            ScreenUtil().setHeight(78)),
-                        buildOnboardingButton(
-                            3, Strings.jejuAirport, ScreenUtil().setHeight(78)),
-                      ],
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(20)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildOnboardingButton(4, Strings.daeguAirport,
-                            ScreenUtil().setHeight(78)),
-                        buildOnboardingButton(
-                            5, Strings.etc, ScreenUtil().setHeight(78)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
-              child: GestureDetector(
-                onTap: () {
-                  _nextClickEvent(4);
-                },
-                child: InfinityButton(
-                    height: 40,
-                    radius: 4,
-                    backgroundColor: _selectedIndex == -1
-                        ? const Color(UserColors.disable)
-                        : const Color(UserColors.enable),
-                    text: Strings.next,
-                    textColor: Colors.white,
-                    textSize: 16,
-                    textWeight: FontWeight.w700),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   _buildThemaPage() {
     return Scaffold(
       backgroundColor: const Color(UserColors.mainBackGround),
@@ -969,11 +793,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       //     : const BouncingScrollPhysics(),
       children: [
         _buildAgeBirthdayPage(),
-        //_buildLanguageSelectPage(),
         _buildWithTravelMatePage(),
         _buildWhatRolePage(),
         _buildSchedulePage(),
-        _buildAirportPage(),
         _buildThemaPage(),
         _buildDestinationPage(),
       ],
