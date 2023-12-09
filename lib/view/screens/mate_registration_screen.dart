@@ -9,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../network/api_response.dart';
+import '../../network/api_url.dart';
+import '../../network/network_manager.dart';
 import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
@@ -25,8 +27,8 @@ class MateRegistrationScreen extends StatefulWidget {
 class _MateRegistrationScreenState extends State<MateRegistrationScreen> {
   HomeViewModel homeViewModel = HomeViewModel();
 
-  int _second = 0;
-  int _minute = 30;
+  int _second = 3;
+  int _minute = 0;
   late Timer _timer;
 
   @override
@@ -141,9 +143,23 @@ class _MateRegistrationScreenState extends State<MateRegistrationScreen> {
                   ),
                   SizedBox(width: ScreenUtil().setWidth(29)),
                   GestureDetector(
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(
-                          text: value.mateCodeData.data?.data.code));
+                    onTap: () async {
+                      if (_minute == 0 && _second == 0) {
+                        Map<String, dynamic> data = {};
+
+                        Map<String, dynamic> queryParams = {
+                          'travelId': 3,
+                        };
+                        Map<String, dynamic> postData = {'key': 'value'};
+
+                        await NetworkManager.instance.postQuery(
+                            ApiUrl.newMateCode, postData, queryParams);
+
+                        NetworkManager.instance.post(ApiUrl.newMateCode, data);
+                      } else {
+                        Clipboard.setData(ClipboardData(
+                            text: value.mateCodeData.data?.data.code));
+                      }
                     },
                     child: Icon(
                       (_minute == 0 && _second == 0)
