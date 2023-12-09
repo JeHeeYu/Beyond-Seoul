@@ -56,7 +56,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String _travelStartDate = "";
   String _travelEndDate = "";
   String _role = "";
-  String _airport = "";
   String _thema = "";
   String _destination = "";
 
@@ -131,7 +130,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "travelStartDate": _travelStartDate,
       "travelEndDate": _travelEndDate,
       "thema": _thema,
-      "transport": _airport,
       "destination": _destination,
     };
 
@@ -156,12 +154,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       case 3:
         break;
       case 4:
-        _airport = airportMap[_selectedIndex] ?? "";
-        break;
-      case 5:
         _thema = themaMap[_selectedIndex] ?? "";
         break;
-      case 6:
+      case 5:
         _destination = destinationMap[_selectedIndex] ?? "";
 
         sendOnboardingComplete();
