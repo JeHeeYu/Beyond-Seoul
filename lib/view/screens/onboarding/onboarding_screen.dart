@@ -14,20 +14,20 @@ import '../../widgets/image_button.dart';
 import '../../widgets/schedule_widget.dart';
 import 'onboarding_button.dart';
 
+enum Page {
+  infoPage,
+  withTravelPage,
+  rolePage,
+  travelDatePage,
+  themaPage,
+  destionPage
+}
+
 Map<int, String> genderMap = {0: "남", 1: "여"};
 
 Map<int, String> withTravelMap = {0: "혼자 여행", 1: "같이 여행"};
 
 Map<int, String> roleMap = {0: "reader", 1: "member"};
-
-Map<int, String> airportMap = {
-  0: "인천공항",
-  1: "김포공항",
-  2: "김해공항",
-  3: "제주공항",
-  4: "대구공항",
-  5: "기타"
-};
 
 Map<int, String> themaMap = {
   0: "음식",
@@ -72,8 +72,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _setTravelStartDate(DateTime time) {
     _travelStartDate = dateToStringFormat(time);
-
-    print("Jehee Start : ${_travelStartDate}");
 
     setState(() {});
   }
@@ -136,29 +134,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     NetworkManager.instance.post(ApiUrl.onboardingComplete, data);
   }
 
-  void _nextClickEvent(int pageIndex) async {
-    _selectedIndex = -1;
-
+  void _nextClickEvent(Page page) async {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    switch (pageIndex) {
-      case 0:
+    switch (page) {
+      case Page.infoPage:
         _gender = genderMap[_selectedIndex] ?? "";
         break;
-      case 1:
+      case Page.withTravelPage:
         _withTravel = withTravelMap[_selectedIndex] ?? "";
         break;
-      case 2:
+      case Page.rolePage:
         _role = roleMap[_selectedIndex] ?? "";
         break;
-      case 3:
+      case Page.travelDatePage:
         break;
-      case 4:
+      case Page.themaPage:
         _thema = themaMap[_selectedIndex] ?? "";
         break;
-      case 5:
+      case Page.destionPage:
         _destination = destinationMap[_selectedIndex] ?? "";
-
         sendOnboardingComplete();
 
         Navigator.push(
@@ -167,6 +162,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         );
         break;
     }
+
+    setState(() {
+      _selectedIndex = -1;
+    });
 
     _pageController.nextPage(
       duration: const Duration(milliseconds: 300),
@@ -266,13 +265,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
-                  _nextClickEvent(0);
+                  _nextClickEvent(Page.infoPage);
                 },
                 child: InfinityButton(
                     height: 40,
                     radius: 4,
-                    backgroundColor: (_selectedIndex == -1 ||
-                            _birthday.isEmpty)
+                    backgroundColor: (_selectedIndex == -1 || _birthday.isEmpty)
                         ? const Color(UserColors.disable)
                         : const Color(UserColors.enable),
                     text: Strings.next,
@@ -330,7 +328,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
-                  _nextClickEvent(1);
+                  _nextClickEvent(Page.withTravelPage);
                 },
                 child: InfinityButton(
                     height: 40,
@@ -403,7 +401,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
-                  _nextClickEvent(2);
+                  _nextClickEvent(Page.rolePage);
                 },
                 child: InfinityButton(
                     height: 40,
@@ -554,14 +552,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
-                  _nextClickEvent(3);
+                  _nextClickEvent(Page.travelDatePage);
                 },
                 child: InfinityButton(
                     height: 40,
                     radius: 4,
-                    backgroundColor: _selectedIndex == -1
-                        ? const Color(UserColors.disable)
-                        : const Color(UserColors.enable),
+                    backgroundColor:
+                        (_travelStartDate.isEmpty || _travelEndDate.isEmpty)
+                            ? const Color(UserColors.disable)
+                            : const Color(UserColors.enable),
                     text: Strings.next,
                     textColor: Colors.white,
                     textSize: 16,
@@ -672,7 +671,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
-                  _nextClickEvent(5);
+                  _nextClickEvent(Page.themaPage);
                 },
                 child: InfinityButton(
                     height: 40,
@@ -759,7 +758,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
-                  _nextClickEvent(6);
+                  _nextClickEvent(Page.destionPage);
                 },
                 child: InfinityButton(
                     height: 40,
@@ -783,9 +782,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return PageView(
       controller: _pageController,
-      // physics: (_selectedIndex == -1 || _birthdayController.text.isEmpty)
-      //     ? const NeverScrollableScrollPhysics()
-      //     : const BouncingScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       children: [
         _buildAgeBirthdayPage(),
         _buildWithTravelMatePage(),
