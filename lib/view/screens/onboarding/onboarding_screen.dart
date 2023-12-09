@@ -119,10 +119,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void sendOnboardingComplete() async {
     Map<String, dynamic> data = {
       "gender": _gender,
-      "age": "20",
       "uid": "0",
       "birth": _birthday,
-      "lang": "EN",
       "travelWith": _withTravel,
       "role": _role,
       "travelStartDate": _travelStartDate,
