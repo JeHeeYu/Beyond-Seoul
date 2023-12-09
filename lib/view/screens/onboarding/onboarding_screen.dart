@@ -224,7 +224,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       onChanged: (text) {
                         setState(() {
                           if (_birthdayController.text.isNotEmpty) {
-                            print("Jehee");
                           }
                         });
                       },

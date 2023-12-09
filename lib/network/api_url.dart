@@ -8,4 +8,5 @@ class ApiUrl {
   static const String home = "http://10.0.2.2:8080/get/home";
   static const String mateCode = "http://10.0.2.2:8080/get/mateCode";
   static const String newMateCode = "http://10.0.2.2:8080/post/matecode/new";
+  static const String recordCreate = "http://10.0.2.2:8080/post/record/create";
 }

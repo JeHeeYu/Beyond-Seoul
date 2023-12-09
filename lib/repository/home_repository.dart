@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import '../models/home/home_screen_model.dart';
 import '../models/home/mate_code_screen_model.dart';
-import '../models/home/travel_model.dart';
 import '../network/api_url.dart';
 import '../network/network_manager.dart';
 

@@ -22,7 +22,7 @@ class NetworkManager {
 
       responseJson = utf8.decode(response.bodyBytes);
 
-      print("responseJson : ${responseJson.toString()}");
+      //print("responseJson : ${responseJson.toString()}");
 
       return responseJson;
     } catch (error) {
@@ -31,7 +31,7 @@ class NetworkManager {
     }
   }
 
-  Future<void> post(String serverUrl, Map<String, dynamic> userData) async {
+  Future<dynamic> post(String serverUrl, Map<String, dynamic> userData) async {
     try {
       String jsonData = jsonEncode(userData);
 
@@ -46,13 +46,16 @@ class NetworkManager {
       } else {
         print("POST 실패: ${response.statusCode}");
       }
+
+      return response;
     } catch (error) {
       print("에러 발생: $error");
+      return "";
     }
   }
 
-    Future<void> postQuery(
-      String serverUrl, Map<String, dynamic> userData, Map<String, dynamic> queryParams) async {
+  Future<void> postQuery(String serverUrl, Map<String, dynamic> userData,
+      Map<String, dynamic> queryParams) async {
     try {
       String queryString = Uri(queryParameters: queryParams).query;
 
