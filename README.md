@@ -21,4 +21,5 @@ flutter pub add intl
 flutter pub add http
 flutter pub add provider
 flutter pub add image_picker
+flutter pub add table_calendar
 ```

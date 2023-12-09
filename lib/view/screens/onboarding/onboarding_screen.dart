@@ -11,6 +11,7 @@ import '../../../statics/colors.dart';
 import '../../../statics/images.dart';
 import '../../../statics/strings.dart';
 import '../../widgets/image_button.dart';
+import '../../widgets/schedule_widget.dart';
 import 'onboarding_button.dart';
 
 Map<int, String> genderMap = {0: "남", 1: "여"};
@@ -47,17 +48,42 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController(initialPage: 3);
   int _selectedIndex = -1;
-  final _birthdayController = TextEditingController();
-  final _travelStartDateController = TextEditingController();
-  final _travelEndDateController = TextEditingController();
+  String _birthday = "";
   String _gender = "";
   String _withTravel = "";
+  String _travelStartDate = "";
+  String _travelEndDate = "";
   String _role = "";
   String _airport = "";
   String _thema = "";
   String _destination = "";
+
+  String dateToStringFormat(DateTime time) {
+    DateFormat format = DateFormat('yyyy-MM-dd');
+    return format.format(time);
+  }
+
+  void _setBirthday(DateTime time) {
+    _birthday = dateToStringFormat(time);
+
+    setState(() {});
+  }
+
+  void _setTravelStartDate(DateTime time) {
+    _travelStartDate = dateToStringFormat(time);
+
+    print("Jehee Start : ${_travelStartDate}");
+
+    setState(() {});
+  }
+
+  void _setTravelEndDate(DateTime time) {
+    _travelEndDate = dateToStringFormat(time);
+
+    setState(() {});
+  }
 
   Widget buildOnboardingButton(int index, String text, double height) {
     return GestureDetector(
@@ -98,12 +124,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "gender": _gender,
       "age": "20",
       "uid": "0",
-      "birth": _birthdayController.text.toString(),
+      "birth": _birthday,
       "lang": "EN",
       "travelWith": _withTravel,
       "role": _role,
-      "travelStartDate": _travelStartDateController.text.toString(),
-      "travelEndDate": _travelEndDateController.text.toString(),
+      "travelStartDate": _travelStartDate,
+      "travelEndDate": _travelEndDate,
       "thema": _thema,
       "transport": _airport,
       "destination": _destination,
@@ -140,10 +166,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
         sendOnboardingComplete();
 
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const App()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const App()),
+        );
         break;
     }
 
@@ -198,35 +224,44 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                     ),
                     SizedBox(height: ScreenUtil().setHeight(32)),
-                    TextField(
-                      controller: _birthdayController,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontFamily: "Pretendard",
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: ScreenUtil().setWidth(10),
-                            horizontal: ScreenUtil().setHeight(15)),
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(ScreenUtil().setWidth(4)),
-                            borderSide: BorderSide.none),
-                      ),
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(6),
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      onChanged: (text) {
-                        setState(() {
-                          if (_birthdayController.text.isNotEmpty) {
-                          }
-                        });
+                    GestureDetector(
+                      onTap: () {
+                        showScheduleBottomSheet(
+                          context,
+                          _setBirthday,
+                        );
                       },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: ScreenUtil().setHeight(58),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: ScreenUtil().setWidth(29)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  _birthday,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Pretendard",
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16),
+                                ),
+                                SizedBox(width: ScreenUtil().setWidth(29)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -242,7 +277,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     height: 40,
                     radius: 4,
                     backgroundColor: (_selectedIndex == -1 ||
-                            _birthdayController.text.isEmpty)
+                            _birthday.isEmpty)
                         ? const Color(UserColors.disable)
                         : const Color(UserColors.enable),
                     text: Strings.next,
@@ -521,29 +556,44 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                     ),
                     SizedBox(height: ScreenUtil().setHeight(12)),
-                    TextField(
-                      controller: _travelStartDateController,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontFamily: "Pretendard",
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: ScreenUtil().setWidth(10),
-                            horizontal: ScreenUtil().setHeight(15)),
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(ScreenUtil().setWidth(4)),
-                            borderSide: BorderSide.none),
+                    GestureDetector(
+                      onTap: () {
+                        showScheduleBottomSheet(
+                          context,
+                          _setTravelStartDate,
+                        );
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: ScreenUtil().setHeight(58),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: ScreenUtil().setWidth(29)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  _travelStartDate,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Pretendard",
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16),
+                                ),
+                                SizedBox(width: ScreenUtil().setWidth(29)),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(6),
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
                     ),
                     SizedBox(height: ScreenUtil().setHeight(75)),
                     const Text(
@@ -555,29 +605,44 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                     ),
                     SizedBox(height: ScreenUtil().setHeight(12)),
-                    TextField(
-                      controller: _travelEndDateController,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontFamily: "Pretendard",
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: ScreenUtil().setWidth(10),
-                            horizontal: ScreenUtil().setHeight(15)),
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(ScreenUtil().setWidth(4)),
-                            borderSide: BorderSide.none),
+                    GestureDetector(
+                      onTap: () {
+                        showScheduleBottomSheet(
+                          context,
+                          _setTravelEndDate,
+                        );
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: ScreenUtil().setHeight(58),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: ScreenUtil().setWidth(29)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  _travelEndDate,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Pretendard",
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16),
+                                ),
+                                SizedBox(width: ScreenUtil().setWidth(29)),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(6),
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
                     ),
                   ],
                 ),
@@ -899,9 +964,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return PageView(
       controller: _pageController,
-      physics: (_selectedIndex == -1 || _birthdayController.text.isEmpty)
-          ? const NeverScrollableScrollPhysics()
-          : const BouncingScrollPhysics(),
+      // physics: (_selectedIndex == -1 || _birthdayController.text.isEmpty)
+      //     ? const NeverScrollableScrollPhysics()
+      //     : const BouncingScrollPhysics(),
       children: [
         _buildAgeBirthdayPage(),
         //_buildLanguageSelectPage(),

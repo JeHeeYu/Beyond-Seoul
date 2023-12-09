@@ -22,7 +22,7 @@ class NetworkManager {
 
       responseJson = utf8.decode(response.bodyBytes);
 
-      //print("responseJson : ${responseJson.toString()}");
+      print("responseJson : ${responseJson.toString()}");
 
       return responseJson;
     } catch (error) {
