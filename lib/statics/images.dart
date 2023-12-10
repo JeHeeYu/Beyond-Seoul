@@ -53,4 +53,9 @@ class Images {
   static const String beforeTravelIcon = "assets/images/before_travel_icon.png";
   static const String afterTravelIcon = "assets/images/after_travel_icon.png";
   static const String photoUpload = "assets/images/photo_upload.png";
+  static const String loginKakao = "assets/images/login_kakao.png";
+  static const String loginNaver = "assets/images/login_naver.png";
+  static const String loginGoogle = "assets/images/login_google.png";
+  static const String loginApple = "assets/images/login_apple.png";
+  static const String bgLogin = "assets/images/bg_login.png";
 }

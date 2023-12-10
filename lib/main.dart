@@ -1,6 +1,7 @@
 import 'package:beyond_seoul/routes/routes.dart';
 import 'package:beyond_seoul/routes/routes_name.dart';
 import 'package:beyond_seoul/view/screens/home_screen.dart';
+import 'package:beyond_seoul/view/screens/login_screen.dart';
 import 'package:beyond_seoul/view/screens/onboarding/onboarding_screen.dart';
 import 'package:beyond_seoul/view_model/home_view_model.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,8 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const OnboardingScreen(),
-          //home: const App(),
+          //home: const OnboardingScreen(),
+          home: const LoginScreen(),
         ),
       ),
     );

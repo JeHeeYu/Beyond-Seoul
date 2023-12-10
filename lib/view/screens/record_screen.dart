@@ -82,6 +82,8 @@ class _RecordScreenState extends State<RecordScreen> {
             case Status.error:
               return const Text("에러");
             case Status.complete:
+              //print("Jehee Test : ${value.recordData.data?.data.travels[0].records[0].comment}");
+              print("Jehee Test : ${value.recordData.data?.code}");
               return _buildCompleteWidget(value);
             default:
               return const Text("오류");
