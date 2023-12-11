@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -56,6 +57,17 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+    void naverLogin() async {
+    final NaverLoginResult result = await FlutterNaverLogin.logIn();
+
+    if (result.status == NaverLoginStatus.loggedIn) {
+      print('accessToken = ${result.accessToken}');
+      print('id = ${result.account.id}');
+      print('email = ${result.account.email}');
+      print('name = ${result.account.name}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +84,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Image.asset(Images.loginKakao)),
               SizedBox(height: ScreenUtil().setHeight(16)),
-              Image.asset(Images.loginNaver),
+              GestureDetector(
+                onTap: (){
+                  naverLogin();
+                },
+                child: Image.asset(Images.loginNaver)),
               SizedBox(height: ScreenUtil().setHeight(16)),
               GestureDetector(
                 onTap: (){
