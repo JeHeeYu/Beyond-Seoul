@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../statics/images.dart';
 
@@ -14,20 +15,16 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   void googleLogin() async {
-    // final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-    // final GoogleSignInAuthentication? googleAuth =
-    //     await googleUser?.authentication;
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
 
-    // final credential = GoogleAuthProvider.credential(
-    //   accessToken: googleAuth?.accessToken,
-    //   idToken: googleAuth?.idToken,
-    // );
-
-    // FirebaseAuth.instance.authStateChanges().listen((user) {
-    //   if (user == null) {
-    //   } else {}
-    // });
+    if (googleUser != null) {
+      print('name = ${googleUser.displayName}');
+      print('email = ${googleUser.email}');
+      print('id = ${googleUser.id}');
+    }
   }
 
   void kakaoLogin() async {
@@ -77,7 +74,11 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: ScreenUtil().setHeight(16)),
               Image.asset(Images.loginNaver),
               SizedBox(height: ScreenUtil().setHeight(16)),
-              Image.asset(Images.loginGoogle),
+              GestureDetector(
+                onTap: (){
+                  googleLogin();
+                },
+                child: Image.asset(Images.loginGoogle)),
               SizedBox(height: ScreenUtil().setHeight(16)),
               Image.asset(Images.loginApple),
             ],
