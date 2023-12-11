@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 import '../../statics/images.dart';
 
@@ -29,32 +31,32 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void kakaoLogin() async {
-    // if (await isKakaoTalkInstalled()) {
-    //   try {
-    //     await UserApi.instance.loginWithKakaoTalk();
-    //     print('카카오톡으로 로그인 성공');
-    //   } catch (error) {
-    //     print('카카오톡으로 로그인 실패 $error');
+    if (await isKakaoTalkInstalled()) {
+      try {
+        await UserApi.instance.loginWithKakaoTalk();
+        print('카카오톡으로 로그인 성공');
+      } catch (error) {
+        print('카카오톡으로 로그인 실패 $error');
 
-    //     if (error is PlatformException && error.code == 'CANCELED') {
-    //       return;
-    //     }
+        if (error is PlatformException && error.code == 'CANCELED') {
+          return;
+        }
 
-    //     try {
-    //       await UserApi.instance.loginWithKakaoAccount();
-    //       print('카카오계정으로 로그인 성공');
-    //     } catch (error) {
-    //       print('카카오계정으로 로그인 실패 $error');
-    //     }
-    //   }
-    // } else {
-    //   try {
-    //     await UserApi.instance.loginWithKakaoAccount();
-    //     print('카카오계정으로 로그인 성공');
-    //   } catch (error) {
-    //     print('카카오계정으로 로그인 실패 $error');
-    //   }
-    // }
+        try {
+          await UserApi.instance.loginWithKakaoAccount();
+          print('카카오계정으로 로그인 성공');
+        } catch (error) {
+          print('카카오계정으로 로그인 실패 $error');
+        }
+      }
+    } else {
+      try {
+        await UserApi.instance.loginWithKakaoAccount();
+        print('카카오계정으로 로그인 성공');
+      } catch (error) {
+        print('카카오계정으로 로그인 실패 $error');
+      }
+    }
   }
 
   @override
