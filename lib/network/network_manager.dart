@@ -54,28 +54,26 @@ class NetworkManager {
     }
   }
 
-  Future<void> postQuery(String serverUrl, Map<String, dynamic> userData,
+  Future<dynamic> postQuery(String serverUrl, Map<String, dynamic> userData,
       Map<String, dynamic> queryParams) async {
+    String queryString = Uri(queryParameters: queryParams).query;
+    String urlWithQuery = '$serverUrl?$queryString';
+
+    String jsonData = jsonEncode(userData);
+
     try {
-      String queryString = Uri(queryParameters: queryParams).query;
-
-      String urlWithQuery = '$serverUrl?$queryString';
-
-      String jsonData = jsonEncode(userData);
-
       final response = await http.post(
         Uri.parse(urlWithQuery),
         headers: commonHeaders,
         body: jsonData,
       );
 
-      if (response.statusCode == 200) {
-        print("POST 성공: ${response.body}");
-      } else {
-        print("POST 실패: ${response.statusCode}");
-      }
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      return responseData['code'];
     } catch (error) {
       print("에러 발생: $error");
+      throw error;
     }
   }
 

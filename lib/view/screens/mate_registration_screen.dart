@@ -27,8 +27,8 @@ class MateRegistrationScreen extends StatefulWidget {
 class _MateRegistrationScreenState extends State<MateRegistrationScreen> {
   HomeViewModel homeViewModel = HomeViewModel();
 
-  int _second = 3;
-  int _minute = 0;
+  int _second = 0;
+  int _minute = 30;
   late Timer _timer;
 
   @override
@@ -145,17 +145,27 @@ class _MateRegistrationScreenState extends State<MateRegistrationScreen> {
                   GestureDetector(
                     onTap: () async {
                       if (_minute == 0 && _second == 0) {
-                        Map<String, dynamic> data = {};
-
                         Map<String, dynamic> queryParams = {
-                          'travelId': 3,
+                          'travelId': "3",
                         };
+
                         Map<String, dynamic> postData = {'key': 'value'};
 
-                        await NetworkManager.instance.postQuery(
-                            ApiUrl.newMateCode, postData, queryParams);
-
-                        NetworkManager.instance.post(ApiUrl.newMateCode, data);
+                        NetworkManager.instance
+                            .postQuery(
+                                ApiUrl.newMateCode, postData, queryParams)
+                            .then((response) {
+                          if (response == 200) {
+                            setState(() {
+                              homeViewModel.fetchMateCodetApi();
+                              _startTimer();
+                              _minute = 30;
+                              _second = 0;
+                            });
+                          }
+                        }).catchError((error) {
+                          print('포스트 실패: $error');
+                        });
                       } else {
                         Clipboard.setData(ClipboardData(
                             text: value.mateCodeData.data?.data.code));

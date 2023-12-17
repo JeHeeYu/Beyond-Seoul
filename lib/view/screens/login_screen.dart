@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-    void naverLogin() async {
+  void naverLogin() async {
     final NaverLoginResult result = await FlutterNaverLogin.logIn();
 
     if (result.status == NaverLoginStatus.loggedIn) {
@@ -85,16 +85,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Image.asset(Images.loginKakao)),
               SizedBox(height: ScreenUtil().setHeight(16)),
               GestureDetector(
-                onTap: (){
-                  naverLogin();
-                },
-                child: Image.asset(Images.loginNaver)),
+                  onTap: () {
+                    naverLogin();
+                  },
+                  child: Image.asset(Images.loginNaver)),
               SizedBox(height: ScreenUtil().setHeight(16)),
               GestureDetector(
-                onTap: (){
-                  googleLogin();
-                },
-                child: Image.asset(Images.loginGoogle)),
+                  onTap: () {
+                    googleLogin();
+                  },
+                  child: Image.asset(Images.loginGoogle)),
               SizedBox(height: ScreenUtil().setHeight(16)),
               Image.asset(Images.loginApple),
             ],
