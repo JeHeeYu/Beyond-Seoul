@@ -11,7 +11,7 @@ class RecordViewModel with ChangeNotifier {
 
   void setRecordImageList(ApiResponse<RecordScreenModel> response) {
     recordData = response;
-    
+
     notifyListeners();
   }
 

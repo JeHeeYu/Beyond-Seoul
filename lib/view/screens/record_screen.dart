@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../network/api_response.dart';
 import '../../statics/colors.dart';
+import '../../statics/images.dart';
 import '../../statics/strings.dart';
 import '../../view_model/record_view_model.dart';
 
@@ -63,11 +64,22 @@ class _RecordScreenState extends State<RecordScreen> {
     );
   }
 
+  Widget _buildEmptyWidget() {
+    return Padding(
+        padding: EdgeInsets.only(top: ScreenUtil().setHeight(100)),
+        child: Image.asset(Images.emptyRecord));
+  }
+
   Widget _buildCompleteWidget(RecordViewModel value) {
-    return Column(
-      children: [
-        _buildDayWidget(),
-      ],
+    return Expanded(
+      child: Column(
+        children: [
+          _buildDayWidget(),
+          value.recordData.data?.data.travels[0].records.isEmpty ?? false
+              ? _buildEmptyWidget()
+              : _buildImageWidget(value),
+        ],
+      ),
     );
   }
 
@@ -110,21 +122,19 @@ class _RecordScreenState extends State<RecordScreen> {
     );
   }
 
-  Widget _buildImageWidget() {
+  Widget _buildImageWidget(RecordViewModel value) {
     return Expanded(
       child: GridView.builder(
-        itemCount: 25,
+        itemCount: value.recordData.data?.data.travels[0].records.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           mainAxisSpacing: 5,
           crossAxisSpacing: 5,
         ),
         itemBuilder: (BuildContext context, int index) {
-          return Container(
-            width: 110,
-            height: 110,
-            color: Colors.lightGreen,
-            child: Text(' Item : $index'),
+          return Image.network(
+            value.recordData.data?.data.travels[0].records[index].image ?? "",
+            fit: BoxFit.cover,
           );
         },
       ),
@@ -145,7 +155,7 @@ class _RecordScreenState extends State<RecordScreen> {
             _buildAppBarWidget(),
             SizedBox(height: ScreenUtil().setHeight(16)),
             _buildMainContent(),
-            _buildImageWidget(),
+            SizedBox(height: ScreenUtil().setHeight(32)),
           ],
         ),
       ),

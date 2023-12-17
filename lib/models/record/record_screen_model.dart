@@ -18,7 +18,7 @@ class RecordScreenModel {
       success: json['success'] ?? false,
       code: json['code'] ?? 0,
       msg: json['msg'] ?? "",
-      data: json['data'] != null ? RecordScreenModelData.fromJson(json['data']) : RecordScreenModelData(travels: []),
+      data: RecordScreenModelData.fromJson(json),
     );
   }
 }
@@ -32,7 +32,9 @@ class RecordScreenModelData {
 
   factory RecordScreenModelData.fromJson(Map<String, dynamic> json) {
     return RecordScreenModelData(
-      travels: List<TravelModel>.from(json['travels'] ?? []),
+      travels: (json['travels'] as List<dynamic> ?? []).map(
+        (travel) => TravelModel.fromJson(travel),
+      ).toList(),
     );
   }
 }

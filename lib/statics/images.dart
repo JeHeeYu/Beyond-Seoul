@@ -58,4 +58,5 @@ class Images {
   static const String loginGoogle = "assets/images/login_google.png";
   static const String loginApple = "assets/images/login_apple.png";
   static const String bgLogin = "assets/images/bg_login.png";
+  static const String emptyRecord = "assets/images/empty_record.png";
 }

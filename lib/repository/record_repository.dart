@@ -10,6 +10,10 @@ class RecordRepository {
       dynamic response = await NetworkManager.instance.post(ApiUrl.recordCreate, {});
       
       String responseBody = response.body;
+
+      // dynamic response =
+      //     await NetworkManager.instance.get(ApiUrl.home);
+      // return HomeScreenModel.fromJson(jsonDecode(response));
       
       return RecordScreenModel.fromJson(jsonDecode(responseBody));
     } catch (e) {

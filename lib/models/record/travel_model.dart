@@ -12,7 +12,9 @@ class TravelModel {
   factory TravelModel.fromJson(Map<String, dynamic> json) {
     return TravelModel(
       title: json['title'] ?? "",
-      records: List<RecordModel>.from(json['records'] ?? []),
+      records: (json['records'] as List<dynamic> ?? []).map(
+        (record) => RecordModel.fromJson(record),
+      ).toList(),
     );
   }
 }
