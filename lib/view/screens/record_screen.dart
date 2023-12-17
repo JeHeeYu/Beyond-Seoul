@@ -1,3 +1,4 @@
+import 'package:beyond_seoul/view/screens/record_feed_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -124,19 +125,28 @@ class _RecordScreenState extends State<RecordScreen> {
 
   Widget _buildImageWidget(RecordViewModel value) {
     return Expanded(
-      child: GridView.builder(
-        itemCount: value.recordData.data?.data.travels[0].records.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 5,
-          crossAxisSpacing: 5,
-        ),
-        itemBuilder: (BuildContext context, int index) {
-          return Image.network(
-            value.recordData.data?.data.travels[0].records[index].image ?? "",
-            fit: BoxFit.cover,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => RecordFeedScreen(date: _getToday())),
           );
         },
+        child: GridView.builder(
+          itemCount: value.recordData.data?.data.travels[0].records.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 5,
+            crossAxisSpacing: 5,
+          ),
+          itemBuilder: (BuildContext context, int index) {
+            return Image.network(
+              value.recordData.data?.data.travels[0].records[index].image ?? "",
+              fit: BoxFit.cover,
+            );
+          },
+        ),
       ),
     );
   }

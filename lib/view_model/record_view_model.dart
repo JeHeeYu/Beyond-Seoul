@@ -15,6 +15,8 @@ class RecordViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  ApiResponse<RecordScreenModel> get getRecordData => recordData;
+
   Future<void> fetchRecordImageApi() async {
     await _reocrdRepo.getRecordScreenData().then((value) {
       setRecordImageList(ApiResponse.complete(value));
