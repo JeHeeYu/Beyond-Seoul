@@ -5,6 +5,7 @@ import 'package:beyond_seoul/view/screens/home_screen.dart';
 import 'package:beyond_seoul/view/screens/login_screen.dart';
 import 'package:beyond_seoul/view/screens/onboarding/onboarding_screen.dart';
 import 'package:beyond_seoul/view_model/home_view_model.dart';
+import 'package:beyond_seoul/view_model/record_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => RecordViewModel()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(390, 840),
