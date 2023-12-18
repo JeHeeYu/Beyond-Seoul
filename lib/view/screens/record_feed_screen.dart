@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../statics/colors.dart';
 import '../../statics/strings.dart';
+import '../../view_model/home_view_model.dart';
+import '../../view_model/record_view_model.dart';
 
 class RecordFeedScreen extends StatefulWidget {
   final String date;
@@ -42,6 +45,17 @@ Widget _buildAppBarWidget(String date) {
 }
 
 class _RecordFeedScreenState extends State<RecordFeedScreen> {
+  HomeViewModel _homeViewModel = HomeViewModel();
+  RecordViewModel _recordViewModel = RecordViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+    _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +72,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
             SizedBox(height: ScreenUtil().setHeight(10)),
             Expanded(
               child: ListView.builder(
-                itemCount: 4,
+                itemCount: _recordViewModel.getRecordData.data?.data.travels[0].records.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +87,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                             ),
                             child: ClipOval(
                               child: Image.network(
-                                "https://mediahub.seoul.go.kr/wp-content/uploads/2020/03/53552dfe5d897d0a50138605f19628a6.jpg",
+                                _homeViewModel.getHomeData.data?.data.profile.userImage ?? "",
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -83,7 +97,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "해운대에서",
+                                _recordViewModel.getRecordData.data?.data.travels[0].title ?? "",
                                 style: const TextStyle(
                                   fontFamily: "Pretendard",
                                   fontSize: 12,
@@ -92,7 +106,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                                 ),
                               ),
                               Text(
-                                "개인 미션",
+                                _recordViewModel.getRecordData.data?.data.travels[0].records[index].missionType ?? "",
                                 style: const TextStyle(
                                   fontFamily: "Pretendard",
                                   fontSize: 11,
@@ -107,14 +121,14 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                       SizedBox(height: ScreenUtil().setHeight(8)),
                       // need add image here
                       Image.network(
-                        "https://mediahub.seoul.go.kr/wp-content/uploads/2020/03/53552dfe5d897d0a50138605f19628a6.jpg",
+                        _recordViewModel.getRecordData.data?.data.travels[0].records[index].image ?? "",
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: ScreenUtil().setWidth(320),
                       ),
                       SizedBox(height: ScreenUtil().setHeight(8)),
                       Text(
-                        "it was amazing!",
+                        _recordViewModel.getRecordData.data?.data.travels[0].records[index].comment ?? "",
                         style: const TextStyle(
                           fontFamily: "Pretendard",
                           fontSize: 16,
@@ -125,7 +139,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                         height: ScreenUtil().setHeight(4),
                       ),
                       Text(
-                        "2023.11.10",
+                        _recordViewModel.getRecordData.data?.data.travels[0].records[index].uploadAt ?? "",
                         style: const TextStyle(
                           fontFamily: "Pretendard",
                           fontSize: 12,

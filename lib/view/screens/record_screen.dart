@@ -20,13 +20,14 @@ class RecordScreen extends StatefulWidget {
 }
 
 class _RecordScreenState extends State<RecordScreen> {
-  RecordViewModel recordViewModel = RecordViewModel();
+  RecordViewModel _recordViewModel = RecordViewModel();
 
   @override
   void initState() {
     super.initState();
 
-    recordViewModel.fetchRecordImageApi();
+    _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
+    _recordViewModel.fetchRecordImageApi();
   }
 
   String _getToday() {
@@ -86,7 +87,7 @@ class _RecordScreenState extends State<RecordScreen> {
 
   Widget _buildMainContent() {
     return ChangeNotifierProvider<RecordViewModel>(
-      create: (BuildContext context) => recordViewModel,
+      create: (BuildContext context) => _recordViewModel,
       child: Consumer<RecordViewModel>(
         builder: (context, value, _) {
           switch (value.recordData.status) {

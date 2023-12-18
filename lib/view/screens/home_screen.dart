@@ -27,13 +27,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  HomeViewModel homeViewModel = HomeViewModel();
+  HomeViewModel _homeViewModel = HomeViewModel();
 
   @override
   void initState() {
     super.initState();
 
-    homeViewModel.fetchTravelListApi();
+    _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+    _homeViewModel.fetchTravelListApi();
   }
 
   Widget bgRectangle(double height, double radius) {
@@ -136,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildMainContent() {
     return ChangeNotifierProvider<HomeViewModel>(
-      create: (BuildContext context) => homeViewModel,
+      create: (BuildContext context) => _homeViewModel,
       child: Consumer<HomeViewModel>(
         builder: (context, value, _) {
           switch (value.homeData.status) {
