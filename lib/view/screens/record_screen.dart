@@ -126,28 +126,31 @@ class _RecordScreenState extends State<RecordScreen> {
 
   Widget _buildImageWidget(RecordViewModel value) {
     return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => RecordFeedScreen(date: _getToday())),
-          );
-        },
-        child: GridView.builder(
-          itemCount: value.recordData.data?.data.travels[0].records.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            mainAxisSpacing: 5,
-            crossAxisSpacing: 5,
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            return Image.network(
+      child: GridView.builder(
+        itemCount: value.recordData.data?.data.travels[0].records.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 5,
+          crossAxisSpacing: 5,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => RecordFeedScreen(
+                          date: _getToday(),
+                          pageIndex: index,
+                        )),
+              );
+            },
+            child: Image.network(
               value.recordData.data?.data.travels[0].records[index].image ?? "",
               fit: BoxFit.cover,
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

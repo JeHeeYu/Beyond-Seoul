@@ -9,8 +9,11 @@ import '../../view_model/record_view_model.dart';
 
 class RecordFeedScreen extends StatefulWidget {
   final String date;
+  final int pageIndex;
 
-  const RecordFeedScreen({Key? key, required this.date}) : super(key: key);
+  const RecordFeedScreen(
+      {Key? key, required this.date, required this.pageIndex})
+      : super(key: key);
 
   @override
   State<RecordFeedScreen> createState() => _RecordFeedScreenState();
@@ -47,6 +50,7 @@ Widget _buildAppBarWidget(String date) {
 class _RecordFeedScreenState extends State<RecordFeedScreen> {
   HomeViewModel _homeViewModel = HomeViewModel();
   RecordViewModel _recordViewModel = RecordViewModel();
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -54,6 +58,22 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
 
     _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
     _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
+
+    _scrollController = ScrollController();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToIndex(widget.pageIndex);
+    });
+  }
+
+  void _scrollToIndex(int index) {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        index * 340,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
@@ -72,7 +92,9 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
             SizedBox(height: ScreenUtil().setHeight(10)),
             Expanded(
               child: ListView.builder(
-                itemCount: _recordViewModel.getRecordData.data?.data.travels[0].records.length,
+                controller: _scrollController,
+                itemCount: _recordViewModel
+                    .getRecordData.data?.data.travels[0].records.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +109,9 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                             ),
                             child: ClipOval(
                               child: Image.network(
-                                _homeViewModel.getHomeData.data?.data.profile.userImage ?? "",
+                                _homeViewModel.getHomeData.data?.data.profile
+                                        .userImage ??
+                                    "",
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -97,7 +121,9 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                _recordViewModel.getRecordData.data?.data.travels[0].title ?? "",
+                                _recordViewModel.getRecordData.data?.data
+                                        .travels[0].title ??
+                                    "",
                                 style: const TextStyle(
                                   fontFamily: "Pretendard",
                                   fontSize: 12,
@@ -106,7 +132,14 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                                 ),
                               ),
                               Text(
-                                _recordViewModel.getRecordData.data?.data.travels[0].records[index].missionType ?? "",
+                                _recordViewModel
+                                        .getRecordData
+                                        .data
+                                        ?.data
+                                        .travels[0]
+                                        .records[index]
+                                        .missionType ??
+                                    "",
                                 style: const TextStyle(
                                   fontFamily: "Pretendard",
                                   fontSize: 11,
@@ -121,14 +154,18 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                       SizedBox(height: ScreenUtil().setHeight(8)),
                       // need add image here
                       Image.network(
-                        _recordViewModel.getRecordData.data?.data.travels[0].records[index].image ?? "",
+                        _recordViewModel.getRecordData.data?.data.travels[0]
+                                .records[index].image ??
+                            "",
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: ScreenUtil().setWidth(320),
                       ),
                       SizedBox(height: ScreenUtil().setHeight(8)),
                       Text(
-                        _recordViewModel.getRecordData.data?.data.travels[0].records[index].comment ?? "",
+                        _recordViewModel.getRecordData.data?.data.travels[0]
+                                .records[index].comment ??
+                            "",
                         style: const TextStyle(
                           fontFamily: "Pretendard",
                           fontSize: 16,
@@ -139,7 +176,9 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                         height: ScreenUtil().setHeight(4),
                       ),
                       Text(
-                        _recordViewModel.getRecordData.data?.data.travels[0].records[index].uploadAt ?? "",
+                        _recordViewModel.getRecordData.data?.data.travels[0]
+                                .records[index].uploadAt ??
+                            "",
                         style: const TextStyle(
                           fontFamily: "Pretendard",
                           fontSize: 12,
