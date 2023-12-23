@@ -21,21 +21,24 @@ class RecordScreen extends StatefulWidget {
 
 class _RecordScreenState extends State<RecordScreen> {
   RecordViewModel _recordViewModel = RecordViewModel();
+  List<String> _dates = [];
+  String? _selectDate;
+  int _selectTravelsIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
     _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
-    _recordViewModel.fetchRecordImageApi();
-  }
-
-  String _getToday() {
-    DateTime now = DateTime.now();
-    DateFormat format = DateFormat('yyyy년MM월');
-    String today = format.format(now);
-
-    return today;
+    _recordViewModel.fetchRecordImageApi().then((_) {
+      if (_recordViewModel.recordData.status == Status.complete) {
+        _dates = List<String>.from(_recordViewModel
+            .recordData.data!.data.travels
+            .map((travel) => travel.title));
+        _selectDate = _dates[0];
+        setState(() {});
+      }
+    });
   }
 
   Widget _buildAppBarWidget() {
@@ -75,9 +78,12 @@ class _RecordScreenState extends State<RecordScreen> {
   Widget _buildCompleteWidget(RecordViewModel value) {
     return Expanded(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildDayWidget(),
-          value.recordData.data?.data.travels[0].records.isEmpty ?? false
+          value.recordData.data?.data.travels[_selectTravelsIndex].records
+                      .isEmpty ??
+                  false
               ? _buildEmptyWidget()
               : _buildImageWidget(value),
         ],
@@ -106,28 +112,38 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   Widget _buildDayWidget() {
-    return Row(
-      children: [
-        Text(
-          _getToday(),
-          style: const TextStyle(
-            fontFamily: "Pretendard",
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const Icon(
-          Icons.expand_more,
-          color: Colors.black,
-        ),
-      ],
+    return DropdownButton(
+      value: _selectDate,
+      items: _dates
+          .map((e) => DropdownMenuItem(
+                value: e,
+                child: Text(
+                  e,
+                  style: const TextStyle(
+                    fontFamily: "Pretendard",
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ))
+          .toList(),
+      onChanged: (value) {
+        if (value != null) {
+          _selectTravelsIndex = _dates.indexOf(value);
+
+          setState(() {
+            _selectDate = value;
+          });
+        }
+      },
     );
   }
 
   Widget _buildImageWidget(RecordViewModel value) {
     return Expanded(
       child: GridView.builder(
-        itemCount: value.recordData.data?.data.travels[0].records.length,
+        itemCount: value
+            .recordData.data?.data.travels[_selectTravelsIndex].records.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           mainAxisSpacing: 5,
@@ -140,13 +156,16 @@ class _RecordScreenState extends State<RecordScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => RecordFeedScreen(
-                          date: _getToday(),
+                          date: _dates[_selectTravelsIndex],
                           pageIndex: index,
+                          selectTravelsIndex: _selectTravelsIndex,
                         )),
               );
             },
             child: Image.network(
-              value.recordData.data?.data.travels[0].records[index].image ?? "",
+              value.recordData.data?.data.travels[_selectTravelsIndex]
+                      .records[index].image ??
+                  "",
               fit: BoxFit.cover,
             ),
           );

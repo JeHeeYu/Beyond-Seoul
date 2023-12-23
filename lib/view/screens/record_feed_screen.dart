@@ -10,9 +10,10 @@ import '../../view_model/record_view_model.dart';
 class RecordFeedScreen extends StatefulWidget {
   final String date;
   final int pageIndex;
+  final int selectTravelsIndex;
 
   const RecordFeedScreen(
-      {Key? key, required this.date, required this.pageIndex})
+      {Key? key, required this.date, required this.pageIndex, required this.selectTravelsIndex})
       : super(key: key);
 
   @override
@@ -94,7 +95,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
               child: ListView.builder(
                 controller: _scrollController,
                 itemCount: _recordViewModel
-                    .getRecordData.data?.data.travels[0].records.length,
+                    .getRecordData.data?.data.travels[widget.selectTravelsIndex].records.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +123,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                             children: [
                               Text(
                                 _recordViewModel.getRecordData.data?.data
-                                        .travels[0].title ??
+                                        .travels[widget.selectTravelsIndex].title ??
                                     "",
                                 style: const TextStyle(
                                   fontFamily: "Pretendard",
@@ -136,7 +137,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                                         .getRecordData
                                         .data
                                         ?.data
-                                        .travels[0]
+                                        .travels[widget.selectTravelsIndex]
                                         .records[index]
                                         .missionType ??
                                     "",
@@ -154,7 +155,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                       SizedBox(height: ScreenUtil().setHeight(8)),
                       // need add image here
                       Image.network(
-                        _recordViewModel.getRecordData.data?.data.travels[0]
+                        _recordViewModel.getRecordData.data?.data.travels[widget.selectTravelsIndex]
                                 .records[index].image ??
                             "",
                         fit: BoxFit.cover,
@@ -163,7 +164,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                       ),
                       SizedBox(height: ScreenUtil().setHeight(8)),
                       Text(
-                        _recordViewModel.getRecordData.data?.data.travels[0]
+                        _recordViewModel.getRecordData.data?.data.travels[widget.selectTravelsIndex]
                                 .records[index].comment ??
                             "",
                         style: const TextStyle(
@@ -176,7 +177,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                         height: ScreenUtil().setHeight(4),
                       ),
                       Text(
-                        _recordViewModel.getRecordData.data?.data.travels[0]
+                        _recordViewModel.getRecordData.data?.data.travels[widget.selectTravelsIndex]
                                 .records[index].uploadAt ??
                             "",
                         style: const TextStyle(
