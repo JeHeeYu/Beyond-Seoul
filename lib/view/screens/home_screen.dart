@@ -17,6 +17,7 @@ import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
 import '../widgets/flexible_text.dart';
 import '../widgets/infinity_button.dart';
+import '../widgets/mate_dialog_widget.dart';
 import 'mate_registration_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -272,12 +273,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const MateRegistrationScreen()),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) =>
+                        //           const MateRegistrationScreen()),
+                        // );
+
+                        MateDialogWidget.show(context);
                       },
                       child: Image.asset(Images.add)),
                 ],

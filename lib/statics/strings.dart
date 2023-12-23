@@ -60,6 +60,9 @@ class Strings {
   static const String newCode = "코드 새로 받기";
   static const String codeExpire = "코드가 만료되었습니다.";
   static const String complete = "완료";
+  static const String travleMate = "여행 메이트";
+  static const String delete = "삭제";
+  static const String addMate = "메이트 추가하기";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";
