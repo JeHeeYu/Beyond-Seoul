@@ -1,16 +1,9 @@
-import 'dart:ui';
-
-import 'package:beyond_seoul/view/screens/mission_detail.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../network/api_response.dart';
-import '../../network/network_manager.dart';
-import '../../routes/routes_name.dart';
 import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
@@ -90,23 +83,40 @@ class _HomeScreenState extends State<HomeScreen> {
     String mission = "";
 
     if (index == 0) {
-      mission = Strings.personalMission;
+      mission = Strings.foodMission;
     } else if (index == 1) {
-      mission = Strings.teamMission;
+      mission = Strings.tourMission;
     } else {
-      mission = Strings.dailyChallenge;
+      mission = Strings.sosoMission;
     }
 
     return Column(
       children: [
-        complete == 0
-            ? Column(
-                children: [
-                  Image.asset(Images.emptyStamp),
-                  SizedBox(height: ScreenUtil().setHeight(16)),
-                ],
-              )
-            : Image.asset(Images.goodStamp),
+        Stack(
+          children: [
+            complete == 0
+                ? Column(
+                    children: [
+                      Image.asset(Images.emptyStamp),
+                      SizedBox(height: ScreenUtil().setHeight(16)),
+                    ],
+                  )
+                : Image.asset(Images.goodStamp),
+            if (complete > 0)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Text(
+                  '+$complete',
+                  style: const TextStyle(
+                    color: Color(0xFF6C4FA4),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+          ],
+        ),
         Text(
           mission,
           style: const TextStyle(
@@ -114,22 +124,6 @@ class _HomeScreenState extends State<HomeScreen> {
             fontSize: 11,
             fontWeight: FontWeight.w700,
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDailyChallengeContent(String complete, String challenge) {
-    return Row(
-      children: [
-        complete == "SUCCESS"
-            ? Image.asset(Images.checkBox)
-            : Image.asset(Images.uncheckBox),
-        SizedBox(width: ScreenUtil().setWidth(9)),
-        FlexibleText(
-          text: challenge,
-          textSize: 16,
-          textWeight: FontWeight.w700,
         ),
       ],
     );
@@ -191,13 +185,36 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildDuringTravelWidget(HomeViewModel value) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildUserInfoWidget(value),
-        _buildBusInfoWidget(value),
         _buildMissionProgressWidget(value),
-        _buildTeamMissionWidget(value),
-        _buildPersonalMissionWidget(value),
-        _buildDailyChallengeWidget(value),
+        SizedBox(height: ScreenUtil().setHeight(30)),
+        _buildMissionTitleWidget(Strings.foodMission),
+        SizedBox(height: ScreenUtil().setHeight(7)),
+        _buildMissionWidget(Strings.foodMission),
+        SizedBox(height: ScreenUtil().setHeight(12)),
+        _buildMissionTitleWidget(Strings.tourMission),
+        SizedBox(height: ScreenUtil().setHeight(7)),
+        _buildMissionWidget(Strings.tourMission),
+        SizedBox(height: ScreenUtil().setHeight(12)),
+        _buildMissionTitleWidget(Strings.sosoMission),
+        SizedBox(height: ScreenUtil().setHeight(7)),
+        _buildMissionWidget(Strings.sosoMission),
+      ],
+    );
+  }
+
+  Widget _buildMissionTitleWidget(String title) {
+    return Row(
+      children: [
+        bgTextRectangle(71, 22, 8, title,
+            const Color(UserColors.enable), 12),
+        SizedBox(width: ScreenUtil().setWidth(10)),
+        const Icon(
+          Icons.refresh,
+          color: Colors.grey,
+        ),
       ],
     );
   }
@@ -239,6 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+                  SizedBox(height: ScreenUtil().setHeight(5)),
                   Text(
                     value.homeData.data?.data.travel.travelName ?? "",
                     style: const TextStyle(
@@ -247,6 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
+                  SizedBox(height: ScreenUtil().setHeight(5)),
                   Text(
                     value.homeData.data?.data.travel.travelDate ?? "",
                     style: const TextStyle(
@@ -289,229 +308,92 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildBusInfoWidget(HomeViewModel value) {
+  Widget _buildMissionWidget(String mission) {
     return Stack(
       alignment: Alignment.center,
       children: [
-        bgRectangle(63, 16),
+        bgRectangle(54, 8),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(8)),
+          padding: EdgeInsets.only(
+              bottom: ScreenUtil().setHeight(5),
+              left: ScreenUtil().setWidth(24),
+              right: ScreenUtil().setWidth(24)),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(Images.bus),
-              const FlexibleText(
-                text: '부산행/BUSAN',
-                textSize: 14,
-                textWeight: FontWeight.w600,
-                textColor: Color(UserColors.enable),
+              FlexibleText(
+                text: mission,
+                textSize: 16,
+                textWeight: FontWeight.w700,
               ),
-              const FlexibleText(
-                text: '2023/11/09',
-                textSize: 11,
-                textWeight: FontWeight.w600,
-              ),
-              const FlexibleText(
-                text: 'AM 10:42',
-                textSize: 11,
-                textWeight: FontWeight.w600,
+              const Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.grey,
               ),
             ],
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildTeamMissionWidget(HomeViewModel value) {
-    return SizedBox(
-      width: double.infinity,
-      height: ScreenUtil().setHeight(134),
-      child: Stack(
-        children: [
-          bgRectangle(134, 12),
-          Column(
-            children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    top: ScreenUtil().setHeight(7),
-                    left: ScreenUtil().setWidth(7),
-                    bottom: ScreenUtil().setHeight(7),
-                  ),
-                  child: bgTextRectangle(71, 22, 8, Strings.togetherMission,
-                      const Color(UserColors.enable), 12),
-                ),
-              ),
-              Text(
-                value.homeData.data?.data.mission.teamMission?.title ?? "",
-                style: const TextStyle(
-                  fontFamily: "Pretendard",
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(height: ScreenUtil().setHeight(8)),
-              Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12)),
-                child: GestureDetector(
-                  onTap: () async {},
-                  child: const InfinityButton(
-                    height: 40,
-                    radius: 4,
-                    backgroundColor: Color(UserColors.disable),
-                    text: Strings.findFriend,
-                    textSize: 16,
-                    textWeight: FontWeight.w700,
-                    textColor: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 
   Widget _buildMissionProgressWidget(HomeViewModel value) {
     return Stack(
-      alignment: Alignment.center,
       children: [
         bgRectangle(152, 12),
-        Column(
-          children: [
-            const Text(
-              Strings.missionProgress,
-              style: TextStyle(
-                fontFamily: "Pretendard",
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            SizedBox(height: ScreenUtil().setHeight(10)),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(25)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildMissionComplete(
-                      0,
-                      value.homeData.data?.data.mission.missionComplete
-                              ?.person ??
-                          0),
-                  _buildMissionComplete(
-                      1,
-                      value.homeData.data?.data.mission.missionComplete?.team ??
-                          0),
-                  _buildMissionComplete(
-                      2,
-                      value.homeData.data?.data.mission.missionComplete
-                              ?.daily ??
-                          0),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPersonalMissionWidget(HomeViewModel value) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MissionDetailScreen(
-                  title:
-                      value.homeData.data?.data.mission.personMission?.title)),
-        );
-      },
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          bgRectangle(54, 8),
-          Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12)),
-            child: Row(
-              children: [
-                bgTextRectangle(61, 22, 8, Strings.personalMission,
-                    const Color(UserColors.enable), 12),
-                SizedBox(width: ScreenUtil().setWidth(12)),
-                FlexibleText(
-                  text:
-                      value.homeData.data?.data.mission.personMission?.title ??
-                          "",
-                  textSize: 16,
-                  textWeight: FontWeight.w700,
-                ),
-                SizedBox(width: ScreenUtil().setWidth(24)),
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.grey,
-                ),
-                SizedBox(width: ScreenUtil().setWidth(12)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDailyChallengeWidget(HomeViewModel value) {
-    return Stack(
-      children: [
-        bgRectangle(214, 12),
         Padding(
           padding: EdgeInsets.only(
-            top: ScreenUtil().setHeight(20),
-            left: ScreenUtil().setWidth(7),
-            bottom: ScreenUtil().setHeight(7),
+              top: ScreenUtil().setHeight(11),
+              right: ScreenUtil().setWidth(17)),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: Text(
+              getToday(),
+              style: const TextStyle(
+                  fontFamily: "Pretendard",
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: Color(UserColors.disable)),
+            ),
           ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: ScreenUtil().setHeight(8)),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  bgTextRectangle(71, 22, 8, Strings.dailyChallenge,
-                      const Color(UserColors.enable), 12),
-                  SizedBox(width: ScreenUtil().setWidth(12)),
-                  Text(
-                    value.homeData.data?.data.mission.dailyMissionCount ?? "",
-                    style: const TextStyle(
-                      fontFamily: "Pretendard",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
+              const Text(
+                Strings.missionProgress,
+                style: TextStyle(
+                  fontFamily: "Pretendard",
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              SizedBox(height: ScreenUtil().setHeight(23)),
-              _buildDailyChallengeContent(
-                value.homeData.data?.data.mission.dailyMissions?[0].status ??
-                    "",
-                value.homeData.data?.data.mission.dailyMissions?[0].title ?? "",
+              SizedBox(height: ScreenUtil().setHeight(10)),
+              Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(25)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildMissionComplete(
+                        0,
+                        value.homeData.data?.data.mission.missionComplete
+                                ?.person ??
+                            0),
+                    _buildMissionComplete(
+                        1,
+                        value.homeData.data?.data.mission.missionComplete
+                                ?.team ??
+                            0),
+                    _buildMissionComplete(
+                        2,
+                        value.homeData.data?.data.mission.missionComplete
+                                ?.daily ??
+                            0),
+                  ],
+                ),
               ),
-              SizedBox(height: ScreenUtil().setHeight(28)),
-              _buildDailyChallengeContent(
-                value.homeData.data?.data.mission.dailyMissions?[1].status ??
-                    "",
-                value.homeData.data?.data.mission.dailyMissions?[1].title ?? "",
-              ),
-              SizedBox(height: ScreenUtil().setHeight(28)),
-              _buildDailyChallengeContent(
-                value.homeData.data?.data.mission.dailyMissions?[2].status ??
-                    "",
-                value.homeData.data?.data.mission.dailyMissions?[2].title ?? "",
-              ),
-              SizedBox(height: ScreenUtil().setHeight(28)),
             ],
           ),
         ),

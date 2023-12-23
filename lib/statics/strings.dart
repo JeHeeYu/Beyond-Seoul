@@ -63,6 +63,9 @@ class Strings {
   static const String travleMate = "여행 메이트";
   static const String delete = "삭제";
   static const String addMate = "메이트 추가하기";
+  static const String foodMission = "먹거리 미션";
+  static const String tourMission = "관광 미션";
+  static const String sosoMission = "소소 미션";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";
