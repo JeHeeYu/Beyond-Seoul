@@ -67,6 +67,10 @@ class Strings {
   static const String tourMission = "관광 미션";
   static const String sosoMission = "소소 미션";
   static const String profileGuide = "정보를 입력해주세요.";
+  static const String close = "닫기";
+  static const String editComplete = "수정 완료";
+  static const String gender = "성별";
+  static const String birthday = "출생연도";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";

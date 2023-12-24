@@ -1,3 +1,4 @@
+import 'package:beyond_seoul/view/widgets/profile_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -95,16 +96,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           child: Row(
             children: [
-              Container(
-                width: ScreenUtil().setWidth(60),
-                height: ScreenUtil().setHeight(60),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                child: ClipOval(
-                  child: Image.network(
-                    value.homeData.data?.data.profile.userImage ?? "",
-                    fit: BoxFit.cover,
+              GestureDetector(
+                onTap: (){
+                  ProfileDialogWidget.show(context, _homeViewModel);
+                },
+                child: Container(
+                  width: ScreenUtil().setWidth(60),
+                  height: ScreenUtil().setHeight(60),
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: ClipOval(
+                    child: Image.network(
+                      value.homeData.data?.data.profile.userImage ?? "",
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

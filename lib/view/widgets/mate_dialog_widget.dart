@@ -61,7 +61,7 @@ class MateDialogWidget {
     );
   }
 
-    static Future<void> show(BuildContext context) async {
+  static Future<void> show(BuildContext context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -102,7 +102,7 @@ class MateDialogWidget {
                 ),
                 SizedBox(height: ScreenUtil().setHeight(30)),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.of(context).pop();
                   },
                   child: InfinityButton(
