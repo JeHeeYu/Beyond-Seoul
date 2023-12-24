@@ -66,6 +66,7 @@ class Strings {
   static const String foodMission = "먹거리 미션";
   static const String tourMission = "관광 미션";
   static const String sosoMission = "소소 미션";
+  static const String profileGuide = "정보를 입력해주세요.";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";
