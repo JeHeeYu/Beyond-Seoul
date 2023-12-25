@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:beyond_seoul/network/api_url.dart';
+import 'package:beyond_seoul/network/network_manager.dart';
 import 'package:beyond_seoul/statics/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,13 +28,16 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   final _commentController = TextEditingController();
   XFile? uploadImage;
   final ImagePicker picker = ImagePicker();
+  dynamic sendData;
 
   Future getImage(ImageSource imageSource) async {
-    final XFile? pickedFile = await picker.pickImage(source: imageSource);
+    final XFile? pickedFile =
+        await picker.pickImage(source: imageSource, imageQuality: 30);
 
     if (pickedFile != null) {
       setState(() {
         uploadImage = XFile(pickedFile.path);
+        sendData = pickedFile.path;
       });
     }
   }
@@ -73,9 +78,16 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
             textSize: 18,
             textWeight: FontWeight.w700,
           ),
-          const Icon(
-            Icons.refresh,
-            color: Colors.black,
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                uploadImage = null;
+              });
+            },
+            child: const Icon(
+              Icons.refresh,
+              color: Colors.black,
+            ),
           ),
         ],
       ),
@@ -83,56 +95,56 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   }
 
   Widget _buildMainContent() {
-  return Expanded(
-    child: SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(22)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              onTap: () async {
-                getImage(ImageSource.gallery);
-              },
-              child: _buildPhotoArea(),
-            ),
-            SizedBox(height: ScreenUtil().setHeight(19)),
-            const Divider(thickness: 1),
-            SizedBox(height: ScreenUtil().setHeight(19)),
-            Container(
-              height: ScreenUtil().setHeight(150),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: const Color(0xFFDEDEDE),
-                  width: 1.0,
-                ),
-                borderRadius: BorderRadius.circular(8),
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(22)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  getImage(ImageSource.gallery);
+                },
+                child: _buildPhotoArea(),
               ),
-              child: TextField(
-                controller: _commentController,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontFamily: "Pretendard",
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
+              SizedBox(height: ScreenUtil().setHeight(19)),
+              const Divider(thickness: 1),
+              SizedBox(height: ScreenUtil().setHeight(19)),
+              Container(
+                height: ScreenUtil().setHeight(150),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color(0xFFDEDEDE),
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                decoration: const InputDecoration(
-                  filled: true,
-                  fillColor: Color(UserColors.mainBackGround),
-                  hintText: Strings.photoUploadHint,
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  border: InputBorder.none,
+                child: TextField(
+                  controller: _commentController,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontFamily: "Pretendard",
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                  decoration: const InputDecoration(
+                    filled: true,
+                    fillColor: Color(UserColors.mainBackGround),
+                    hintText: Strings.photoUploadHint,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,14 +161,21 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
             _buildMainContent(),
             Padding(
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
-              child: const InfinityButton(
-                height: 40,
-                radius: 4,
-                backgroundColor: Color(UserColors.disable),
-                text: Strings.missionComplete,
-                textSize: 16,
-                textWeight: FontWeight.w700,
-                textColor: Colors.white,
+              child: GestureDetector(
+                onTap: () {
+                  NetworkManager.instance.imagePost(ApiUrl.mateCode, sendData);
+                },
+                child: InfinityButton(
+                  height: 40,
+                  radius: 4,
+                  backgroundColor: (uploadImage == null)
+                      ? const Color(UserColors.disable)
+                      : const Color(UserColors.enable),
+                  text: Strings.missionComplete,
+                  textSize: 16,
+                  textWeight: FontWeight.w700,
+                  textColor: Colors.white,
+                ),
               ),
             ),
           ],

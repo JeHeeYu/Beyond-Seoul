@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -74,6 +75,24 @@ class NetworkManager {
     } catch (error) {
       print("에러 발생: $error");
       throw error;
+    }
+  }
+
+  Future<dynamic> imagePost(String serverUrl, dynamic input) async {
+    var dio = Dio();
+    try {
+      dio.options.contentType = 'multipart/form-data';
+      dio.options.maxRedirects.isFinite;
+
+      dio.options.headers = commonHeaders;
+      var response = await dio.post(
+        serverUrl,
+        data: input,
+      );
+      print('Data : ${response.data}');
+      return response.data;
+    } catch (e) {
+      print('Error in imagePost: $e');
     }
   }
 

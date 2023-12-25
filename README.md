@@ -25,4 +25,5 @@ flutter pub add table_calendar
 flutter pub add kakao_flutter_sdk
 flutter pub add google_sign_in
 flutter pub add flutter_naver_login
+flutter pub add dio
 ```

@@ -11,6 +11,7 @@ import '../../view_model/home_view_model.dart';
 import '../widgets/flexible_text.dart';
 import '../widgets/infinity_button.dart';
 import 'mate_registration_screen.dart';
+import 'mission_detail.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -192,7 +193,17 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(height: ScreenUtil().setHeight(30)),
         _buildMissionTitleWidget(Strings.foodMission),
         SizedBox(height: ScreenUtil().setHeight(7)),
-        _buildMissionWidget(Strings.foodMission),
+        GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MissionDetailScreen(
+                        title: value
+                            .homeData.data?.data.mission.personMission?.title)),
+              );
+            },
+            child: _buildMissionWidget(Strings.foodMission)),
         SizedBox(height: ScreenUtil().setHeight(12)),
         _buildMissionTitleWidget(Strings.tourMission),
         SizedBox(height: ScreenUtil().setHeight(7)),
@@ -208,8 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildMissionTitleWidget(String title) {
     return Row(
       children: [
-        bgTextRectangle(71, 22, 8, title,
-            const Color(UserColors.enable), 12),
+        bgTextRectangle(71, 22, 8, title, const Color(UserColors.enable), 12),
         SizedBox(width: ScreenUtil().setWidth(10)),
         const Icon(
           Icons.refresh,
