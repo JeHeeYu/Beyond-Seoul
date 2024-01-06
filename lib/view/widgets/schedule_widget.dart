@@ -54,7 +54,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
         },
       ),
       focusedDay: DateTime.now(),
-      firstDay: DateTime.now(),
+      firstDay: DateTime(1900),
       lastDay: DateTime(3000),
       locale: 'ko-KR',
       headerStyle: const HeaderStyle(
@@ -73,7 +73,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
           shape: BoxShape.circle,
         ),
       ),
-      enabledDayPredicate: _endDayDisble,
+      //enabledDayPredicate: _endDayDisble,
       onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
         setState(() {
           this.selectedDay = selectedDay;
