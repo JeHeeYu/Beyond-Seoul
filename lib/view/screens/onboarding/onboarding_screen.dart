@@ -12,6 +12,7 @@ import '../../../statics/images.dart';
 import '../../../statics/strings.dart';
 import '../../widgets/image_button.dart';
 import '../../widgets/schedule_widget.dart';
+import '../mate_registration_screen.dart';
 import 'onboarding_button.dart';
 
 enum Page {
@@ -138,17 +139,37 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     switch (page) {
       case Page.infoPage:
         _gender = genderMap[_selectedIndex] ?? "";
+        _pageController.jumpToPage(Page.withTravelPage.index);
         break;
       case Page.withTravelPage:
         _withTravel = withTravelMap[_selectedIndex] ?? "";
+
+        if (_selectedIndex == 0) {
+          _pageController.jumpToPage(Page.travelDatePage.index);
+        } else {
+          _pageController.jumpToPage(Page.rolePage.index);
+        }
         break;
       case Page.rolePage:
         _role = roleMap[_selectedIndex] ?? "";
+
+        if (_selectedIndex == 0) {
+          _pageController.jumpToPage(Page.travelDatePage.index);
+        } else {
+          sendOnboardingComplete();
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MateRegistrationScreen()),
+          );
+        }
         break;
       case Page.travelDatePage:
+      _pageController.jumpToPage(Page.themaPage.index);
         break;
       case Page.themaPage:
         _thema = themaMap[_selectedIndex] ?? "";
+        _pageController.jumpToPage(Page.destionPage.index);
         break;
       case Page.destionPage:
         _destination = destinationMap[_selectedIndex] ?? "";
@@ -164,11 +185,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     setState(() {
       _selectedIndex = -1;
     });
-
-    _pageController.nextPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
   }
 
   _buildAgeBirthdayPage() {
