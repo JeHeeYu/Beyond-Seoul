@@ -112,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: const TextStyle(
                     color: Color(0xFF6C4FA4),
                     fontSize: 11,
+                    fontFamily: "PottaOne-Regular",
                     fontWeight: FontWeight.w500,
                   ),
                 ),
