@@ -17,51 +17,22 @@ import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
 import '../widgets/infinity_button.dart';
 
-class MateRegistrationScreen extends StatefulWidget {
-  const MateRegistrationScreen({super.key});
+class MateReCodeScreen extends StatefulWidget {
+  const MateReCodeScreen({super.key});
 
   @override
-  State<MateRegistrationScreen> createState() => _MateRegistrationScreenState();
+  State<MateReCodeScreen> createState() => _MateCodeScreenState();
 }
 
-class _MateRegistrationScreenState extends State<MateRegistrationScreen> {
+class _MateCodeScreenState extends State<MateReCodeScreen> {
   HomeViewModel homeViewModel = HomeViewModel();
-
-  int _second = 0;
-  int _minute = 30;
-  late Timer _timer;
+  final mateCodeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
     homeViewModel.fetchMateCodetApi();
-    _startTimer();
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_second == 0) {
-          _minute--;
-          _second = 59;
-        } else {
-          _second--;
-        }
-
-        if (_second == 0 && _minute == 0) {
-          _timer.cancel();
-        }
-      });
-    });
-  }
-
-  String formatTime() {
-    Duration duration = Duration(minutes: _minute, seconds: _second);
-    DateFormat formatter = DateFormat('mm:ss');
-    String formattedTime = formatter.format(DateTime(0).add(duration));
-
-    return formattedTime;
   }
 
   Widget _buildMainContent() {
@@ -125,93 +96,43 @@ class _MateRegistrationScreenState extends State<MateRegistrationScreen> {
                 color: Colors.white,
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: ScreenUtil().setWidth(29)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    (_minute == 0 && _second == 0)
-                        ? Strings.newCode
-                        : value.mateCodeData.data?.data.code ??
-                            Strings.codeExpire,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontFamily: "Pretendard",
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20),
-                  ),
-                  SizedBox(width: ScreenUtil().setWidth(29)),
-                  GestureDetector(
-                    onTap: () async {
-                      if (_minute == 0 && _second == 0) {
-                        Map<String, dynamic> queryParams = {
-                          'travelId': "3",
-                        };
-
-                        Map<String, dynamic> postData = {'key': 'value'};
-
-                        NetworkManager.instance
-                            .postQuery(
-                                ApiUrl.newMateCode, postData, queryParams)
-                            .then((response) {
-                          if (response == 200) {
-                            setState(() {
-                              homeViewModel.fetchMateCodetApi();
-                              _startTimer();
-                              _minute = 30;
-                              _second = 0;
-                            });
-                          }
-                        }).catchError((error) {
-                          print('포스트 실패: $error');
-                        });
-                      } else {
-                        Clipboard.setData(ClipboardData(
-                            text: value.mateCodeData.data?.data.code));
-                      }
-                    },
-                    child: Icon(
-                      (_minute == 0 && _second == 0)
-                          ? Icons.refresh
-                          : Icons.content_copy,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+            TextField(
+              controller: mateCodeController,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.black,
+                fontFamily: "Pretendard",
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+              decoration: const InputDecoration(
+                hintText: Strings.mateCodeInput,
+                border: InputBorder.none,
               ),
             ),
           ],
         ),
-        SizedBox(height: ScreenUtil().setHeight(24)),
-        Align(
-          alignment: Alignment.center,
-          child: Text(
-            (_minute == 0 && _second == 0)
-                ? Strings.codeExpire
-                : Strings.codeValidGuide,
-            style: const TextStyle(
+      ],
+    );
+  }
+
+  Widget _buildCodeNextTimeWidget() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(11)),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: const Text(
+          Strings.codeNextTime,
+          style: TextStyle(
               color: Color(UserColors.guideText),
               fontFamily: "Pretendard",
-              fontSize: 12,
+              fontSize: 15,
               fontWeight: FontWeight.w500,
-            ),
-          ),
+              decoration: TextDecoration.underline),
         ),
-        SizedBox(height: ScreenUtil().setHeight(14)),
-        Align(
-          alignment: Alignment.center,
-          child: Text(
-            (_minute == 0 && _second == 0) ? "" : formatTime(),
-            style: const TextStyle(
-              color: Colors.black,
-              fontFamily: "Pretendard",
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -249,6 +170,7 @@ class _MateRegistrationScreenState extends State<MateRegistrationScreen> {
             ),
           ),
         ),
+        _buildCodeNextTimeWidget(),
         _buildButtonWidget(),
       ],
     );

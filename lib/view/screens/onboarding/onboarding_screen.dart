@@ -12,7 +12,7 @@ import '../../../statics/images.dart';
 import '../../../statics/strings.dart';
 import '../../widgets/image_button.dart';
 import '../../widgets/schedule_widget.dart';
-import '../mate_registration_screen.dart';
+import '../mate_code_screen.dart';
 import 'onboarding_button.dart';
 
 enum Page {
@@ -160,7 +160,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const MateRegistrationScreen()),
+            MaterialPageRoute(builder: (context) => const MateReCodeScreen()),
           );
         }
         break;

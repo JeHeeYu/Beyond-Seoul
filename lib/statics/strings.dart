@@ -55,7 +55,9 @@ class Strings {
   static const String isReader = "리더에요!";
   static const String togetherMage = "메이트에요!";
   static const String mateRegistration = "여행메이트 등록하기";
-  static const String mateRegistrationGuide = "여행을 같이 할 메이트들에게 아래 코드를 공유하고,\n함께 새로운 경험을 즐겨보세요!";
+  static const String mateRegistrationGuide = "여행 리더의 등록 코드를 입력하고, 함께 새로운 경험을 즐겨보세요!";
+  static const String mateRegistrationCodeGuide = "여행을 같이 할 메이트들에게 아래 코드를 공유하고,\n함께 새로운 경험을 즐겨보세요!";
+  static const String mateRegistrationCode = "여행메이트 등록 코드";
   static const String codeValidGuide = "위 코드는 30분간만 유효합니다.";
   static const String newCode = "코드 새로 받기";
   static const String codeExpire = "코드가 만료되었습니다.";
@@ -71,6 +73,8 @@ class Strings {
   static const String editComplete = "수정 완료";
   static const String gender = "성별";
   static const String birthday = "출생연도";
+  static const String codeNextTime = "다음에 등록하기";
+  static const String mateCodeInput = "코드를 입력해주세요.";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";

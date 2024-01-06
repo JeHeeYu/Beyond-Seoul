@@ -10,7 +10,7 @@ import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
 import '../widgets/flexible_text.dart';
 import '../widgets/infinity_button.dart';
-import 'mate_registration_screen.dart';
+import 'mate_code_screen.dart';
 import 'mission_detail.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -306,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  const MateRegistrationScreen()),
+                                  const MateReCodeScreen()),
                         );
                       },
                       child: Image.asset(Images.add)),
