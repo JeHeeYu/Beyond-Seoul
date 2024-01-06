@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'api_response.dart';
+
 class NetworkManager {
   Map<String, String> commonHeaders = {
     "Content-Type": "application/json",
@@ -23,7 +25,7 @@ class NetworkManager {
 
       responseJson = utf8.decode(response.bodyBytes);
 
-      //print("responseJson : ${responseJson.toString()}");
+      print("GET 성공: ${response.body}");
 
       return responseJson;
     } catch (error) {
@@ -98,9 +100,11 @@ class NetworkManager {
 
   dynamic returnResponse(http.Response response) {
     switch (response.statusCode) {
+      case 0:
       case 200:
-      default:
         return response.body;
+      default:
+      return ApiResponse.error;
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:beyond_seoul/view/screens/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -139,12 +140,11 @@ class _HomeScreenState extends State<HomeScreen> {
           switch (value.homeData.status) {
             case Status.loading:
               return _buildLoadingWidget();
-            case Status.error:
-              return const Text("에러");
             case Status.complete:
               return _buildCompleteWidget(value);
+            case Status.error:
             default:
-              return const Text("오류");
+              return const ErrorScreen();
           }
         },
       ),
@@ -305,8 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const MateReCodeScreen()),
+                              builder: (context) => const MateReCodeScreen()),
                         );
                       },
                       child: Image.asset(Images.add)),

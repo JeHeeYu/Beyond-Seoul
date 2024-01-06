@@ -11,6 +11,7 @@ import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
 import '../../view_model/record_view_model.dart';
+import 'error_screen.dart';
 
 class RecordScreen extends StatefulWidget {
   const RecordScreen({super.key});
@@ -99,12 +100,12 @@ class _RecordScreenState extends State<RecordScreen> {
           switch (value.recordData.status) {
             case Status.loading:
               return const Center(child: CircularProgressIndicator());
-            case Status.error:
-              return const Text("에러");
+
             case Status.complete:
               return _buildCompleteWidget(value);
+            case Status.error:
             default:
-              return const Text("오류");
+              return const ErrorScreen();
           }
         },
       ),

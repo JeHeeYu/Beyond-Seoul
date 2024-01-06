@@ -14,7 +14,7 @@ class HomeViewModel with ChangeNotifier {
 
   void setTravelList(ApiResponse<HomeScreenModel> response) {
     homeData = response;
-    
+
     notifyListeners();
   }
 
@@ -28,7 +28,12 @@ class HomeViewModel with ChangeNotifier {
 
   Future<void> fetchTravelListApi() async {
     await _homeRepo.getHomeScreenData().then((value) {
-      setTravelList(ApiResponse.complete(value));
+      if (value.code != 0) {
+        setTravelList(
+            ApiResponse.error("Error: Unexpected response code ${value.code}"));
+      } else {
+        setTravelList(ApiResponse.complete(value));
+      }
     }).onError((error, stackTrace) {
       setTravelList(ApiResponse.error(error.toString()));
       return Future.value(null);

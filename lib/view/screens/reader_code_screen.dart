@@ -13,6 +13,7 @@ import '../../statics/colors.dart';
 import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
 import '../widgets/infinity_button.dart';
+import 'error_screen.dart';
 
 class ReaderCodeScreen extends StatefulWidget {
   const ReaderCodeScreen({super.key});
@@ -69,12 +70,11 @@ class _ReaderCodeScreenState extends State<ReaderCodeScreen> {
           switch (value.mateCodeData.status) {
             case Status.loading:
               return const Center(child: CircularProgressIndicator());
-            case Status.error:
-              return const Text("에러");
             case Status.complete:
               return _buildCompleteWidget(value);
+            case Status.error:
             default:
-              return const Text("오류");
+              return const ErrorScreen();
           }
         },
       ),
