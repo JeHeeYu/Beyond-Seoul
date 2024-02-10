@@ -27,13 +27,13 @@ enum Page {
   destionPage
 }
 
-Map<int, String> genderMap = {0: "남", 1: "여"};
+Map<int, String> sexMap = {0: "남", 1: "여"};
 
-Map<int, String> withTravelMap = {0: "혼자 여행", 1: "같이 여행"};
+Map<int, String> withTravelMap = {0: "혼자", 1: "여행 메이트와 함께"};
 
-Map<int, String> roleMap = {0: "reader", 1: "member"};
+Map<int, String> roleMap = {0: "리더에요!", 1: "메이트에요!"};
 
-Map<int, String> themaMap = {
+Map<int, String> themeMap = {
   0: "음식",
   1: "산림",
   2: "역사/문화",
@@ -52,15 +52,15 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _pageController = PageController(initialPage: 4);
+  final PageController _pageController = PageController(initialPage: 0);
   int _selectedIndex = -1;
   String _birthday = "";
-  String _gender = "";
+  String _sex = "";
   String _withTravel = "";
   String _travelStartDate = "";
   String _travelEndDate = "";
   String _role = "";
-  String _thema = "";
+  int _themeId = 0;
   String _destination = "";
   OnboardingViewModel _onboardingViewModel = OnboardingViewModel();
 
@@ -133,18 +133,37 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void sendOnboardingComplete() async {
     Map<String, dynamic> data = {
-      "gender": _gender,
-      "uid": "0",
-      "birth": _birthday,
-      "travelWith": _withTravel,
-      "role": _role,
-      "travelStartDate": _travelStartDate,
-      "travelEndDate": _travelEndDate,
-      "thema": _thema,
+      "age": "",
+      "sex": _sex,
+      //"birth": _birthday,
+      "birth": "",
       "destination": _destination,
+      "lang": "한국어",
+      "role": _role,
+      "themaId": 1,
+      "travelEndDate": _travelEndDate,
+      "travelStartDate": _travelStartDate,
+      "travelWith": _withTravel,
+      "uid": 1,
     };
 
-    NetworkManager.instance.post(ApiUrl.onboardingComplete, data);
+    NetworkManager.instance
+        .post(ApiUrl.onboardingComplete, data)
+        .then((response) {
+      if (response.statusCode == 200 ) {
+        print("POST 성공 123: ${response.body}");
+
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const App()),
+        );
+      } else {
+        print("POST 실패 123: ${response.statusCode}");
+      }
+    }).catchError((error) {
+      print("에러 발생: $error");
+    });
   }
 
   void _nextClickEvent(Page page) async {
@@ -152,7 +171,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     switch (page) {
       case Page.infoPage:
-        _gender = genderMap[_selectedIndex] ?? "";
+        _sex = sexMap[_selectedIndex] ?? "";
         _pageController.jumpToPage(Page.withTravelPage.index);
         break;
       case Page.withTravelPage:
@@ -166,6 +185,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         break;
       case Page.rolePage:
         _role = roleMap[_selectedIndex] ?? "";
+
+        print("Jehee 123 : ${_role}");
 
         if (_selectedIndex == 0) {
           _pageController.jumpToPage(Page.travelDatePage.index);
@@ -182,17 +203,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         _pageController.jumpToPage(Page.themaPage.index);
         break;
       case Page.themaPage:
-        _thema = themaMap[_selectedIndex] ?? "";
+        _themeId = _selectedIndex;
         _pageController.jumpToPage(Page.destionPage.index);
         break;
       case Page.destionPage:
         _destination = destinationMap[_selectedIndex] ?? "";
         sendOnboardingComplete();
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const App()),
-        );
         break;
     }
 
