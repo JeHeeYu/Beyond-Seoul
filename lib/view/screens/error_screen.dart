@@ -11,7 +11,7 @@ class ErrorScreen extends StatelessWidget {
     return Container(
       color: const Color(UserColors.mainBackGround),
       child: Center(
-        child: Image.asset(Images.errorScreenBg),
+
       ),
     );
   }

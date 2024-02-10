@@ -1,17 +1,20 @@
 import 'package:beyond_seoul/network/network_manager.dart';
 import 'package:beyond_seoul/view/widgets/infinity_button.dart';
+import 'package:beyond_seoul/view_model/onboarding_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../app.dart';
+import '../../../network/api_response.dart';
 import '../../../network/api_url.dart';
 import '../../../statics/colors.dart';
 import '../../../statics/images.dart';
 import '../../../statics/strings.dart';
 import '../../widgets/image_button.dart';
 import '../../widgets/schedule_widget.dart';
+import '../error_screen.dart';
 import '../mate_code_screen.dart';
 import 'onboarding_button.dart';
 
@@ -49,7 +52,7 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController(initialPage: 4);
   int _selectedIndex = -1;
   String _birthday = "";
   String _gender = "";
@@ -59,6 +62,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String _role = "";
   String _thema = "";
   String _destination = "";
+  OnboardingViewModel _onboardingViewModel = OnboardingViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _onboardingViewModel =
+        Provider.of<OnboardingViewModel>(context, listen: false);
+    _onboardingViewModel.fetchThemaListApi();
+    _onboardingViewModel.fetchDestinationListApi();
+  }
 
   String dateToStringFormat(DateTime time) {
     DateFormat format = DateFormat('yyyy-MM-dd');
@@ -165,7 +179,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         }
         break;
       case Page.travelDatePage:
-      _pageController.jumpToPage(Page.themaPage.index);
+        _pageController.jumpToPage(Page.themaPage.index);
         break;
       case Page.themaPage:
         _thema = themaMap[_selectedIndex] ?? "";
@@ -789,6 +803,40 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildMainContent() {
+    return ChangeNotifierProvider<OnboardingViewModel>(
+      create: (BuildContext context) => _onboardingViewModel,
+      child: Consumer<OnboardingViewModel>(
+        builder: (context, value, _) {
+          switch (value.themaData.status) {
+            case Status.loading:
+              return CircularProgressIndicator();
+            case Status.complete:
+              return _buildCompleteWidget(value);
+            case Status.error:
+            default:
+              return const ErrorScreen();
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildCompleteWidget(OnboardingViewModel value) {
+    return PageView(
+      controller: _pageController,
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        _buildAgeBirthdayPage(),
+        _buildWithTravelMatePage(),
+        _buildWhatRolePage(),
+        _buildSchedulePage(),
+        _buildThemaPage(),
+        _buildDestinationPage(),
+      ],
     );
   }
 

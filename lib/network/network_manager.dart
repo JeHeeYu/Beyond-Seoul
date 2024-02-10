@@ -25,7 +25,7 @@ class NetworkManager {
 
       responseJson = utf8.decode(response.bodyBytes);
 
-      print("GET 성공: ${response.body}");
+      print("GET 성공: ${responseJson}");
 
       return responseJson;
     } catch (error) {
