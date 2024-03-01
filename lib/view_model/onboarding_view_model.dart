@@ -37,7 +37,7 @@ class OnboardingViewModel with ChangeNotifier {
     });
   }
 
-    Future<void> fetchDestinationListApi() async {
+  Future<void> fetchDestinationListApi() async {
     await _onboardingRepo.getDestinationData().then((value) {
       if (value.code != 0) {
         setDestinationList(

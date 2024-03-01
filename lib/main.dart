@@ -5,6 +5,7 @@ import 'package:beyond_seoul/view/screens/home_screen.dart';
 import 'package:beyond_seoul/view/screens/login_screen.dart';
 import 'package:beyond_seoul/view/screens/onboarding/onboarding_screen.dart';
 import 'package:beyond_seoul/view_model/home_view_model.dart';
+import 'package:beyond_seoul/view_model/login_view_model.dart';
 import 'package:beyond_seoul/view_model/onboarding_view_model.dart';
 import 'package:beyond_seoul/view_model/record_view_model.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => RecordViewModel()),
         ChangeNotifierProvider(create: (_) => OnboardingViewModel()),
+        ChangeNotifierProvider(create: (_) => LoginViewModel()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(390, 840),
@@ -40,8 +42,8 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const OnboardingScreen(),
-          //home: const App(),
+          //home: const OnboardingScreen(),
+          home: const LoginScreen(),
         ),
       ),
     );

@@ -1,9 +1,11 @@
+import 'package:beyond_seoul/view_model/login_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 import '../../statics/images.dart';
 
@@ -15,6 +17,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  LoginViewModel _loginViewModel = LoginViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+  }
+
   void googleLogin() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -31,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void kakaoLogin() async {
     if (await isKakaoTalkInstalled()) {
       try {
-        await UserApi.instance.loginWithKakaoTalk();
+        OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
         print('카카오톡으로 로그인 성공');
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
@@ -41,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
 
         try {
-          await UserApi.instance.loginWithKakaoAccount();
+          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
           print('카카오계정으로 로그인 성공');
         } catch (error) {
           print('카카오계정으로 로그인 실패 $error');
@@ -49,8 +60,22 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } else {
       try {
-        await UserApi.instance.loginWithKakaoAccount();
+        OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+
         print('카카오계정으로 로그인 성공');
+        User user = await UserApi.instance.me();
+        print('\n회원번호: ${user.id}'
+            '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
+            '\n이메일: ${user.kakaoAccount?.email}');
+
+        Map<String, dynamic> jsonData = {
+          'email': user.kakaoAccount?.email,
+          'idToken': user.id,
+          'nickName': user.kakaoAccount?.profile?.nickname,
+          'sns': 'kakao',
+        };
+
+        _loginViewModel.login(jsonData);
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
       }

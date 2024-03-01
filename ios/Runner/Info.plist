@@ -41,66 +41,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	    <key>CFBundleURLTypes</key>
-    <array>
-      <dict>
-      <key>CFBundleURLSchemes</key>
-      <array>
-        <!-- google login -->
-        <string>com.googleusercontent.apps.568147733054-qg5fesunns1qpb7mjbo1790m1v1qpvp8</string>
-	    <!-- naver login -->
-        <string>socialloginapp</string>
-      </array>
-      </dict>
-    </array>
-	    <key>naverServiceAppUrlScheme</key>
-    <string>socialloginapp</string>
-	
-    <!-- naver client_id -->
-    <key>naverConsumerKey</key>
-    <string>oGWRFJoxzP5IGs3s9Wbz</string>
-    
-    <!-- naver client_secret -->
-    <key>naverConsumerSecret</key>
-    <string>cN8Pj63yv3</string>
-
-    <key>naverServiceAppName</key>
-    <string>Beyond Seoul</string>
-
-    <!-- http allows configurations -->
-    <key>NSAppTransportSecurity</key>
-    <dict>
-       <key>NSAllowsArbitraryLoads</key>
-       <true/>
-       <key>NSExceptionDomains</key>
-       <dict>
-          <key>naver.com</key>
-          <dict>
-             <key>NSExceptionRequiresForwardSecrecy</key>
-             <false/>
-             <key>NSIncludesSubdomains</key>
-             <true/>
-          </dict>
-          <key>naver.net</key>
-          <dict>
-             <key>NSExceptionRequiresForwardSecrecy</key>
-             <false/>
-             <key>NSIncludesSubdomains</key>
-             <true/>
-          </dict>
-        </dict>
-    </dict>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string></string>
-	<key>NSCameraUsageDescription</key>
-	<string></string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string></string>
 	<true/>
 </dict>
 </plist>
