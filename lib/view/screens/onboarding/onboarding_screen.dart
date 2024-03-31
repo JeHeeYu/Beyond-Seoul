@@ -52,7 +52,7 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController(initialPage: 3);
   int _selectedIndex = -1;
   String _birthday = "";
   String _sex = "";
@@ -131,6 +131,74 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
+  List<Widget> _buildThemeImageRows() {
+    List<Widget> rows = [];
+    List<String> imageUrls = _onboardingViewModel.themaData.data?.data.themes
+            .map((theme) => theme.image)
+            .toList() ??
+        [];
+    List<String> themeNames = _onboardingViewModel.themaData.data?.data.themes
+            .map((theme) => theme.themeName)
+            .toList() ??
+        [];
+
+    for (var i = 0; i < imageUrls.length; i += 2) {
+      var rowWidgets = <Widget>[];
+      for (var j = i; j < i + 2 && j < imageUrls.length; j++) {
+        rowWidgets.add(_networkImageButton(imageUrls[j], themeNames[j], j));
+        if (j < i + 1) {
+          rowWidgets.add(const Spacer());
+        }
+      }
+
+      rows.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: rowWidgets,
+      ));
+
+      if (i + 2 < imageUrls.length) {
+        rows.add(SizedBox(height: ScreenUtil().setHeight(4)));
+      }
+    }
+
+    return rows;
+  }
+
+  Widget _networkImageButton(String imageUrl, String themeName, int index) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedIndex = index;
+        });
+      },
+      child: Stack(
+        children: [
+          Opacity(
+            opacity: _selectedIndex == index ? 1.0 : 0.5,
+            child: Image.network(
+              imageUrl,
+              width: ScreenUtil().setWidth(168),
+              height: ScreenUtil().setHeight(160),
+            ),
+          ),
+          Positioned(
+            right: ScreenUtil().setWidth(8.0),
+            bottom: ScreenUtil().setHeight(8.0),
+            child: Text(
+              themeName,
+              style: const TextStyle(
+                fontFamily: "Pretendard",
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void sendOnboardingComplete() async {
     Map<String, dynamic> data = {
       "age": "",
@@ -150,9 +218,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     NetworkManager.instance
         .post(ApiUrl.onboardingComplete, data)
         .then((response) {
-      if (response.statusCode == 200 ) {
+      if (response.statusCode == 200) {
         print("POST 성공 123: ${response.body}");
-
 
         Navigator.push(
           context,
@@ -652,60 +719,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                     ),
                     SizedBox(height: ScreenUtil().setHeight(20)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildImageButton(
-                            0,
-                            ScreenUtil().setWidth(168),
-                            ScreenUtil().setHeight(160),
-                            Images.themaFoodEnable,
-                            Images.themaFoodDisable),
-                        buildImageButton(
-                            1,
-                            ScreenUtil().setWidth(168),
-                            ScreenUtil().setHeight(160),
-                            Images.themaMountainEnable,
-                            Images.themaMountainDisable),
-                      ],
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(4)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildImageButton(
-                            2,
-                            ScreenUtil().setWidth(168),
-                            ScreenUtil().setHeight(160),
-                            Images.themaMountainEnable,
-                            Images.themaMountainDisable),
-                        buildImageButton(
-                            3,
-                            ScreenUtil().setWidth(168),
-                            ScreenUtil().setHeight(160),
-                            Images.themaOceanEnable,
-                            Images.themaOceanDisable),
-                      ],
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(4)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildImageButton(
-                            4,
-                            ScreenUtil().setWidth(168),
-                            ScreenUtil().setHeight(160),
-                            Images.themaLeisureEnable,
-                            Images.themaLeisureDisable),
-                        buildImageButton(
-                            5,
-                            ScreenUtil().setWidth(168),
-                            ScreenUtil().setHeight(160),
-                            Images.themaShowppingEnable,
-                            Images.themaShowppingDisable),
-                      ],
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(4)),
+                    ..._buildThemeImageRows(),
                   ],
                 ),
               ),
