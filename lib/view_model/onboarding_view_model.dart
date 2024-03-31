@@ -2,14 +2,15 @@ import 'package:beyond_seoul/models/onboarding/onboarding_screen_model.dart';
 import 'package:beyond_seoul/repository/onboarding_repository.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../models/onboarding/theme_list_model.dart';
 import '../network/api_response.dart';
 
 class OnboardingViewModel with ChangeNotifier {
   final _onboardingRepo = OnboardingRepository();
 
-  ApiResponse<OnboardingScreenModel> themaData = ApiResponse.loading();
+  ApiResponse<ThemeListModel> themaData = ApiResponse.loading();
 
-  void setThemaList(ApiResponse<OnboardingScreenModel> response) {
+  void setThemaList(ApiResponse<ThemeListModel> response) {
     themaData = response;
 
     notifyListeners();
