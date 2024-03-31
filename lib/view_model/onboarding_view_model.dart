@@ -1,4 +1,4 @@
-import 'package:beyond_seoul/models/onboarding/onboarding_screen_model.dart';
+import 'package:beyond_seoul/models/onboarding/destination_list_model.dart';
 import 'package:beyond_seoul/repository/onboarding_repository.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -16,9 +16,9 @@ class OnboardingViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  ApiResponse<OnboardingScreenModel> destinationData = ApiResponse.loading();
+  ApiResponse<DestinationListModel> destinationData = ApiResponse.loading();
 
-  void setDestinationList(ApiResponse<OnboardingScreenModel> response) {
+  void setDestinationList(ApiResponse<DestinationListModel> response) {
     destinationData = response;
 
     notifyListeners();
@@ -45,6 +45,7 @@ class OnboardingViewModel with ChangeNotifier {
             ApiResponse.error("Error: Unexpected response code ${value.code}"));
       } else {
         setDestinationList(ApiResponse.complete(value));
+
       }
     }).onError((error, stackTrace) {
       setDestinationList(ApiResponse.error(error.toString()));
