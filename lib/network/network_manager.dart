@@ -120,7 +120,6 @@ class NetworkManager {
       } else {
         print('Image upload failed with status: ${response.statusCode}');
       }
-
       return response.data;
     } catch (error) {
       print('Error uploading: $error');

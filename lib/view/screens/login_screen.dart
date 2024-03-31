@@ -1,4 +1,7 @@
+import 'package:beyond_seoul/app.dart';
 import 'package:beyond_seoul/network/api_url.dart';
+import 'package:beyond_seoul/view/screens/home_screen.dart';
+import 'package:beyond_seoul/view/screens/onboarding/onboarding_screen.dart';
 import 'package:beyond_seoul/view_model/login_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -77,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'sns': 'kakao',
         };
 
-        _loginViewModel.login(jsonData);
+        //_loginViewModel.login(jsonData);
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
       }
@@ -100,15 +103,22 @@ class _LoginScreenState extends State<LoginScreen> {
         "sns": "naver",
       };
 
-      String serverUrl = ApiUrl.login;
-
-      Uint8List? thumbnailData =
-          await loadImageAsset(Images.bgLogin);
+      Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
 
       try {
-        var response = await NetworkManager.instance.imagePost(serverUrl, userData, thumbnailData);
-        
-        print("Image Post Response: $response");
+        await _loginViewModel.login(userData, thumbnailData);
+
+        if (_loginViewModel.loginData.data?.data.registerYN == 'Y') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const App()),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+          );
+        }
       } catch (e) {
         print("Error calling imagePost: $e");
       }

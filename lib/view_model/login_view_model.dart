@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import '../models/login/login_screen_model.dart';
@@ -13,8 +15,8 @@ class LoginViewModel with ChangeNotifier {
     loginData = response;
   }
 
-  Future<void> login(Map<String, dynamic> data) async {
-    await _loginRepository.login(data).then((value) {
+  Future<void> login(Map<String, dynamic> data, Uint8List profileImage) async {
+    await _loginRepository.login(data, profileImage).then((value) {
       if (value.code != 0) {
         setLoginData(
             ApiResponse.error("Error: Unexpected response code ${value.code}"));

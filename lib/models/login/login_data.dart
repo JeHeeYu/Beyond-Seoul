@@ -23,15 +23,15 @@ class LoginData {
 
   factory LoginData.fromJson(Map<String, dynamic> json) {
     return LoginData(
-      id: json['id'],
-      email: json['email'],
-      sex: json['sex'],
-      nickName: json['nickName'],
+      id: json['id']?.toString(),
+      email: json['email'] ?? '',
+      sex: json['sex'] ?? '',
+      nickName: json['nickName'] ?? '',
       birth: json['birth'],
-      image: json['image'],
-      status: json['status'],
-      createDate: json['createDate'],
-      registerYN: json['registerYN'],
+      image: json['image'] ?? '',
+      status: json['status'] ?? '',
+      createDate: json['createDate'] ?? '',
+      registerYN: json['registerYN'] ?? '',
     );
   }
 }

@@ -186,8 +186,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       case Page.rolePage:
         _role = roleMap[_selectedIndex] ?? "";
 
-        print("Jehee 123 : ${_role}");
-
         if (_selectedIndex == 0) {
           _pageController.jumpToPage(Page.travelDatePage.index);
         } else {
