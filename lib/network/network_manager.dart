@@ -1,7 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:http_parser/http_parser.dart';
 import 'api_response.dart';
 
 class NetworkManager {
@@ -83,21 +85,46 @@ class NetworkManager {
     }
   }
 
-  Future<dynamic> imagePost(String serverUrl, dynamic input) async {
-    var dio = Dio();
-    try {
-      dio.options.contentType = 'multipart/form-data';
-      dio.options.maxRedirects.isFinite;
+  Future<dynamic> imagePost(String serverUrl, Map<String, dynamic> userData,
+      Uint8List? thumbnailData) async {
+    Map<String, dynamic> sendData = userData;
 
-      dio.options.headers = commonHeaders;
-      var response = await dio.post(
+    var dio = Dio();
+
+    FormData formData = FormData.fromMap({
+      "files": await MultipartFile.fromBytes(
+        thumbnailData!,
+        filename: 'files.png',
+        contentType: MediaType('image', 'png'),
+      ),
+      "dto": MultipartFile.fromString(
+        jsonEncode(sendData),
+        contentType: MediaType('application', 'json'),
+      ),
+    });
+
+    try {
+      Response response = await dio.post(
         serverUrl,
-        data: input,
+        data: formData,
+        options: Options(
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Accept": "application/json",
+          },
+        ),
       );
-      print('Data : ${response.data}');
+
+      if (response.statusCode == 200) {
+        print('Image upload successful');
+      } else {
+        print('Image upload failed with status: ${response.statusCode}');
+      }
+
       return response.data;
-    } catch (e) {
-      print('Error in imagePost: $e');
+    } catch (error) {
+      print('Error uploading: $error');
+      throw error;
     }
   }
 
@@ -107,7 +134,7 @@ class NetworkManager {
       case 200:
         return response.body;
       default:
-      return ApiResponse.error;
+        return ApiResponse.error;
     }
   }
 }

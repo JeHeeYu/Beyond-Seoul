@@ -163,7 +163,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
-                  NetworkManager.instance.imagePost(ApiUrl.mateCode, sendData);
+                  //NetworkManager.instance.imagePost(ApiUrl.mateCode, sendData);
                 },
                 child: InfinityButton(
                   height: 40,

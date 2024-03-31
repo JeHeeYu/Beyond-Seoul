@@ -1,3 +1,4 @@
+import 'package:beyond_seoul/network/api_url.dart';
 import 'package:beyond_seoul/view_model/login_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
+import '../../network/network_manager.dart';
 import '../../statics/images.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -90,7 +92,34 @@ class _LoginScreenState extends State<LoginScreen> {
       print('id = ${result.account.id}');
       print('email = ${result.account.email}');
       print('name = ${result.account.name}');
+
+      Map<String, dynamic> userData = {
+        "idToken": result.account.id,
+        "email": result.account.email,
+        "name": result.account.name,
+        "sns": "naver",
+      };
+
+      String serverUrl = ApiUrl.login;
+
+      Uint8List? thumbnailData =
+          await loadImageAsset(Images.bgLogin);
+
+      try {
+        var response = await NetworkManager.instance.imagePost(serverUrl, userData, thumbnailData);
+        
+        print("Image Post Response: $response");
+      } catch (e) {
+        print("Error calling imagePost: $e");
+      }
+    } else {
+      print('Login failed: ${result.status}');
     }
+  }
+
+  Future<Uint8List> loadImageAsset(String path) async {
+    final byteData = await rootBundle.load(path);
+    return byteData.buffer.asUint8List();
   }
 
   @override
