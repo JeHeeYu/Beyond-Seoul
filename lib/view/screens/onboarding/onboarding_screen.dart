@@ -52,7 +52,7 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _pageController = PageController(initialPage: 3);
+  final PageController _pageController = PageController(initialPage: 4);
   int _selectedIndex = -1;
   String _birthday = "";
   String _sex = "";
@@ -71,7 +71,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _onboardingViewModel =
         Provider.of<OnboardingViewModel>(context, listen: false);
     _onboardingViewModel.fetchThemaListApi();
-    _onboardingViewModel.fetchDestinationListApi();
   }
 
   String dateToStringFormat(DateTime time) {
@@ -269,7 +268,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         break;
       case Page.themaPage:
         _themeId = _selectedIndex;
-        _pageController.jumpToPage(Page.destionPage.index);
+        Map<String, String> queryParams = { "themeId": _selectedIndex.toString()};
+        _onboardingViewModel.fetchDestinationListApi(queryParams);
+        // _pageController.jumpToPage(Page.destionPage.index);
         break;
       case Page.destionPage:
         _destination = destinationMap[_selectedIndex] ?? "";

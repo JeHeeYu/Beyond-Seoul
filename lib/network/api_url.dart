@@ -4,7 +4,7 @@ class ApiUrl {
   static const String onboardingComplete = "http://43.202.106.98:8080/onboard/complete";
   //static const String mateCode = "http://43.202.106.98:8080/matecode/view";
   static const String themas = "http://43.202.106.98:8080/themes";
-  static const String destinations = "http://43.202.106.98:8080/themes/destinations?themeId=1";
+  static const String destinations = "http://43.202.106.98:8080/themes/destinations";
   static const String login = "http://43.202.106.98:8080/users/login";
 
   // local test url

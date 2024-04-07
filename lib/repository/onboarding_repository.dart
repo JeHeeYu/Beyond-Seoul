@@ -18,10 +18,10 @@ class OnboardingRepository {
     }
   }
 
-  Future<DestinationListModel> getDestinationData() async {
+  Future<DestinationListModel> getDestinationData(Map<String, String> queryParams) async {
     try {
       dynamic response =
-          await NetworkManager.instance.get(ApiUrl.destinations);
+          await NetworkManager.instance.getQuery(ApiUrl.destinations, queryParams);
       return DestinationListModel.fromJson(jsonDecode(response));
     } catch (e) {
       rethrow;

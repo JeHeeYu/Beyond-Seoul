@@ -36,6 +36,23 @@ class NetworkManager {
     }
   }
 
+  Future<dynamic> getQuery(
+      String serverUrl, Map<String, String> queryParams) async {
+    dynamic responseJson;
+    try {
+      String queryString = Uri(queryParameters: queryParams).query;
+      String urlWithQuery = '$serverUrl?$queryString';
+      final response =
+          await http.get(Uri.parse(urlWithQuery), headers: commonHeaders);
+      responseJson = utf8.decode(response.bodyBytes);
+      print("GET Query 성공: ${responseJson}");
+      return responseJson;
+    } catch (error) {
+      print("에러 발생: $error");
+      return "";
+    }
+  }
+
   Future<dynamic> post(String serverUrl, Map<String, dynamic> userData) async {
     try {
       dynamic responseJson;

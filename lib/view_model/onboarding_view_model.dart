@@ -38,8 +38,8 @@ class OnboardingViewModel with ChangeNotifier {
     });
   }
 
-  Future<void> fetchDestinationListApi() async {
-    await _onboardingRepo.getDestinationData().then((value) {
+  Future<void> fetchDestinationListApi(Map<String, String> queryParams) async {
+    await _onboardingRepo.getDestinationData(queryParams).then((value) {
       if (value.code != 0) {
         setDestinationList(
             ApiResponse.error("Error: Unexpected response code ${value.code}"));
