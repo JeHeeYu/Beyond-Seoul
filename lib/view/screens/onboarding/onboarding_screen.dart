@@ -163,6 +163,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return rows;
   }
 
+  List<Widget> _buildDestinationImageColumns() {
+    List<Widget> columns = [];
+    List<String> imageUrls = _onboardingViewModel
+            .destinationData.data?.data.destinations
+            .map((destination) => destination.image)
+            .toList() ??
+        [];
+    List<String> themeNames = _onboardingViewModel
+            .destinationData.data?.data.destinations
+            .map((destination) => destination.destination)
+            .toList() ??
+        [];
+
+    for (var i = 0; i < imageUrls.length; i++) {
+      columns.add(_destinationButton(imageUrls[i], themeNames[i], i));
+
+      if (i < imageUrls.length - 1) {
+        columns.add(SizedBox(height: ScreenUtil().setHeight(4)));
+      }
+    }
+
+    return columns;
+  }
+
   Widget _networkImageButton(String imageUrl, String themeName, int index) {
     return GestureDetector(
       onTap: () {
@@ -198,11 +222,68 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
+  Widget _destinationButton(String imageUrl, String themeName, int index) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedIndex = index;
+        });
+      },
+      child: Container(
+        width: double.infinity,
+        height: ScreenUtil().setHeight(157.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+          border: Border.all(
+            color: const Color(0xFFD2D2D2),
+            width: 1.0,
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(width: ScreenUtil().setWidth(15.0)),
+            Image.network(
+              imageUrl,
+              width: ScreenUtil().setWidth(143),
+              height: ScreenUtil().setHeight(143),
+            ),
+            SizedBox(width: ScreenUtil().setWidth(12.0)),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: ScreenUtil().setHeight(7.0)),
+                Text(
+                  _onboardingViewModel.destinationData.data?.data.destinations[index].destination ?? '',
+                  style: const TextStyle(
+                    fontFamily: "Pretendard",
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(height: ScreenUtil().setHeight(11.0)),
+                Text(
+                  "themeName",
+                  style: const TextStyle(
+                    fontFamily: "Pretendard",
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF7E7E7E),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void sendOnboardingComplete() async {
     Map<String, dynamic> data = {
       "age": "",
       "sex": _sex,
-      //"birth": _birthday,
       "birth": "",
       "destination": _destination,
       "lang": "한국어",
@@ -268,9 +349,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         break;
       case Page.themaPage:
         _themeId = _selectedIndex;
-        Map<String, String> queryParams = { "themeId": _selectedIndex.toString()};
+        Map<String, String> queryParams = {
+          "themeId": _selectedIndex.toString()
+        };
         _onboardingViewModel.fetchDestinationListApi(queryParams);
-        // _pageController.jumpToPage(Page.destionPage.index);
+        _pageController.jumpToPage(Page.destionPage.index);
         break;
       case Page.destionPage:
         _destination = destinationMap[_selectedIndex] ?? "";
@@ -785,29 +868,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                     ),
                     SizedBox(height: ScreenUtil().setHeight(25)),
-                    buildImageButton(
-                      0,
-                      ScreenUtil().setWidth(340),
-                      ScreenUtil().setHeight(157),
-                      Images.busanEnable,
-                      Images.busanDisable,
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(10)),
-                    buildImageButton(
-                      1,
-                      ScreenUtil().setWidth(340),
-                      ScreenUtil().setHeight(157),
-                      Images.jeonjuEnable,
-                      Images.jeonjuDisable,
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(10)),
-                    buildImageButton(
-                      2,
-                      ScreenUtil().setWidth(340),
-                      ScreenUtil().setHeight(157),
-                      Images.yeosuEnable,
-                      Images.yeosuDisable,
-                    ),
+                    ..._buildDestinationImageColumns(),
                   ],
                 ),
               ),
