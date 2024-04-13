@@ -1,6 +1,7 @@
 class ApiUrl {
   // server url
   static const String home = "http://43.202.106.98:8080/home/view";
+  static const String missionRefresh = "http://43.202.106.98:8080/mission/refresh";
   static const String onboardingComplete = "http://43.202.106.98:8080/onboard/complete";
   //static const String mateCode = "http://43.202.106.98:8080/matecode/view";
   static const String themas = "http://43.202.106.98:8080/themes";

@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../network/api_response.dart';
+import '../../network/api_url.dart';
+import '../../network/network_manager.dart';
 import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
@@ -31,6 +33,22 @@ class _HomeScreenState extends State<HomeScreen> {
     _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
     Map<String, String> queryParams = {"uid": "4"};
     _homeViewModel.fetchTravelListApi(queryParams);
+  }
+
+  void _missionRefresh(int missionId) async {
+    Map<String, String> data = {
+      "missionId": missionId.toString(),
+    };
+
+    NetworkManager.instance
+        .postQuery(ApiUrl.missionRefresh, data)
+        .then((response) {
+      print("POST 성공 145623: ${response}");
+      Map<String, String> queryParams = {"uid": "4"};
+      _homeViewModel.fetchTravelListApi(queryParams);
+    }).catchError((error) {
+      print("에러 발생 123123: $error");
+    });
   }
 
   Widget bgRectangle(double height, double radius) {
@@ -197,27 +215,44 @@ class _HomeScreenState extends State<HomeScreen> {
               //               .homeData.data?.data.mission.personMission?.title)),
               // );
             },
-            child: _buildMissionWidget(Strings.foodMission)),
+            child: _buildMissionWidget(value.homeData.data?.data.ongoingMission.foodMission ?? '')),
         SizedBox(height: ScreenUtil().setHeight(12)),
         _buildMissionTitleWidget(Strings.tourMission),
         SizedBox(height: ScreenUtil().setHeight(7)),
-        _buildMissionWidget(Strings.tourMission),
+        _buildMissionWidget(value.homeData.data?.data.ongoingMission.tourMission ?? ''),
         SizedBox(height: ScreenUtil().setHeight(12)),
         _buildMissionTitleWidget(Strings.sosoMission),
         SizedBox(height: ScreenUtil().setHeight(7)),
-        _buildMissionWidget(Strings.sosoMission),
+        _buildMissionWidget(value.homeData.data?.data.ongoingMission.sosoMission ?? ''),
       ],
     );
   }
 
   Widget _buildMissionTitleWidget(String title) {
+    int missionId = 0;
+    if (title == Strings.foodMission) {
+      missionId =
+          _homeViewModel.homeData.data?.data.ongoingMission.foodMissionId ?? 0;
+    } else if (title == Strings.tourMission) {
+      missionId =
+          _homeViewModel.homeData.data?.data.ongoingMission.tourMissionId ?? 0;
+    } else {
+      missionId =
+          _homeViewModel.homeData.data?.data.ongoingMission.sosoMissionId ?? 0;
+    }
+
     return Row(
       children: [
         bgTextRectangle(71, 22, 8, title, const Color(UserColors.enable), 12),
         SizedBox(width: ScreenUtil().setWidth(10)),
-        const Icon(
-          Icons.refresh,
-          color: Colors.grey,
+        GestureDetector(
+          onTap: () {
+            _missionRefresh(missionId);
+          },
+          child: const Icon(
+            Icons.refresh,
+            color: Colors.grey,
+          ),
         ),
       ],
     );

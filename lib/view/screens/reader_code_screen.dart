@@ -141,32 +141,32 @@ class _ReaderCodeScreenState extends State<ReaderCodeScreen> {
                   SizedBox(width: ScreenUtil().setWidth(29)),
                   GestureDetector(
                     onTap: () async {
-                      if (_minute == 0 && _second == 0) {
-                        Map<String, dynamic> queryParams = {
-                          'travelId': "3",
-                        };
+                      // if (_minute == 0 && _second == 0) {
+                      //   Map<String, dynamic> queryParams = {
+                      //     'travelId': "3",
+                      //   };
 
-                        Map<String, dynamic> postData = {'key': 'value'};
+                      //   Map<String, dynamic> postData = {'key': 'value'};
 
-                        NetworkManager.instance
-                            .postQuery(
-                                ApiUrl.newMateCode, postData, queryParams)
-                            .then((response) {
-                          if (response == 200) {
-                            setState(() {
-                              homeViewModel.fetchMateCodetApi();
-                              _startTimer();
-                              _minute = 30;
-                              _second = 0;
-                            });
-                          }
-                        }).catchError((error) {
-                          print('포스트 실패: $error');
-                        });
-                      } else {
-                        Clipboard.setData(ClipboardData(
-                            text: value.mateCodeData.data?.data.code));
-                      }
+                      //   NetworkManager.instance
+                      //       .postQuery(
+                      //           ApiUrl.newMateCode, postData, queryParams)
+                      //       .then((response) {
+                      //     if (response == 200) {
+                      //       setState(() {
+                      //         homeViewModel.fetchMateCodetApi();
+                      //         _startTimer();
+                      //         _minute = 30;
+                      //         _second = 0;
+                      //       });
+                      //     }
+                      //   }).catchError((error) {
+                      //     print('포스트 실패: $error');
+                      //   });
+                      // } else {
+                      //   Clipboard.setData(ClipboardData(
+                      //       text: value.mateCodeData.data?.data.code));
+                      // }
                     },
                     child: Icon(
                       (_minute == 0 && _second == 0)
