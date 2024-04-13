@@ -6,10 +6,10 @@ import '../network/api_url.dart';
 import '../network/network_manager.dart';
 
 class HomeRepository {
-  Future<HomeScreenModel> getHomeScreenData() async {
+  Future<HomeScreenModel> getHomeScreenData(Map<String, String> queryParams) async {
     try {
       dynamic response =
-          await NetworkManager.instance.get(ApiUrl.home);
+          await NetworkManager.instance.getQuery(ApiUrl.home, queryParams);
       return HomeScreenModel.fromJson(jsonDecode(response));
     } catch (e) {
       rethrow;

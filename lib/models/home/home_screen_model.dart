@@ -1,7 +1,8 @@
+import 'package:beyond_seoul/models/home/misson_count_model.dart';
 import 'package:beyond_seoul/models/home/profile_model.dart';
 import 'package:beyond_seoul/models/home/travel_model.dart';
 
-import 'mission_model.dart';
+import 'on_going_mission_model.dart';
 
 class HomeScreenModel {
   bool success;
@@ -28,23 +29,23 @@ class HomeScreenModel {
 
 class HomeScreenModelData {
   Profile profile;
-  Mission mission;
-  String travelStatus;
+  OngoingMission ongoingMission;
   Travel travel;
+  MissionCount missionCount;
 
   HomeScreenModelData({
     required this.profile,
-    required this.mission,
-    required this.travelStatus,
+    required this.ongoingMission, 
     required this.travel,
+    required this.missionCount,
   });
 
   factory HomeScreenModelData.fromJson(Map<String, dynamic> json) {
     return HomeScreenModelData(
       profile: Profile.fromJson(json['profile'] ?? {}),
-      mission: Mission.fromJson(json['mission'] ?? {}),
-      travelStatus: json['travelStatus'] ?? '',
       travel: Travel.fromJson(json['travel'] ?? {}),
+      ongoingMission: OngoingMission.fromJson(json['ongoingMission'] ?? {}),
+      missionCount: MissionCount.fromJson(json['missionCount'] ?? {}),
     );
   }
 }

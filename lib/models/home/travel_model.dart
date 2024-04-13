@@ -1,12 +1,12 @@
 class Travel {
   int travelId;
-  String travelName;
+  String travelTitle;
   String travelDate;
   List<String> travelFreinds;
 
   Travel({
     required this.travelId,
-    required this.travelName,
+    required this.travelTitle,
     required this.travelDate,
     required this.travelFreinds,
   });
@@ -14,7 +14,7 @@ class Travel {
   factory Travel.fromJson(Map<String, dynamic> json) {
     return Travel(
       travelId: json['travelId'] ?? 0,
-      travelName: json['travelName'] ?? "",
+      travelTitle: json['travelTitle'] ?? "",
       travelDate: json['travelDate'] ?? "",
       travelFreinds: List<String>.from(json['travelFreinds'] ?? []),
     );

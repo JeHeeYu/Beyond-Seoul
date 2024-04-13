@@ -26,8 +26,8 @@ class HomeViewModel with ChangeNotifier {
 
   ApiResponse<HomeScreenModel> get getHomeData => homeData;
 
-  Future<void> fetchTravelListApi() async {
-    await _homeRepo.getHomeScreenData().then((value) {
+  Future<void> fetchTravelListApi(Map<String, String> queryParams) async {
+    await _homeRepo.getHomeScreenData(queryParams).then((value) {
       if (value.code != 0) {
         setTravelList(
             ApiResponse.error("Error: Unexpected response code ${value.code}"));

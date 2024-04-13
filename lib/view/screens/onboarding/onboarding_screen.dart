@@ -83,9 +83,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _setBirthday(DateTime time) {
     _birthday = dateToStringFormat(time);
-
-    print("Jehee :: ${_birthday}");
-
     setState(() {});
   }
 

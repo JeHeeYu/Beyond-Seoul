@@ -108,8 +108,6 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         await _loginViewModel.login(userData, thumbnailData);
 
-        print("Jehee : ${_loginViewModel.loginData.data?.data.id}");
-
         if (_loginViewModel.loginData.data?.data.registerYN == 'Y') {
           Navigator.push(
             context,

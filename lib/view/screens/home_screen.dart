@@ -29,7 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
-    _homeViewModel.fetchTravelListApi();
+    Map<String, String> queryParams = {"uid": "4"};
+    _homeViewModel.fetchTravelListApi(queryParams);
   }
 
   Widget bgRectangle(double height, double radius) {
@@ -174,15 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildCompleteWidget(HomeViewModel value) {
-    switch (value.homeData.data?.data.travelStatus) {
-      case "BEFORE_TRAVEL_START":
-        return _buildBeforeTravelWidget(value);
-      case "DURING_TRAVEL":
-        return _buildDuringTravelWidget(value);
-      case "AFTER_TRAVEL":
-      default:
-        return _buildAfterTravelWidget(value);
-    }
+    return _buildDuringTravelWidget(value);
   }
 
   Widget _buildDuringTravelWidget(HomeViewModel value) {
@@ -196,13 +189,13 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(height: ScreenUtil().setHeight(7)),
         GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MissionDetailScreen(
-                        title: value
-                            .homeData.data?.data.mission.personMission?.title)),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => MissionDetailScreen(
+              //           title: value
+              //               .homeData.data?.data.mission.personMission?.title)),
+              // );
             },
             child: _buildMissionWidget(Strings.foodMission)),
         SizedBox(height: ScreenUtil().setHeight(12)),
@@ -269,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: ScreenUtil().setHeight(5)),
                   Text(
-                    value.homeData.data?.data.travel.travelName ?? "",
+                    value.homeData.data?.data.travel.travelTitle ?? "",
                     style: const TextStyle(
                       fontFamily: "Pretendard",
                       fontSize: 11,
@@ -387,19 +380,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildMissionComplete(
-                        0,
-                        value.homeData.data?.data.mission.missionComplete
-                                ?.person ??
-                            0),
+                      0,
+                      value.homeData.data?.data.missionCount.foodMissionCount ??
+                          0,
+                    ),
                     _buildMissionComplete(
                         1,
-                        value.homeData.data?.data.mission.missionComplete
-                                ?.team ??
+                        value.homeData.data?.data.missionCount
+                                .tourMissionCount ??
                             0),
                     _buildMissionComplete(
                         2,
-                        value.homeData.data?.data.mission.missionComplete
-                                ?.daily ??
+                        value.homeData.data?.data.missionCount
+                                .sosoMissionCount ??
                             0),
                   ],
                 ),
