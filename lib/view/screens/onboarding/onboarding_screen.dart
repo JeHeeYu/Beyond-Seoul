@@ -12,6 +12,7 @@ import '../../../network/api_url.dart';
 import '../../../statics/colors.dart';
 import '../../../statics/images.dart';
 import '../../../statics/strings.dart';
+import '../../../view_model/login_view_model.dart';
 import '../../widgets/image_button.dart';
 import '../../widgets/schedule_widget.dart';
 import '../error_screen.dart';
@@ -52,7 +53,8 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _pageController = PageController(initialPage: 4);
+  LoginViewModel _loginViewModel = LoginViewModel();
+  final PageController _pageController = PageController(initialPage: 0);
   int _selectedIndex = -1;
   String _birthday = "";
   String _sex = "";
@@ -70,6 +72,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     _onboardingViewModel =
         Provider.of<OnboardingViewModel>(context, listen: false);
+    _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
     _onboardingViewModel.fetchThemaListApi();
   }
 
@@ -80,6 +83,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _setBirthday(DateTime time) {
     _birthday = dateToStringFormat(time);
+
+    print("Jehee :: ${_birthday}");
 
     setState(() {});
   }
@@ -94,6 +99,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _travelEndDate = dateToStringFormat(time);
 
     setState(() {});
+  }
+
+  void _setThemeId(int index) {
+    _themeId = index;
   }
 
   Widget buildOnboardingButton(int index, String text, double height) {
@@ -254,7 +263,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               children: [
                 SizedBox(height: ScreenUtil().setHeight(7.0)),
                 Text(
-                  _onboardingViewModel.destinationData.data?.data.destinations[index].destination ?? '',
+                  _onboardingViewModel.destinationData.data?.data
+                          .destinations[index].destination ??
+                      '',
                   style: const TextStyle(
                     fontFamily: "Pretendard",
                     fontSize: 16,
@@ -284,15 +295,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     Map<String, dynamic> data = {
       "age": "",
       "sex": _sex,
-      "birth": "",
+      "birth": _birthday,
       "destination": _destination,
       "lang": "한국어",
       "role": _role,
-      "themaId": 1,
+      "themaId": _themeId,
       "travelEndDate": _travelEndDate,
       "travelStartDate": _travelStartDate,
       "travelWith": _withTravel,
-      "uid": 1,
+      "uid": _loginViewModel.loginData.data?.data.id,
     };
 
     NetworkManager.instance
@@ -352,6 +363,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         Map<String, String> queryParams = {
           "themeId": _selectedIndex.toString()
         };
+        _setThemeId(_selectedIndex);
         _onboardingViewModel.fetchDestinationListApi(queryParams);
         _pageController.jumpToPage(Page.destionPage.index);
         break;
