@@ -1,4 +1,5 @@
 import 'package:beyond_seoul/view/screens/record_feed_screen.dart';
+import 'package:beyond_seoul/view_model/home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -22,6 +23,7 @@ class RecordScreen extends StatefulWidget {
 
 class _RecordScreenState extends State<RecordScreen> {
   RecordViewModel _recordViewModel = RecordViewModel();
+  HomeViewModel _homeViewModel = HomeViewModel();
   List<String> _dates = [];
   String? _selectDate;
   int _selectTravelsIndex = 0;
@@ -30,20 +32,16 @@ class _RecordScreenState extends State<RecordScreen> {
   void initState() {
     super.initState();
 
+    Map<String, String> data = {
+      "cursorId": "50",
+      "size": "10",
+      "uid": "4",
+      "travelId": "27"
+    };
+
+    _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
     _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
-    _recordViewModel.fetchRecordImageApi().then((_) {
-      if (_recordViewModel.recordData.status == Status.complete) {
-        print("Jehee test");
-        _dates = List<String>.from(_recordViewModel
-            .recordData.data!.data.travels
-            .map((travel) => travel.title));
-        _selectDate = _dates[0];
-        setState(() {});
-      }
-      else {
-                print("Jehee test");
-      }
-    });
+    _recordViewModel.fetchRecordView(data);
   }
 
   Widget _buildAppBarWidget() {

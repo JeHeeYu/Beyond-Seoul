@@ -16,8 +16,8 @@ class RecordViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchRecordImageApi() async {
-    await _reocrdRepo.getRecordScreenData().then((value) {
+  Future<void> fetchRecordView(Map<String, String> queryParams) async {
+    await _reocrdRepo.getRecordView(queryParams).then((value) {
       setRecordImageList(ApiResponse.complete(value));
     }).onError((error, stackTrace) {
       setRecordImageList(ApiResponse.error(error.toString()));

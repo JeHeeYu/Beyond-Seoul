@@ -5,15 +5,13 @@ import '../network/api_url.dart';
 import '../network/network_manager.dart';
 
 class RecordRepository {
-  Future<RecordScreenModel> getRecordScreenData() async {
+    Future<RecordScreenModel> getRecordView(Map<String, String> queryParams) async {
     try {
-      dynamic response = await NetworkManager.instance.post(ApiUrl.recordCreate, {});
+      dynamic response = await NetworkManager.instance.postQuery(ApiUrl.recordView, queryParams);
       
       String responseBody = response.body;
 
-      // dynamic response =
-      //     await NetworkManager.instance.get(ApiUrl.home);
-      // return HomeScreenModel.fromJson(jsonDecode(response));
+      print("Jehee : ${responseBody}");
       
       return RecordScreenModel.fromJson(jsonDecode(responseBody));
     } catch (e) {

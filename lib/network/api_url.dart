@@ -8,6 +8,7 @@ class ApiUrl {
   static const String destinations = "http://43.202.106.98:8080/themes/destinations";
   static const String login = "http://43.202.106.98:8080/users/login";
   static const String recordCreate = "http://43.202.106.98:8080/record/create";
+  static const String recordView = "http://43.202.106.98:8080/record/view";
 
   // local test url
   //static const String home = "http://10.0.2.2:8080/get/home";
