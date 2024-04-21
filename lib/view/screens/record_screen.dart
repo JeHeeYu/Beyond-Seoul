@@ -33,11 +33,15 @@ class _RecordScreenState extends State<RecordScreen> {
     _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
     _recordViewModel.fetchRecordImageApi().then((_) {
       if (_recordViewModel.recordData.status == Status.complete) {
+        print("Jehee test");
         _dates = List<String>.from(_recordViewModel
             .recordData.data!.data.travels
             .map((travel) => travel.title));
         _selectDate = _dates[0];
         setState(() {});
+      }
+      else {
+                print("Jehee test");
       }
     });
   }
@@ -100,7 +104,6 @@ class _RecordScreenState extends State<RecordScreen> {
           switch (value.recordData.status) {
             case Status.loading:
               return const Center(child: CircularProgressIndicator());
-
             case Status.complete:
               return _buildCompleteWidget(value);
             case Status.error:

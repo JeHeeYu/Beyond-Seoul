@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
           ),
           // home: const OnboardingScreen(),
-          home: const HomeScreen(),
+          home: const App(),
         ),
       ),
     );

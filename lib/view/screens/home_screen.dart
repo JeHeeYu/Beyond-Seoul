@@ -25,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   HomeViewModel _homeViewModel = HomeViewModel();
+  final String _foodMissionType = "food";
 
   @override
   void initState() {
@@ -207,23 +208,36 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(height: ScreenUtil().setHeight(7)),
         GestureDetector(
             onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => MissionDetailScreen(
-              //           title: value
-              //               .homeData.data?.data.mission.personMission?.title)),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MissionDetailScreen(
+                          title: value.homeData.data?.data.ongoingMission
+                                  .foodMission ??
+                              '',
+                          missionType: _foodMissionType,
+                          missionId: value.homeData.data?.data.ongoingMission
+                                  .foodMissionId
+                                  .toString() ??
+                              '',
+                          travelId: value.homeData.data?.data.travel.travelId
+                                  .toString() ??
+                              '',
+                        )),
+              );
             },
-            child: _buildMissionWidget(value.homeData.data?.data.ongoingMission.foodMission ?? '')),
+            child: _buildMissionWidget(
+                value.homeData.data?.data.ongoingMission.foodMission ?? '')),
         SizedBox(height: ScreenUtil().setHeight(12)),
         _buildMissionTitleWidget(Strings.tourMission),
         SizedBox(height: ScreenUtil().setHeight(7)),
-        _buildMissionWidget(value.homeData.data?.data.ongoingMission.tourMission ?? ''),
+        _buildMissionWidget(
+            value.homeData.data?.data.ongoingMission.tourMission ?? ''),
         SizedBox(height: ScreenUtil().setHeight(12)),
         _buildMissionTitleWidget(Strings.sosoMission),
         SizedBox(height: ScreenUtil().setHeight(7)),
-        _buildMissionWidget(value.homeData.data?.data.ongoingMission.sosoMission ?? ''),
+        _buildMissionWidget(
+            value.homeData.data?.data.ongoingMission.sosoMission ?? ''),
       ],
     );
   }

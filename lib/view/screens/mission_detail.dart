@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:beyond_seoul/network/api_url.dart';
 import 'package:beyond_seoul/network/network_manager.dart';
@@ -12,13 +13,24 @@ import '../../statics/strings.dart';
 import '../widgets/flexible_text.dart';
 import '../widgets/infinity_button.dart';
 
+import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:http_parser/http_parser.dart';
+
 class MissionDetailScreen extends StatefulWidget {
   const MissionDetailScreen({
     Key? key,
     required this.title,
+    required this.missionType,
+    required this.missionId,
+    required this.travelId,
   }) : super(key: key);
 
-  final title;
+  final String title;
+  final String missionType;
+  final String missionId;
+  final String travelId;
 
   @override
   State<MissionDetailScreen> createState() => _MissionDetailScreenState();
@@ -50,6 +62,30 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
             child: Image.file(File(uploadImage!.path)),
           )
         : Image.asset(Images.photoUpload);
+  }
+
+  void _sendRecordCreate() async {
+    String imagePath = uploadImage?.path ?? "";
+    Uint8List? imageBytes;
+    if (uploadImage != null) {
+      imageBytes = await File(imagePath).readAsBytes();
+    }
+
+    Map<String, String> data = {
+      "missionType": widget.missionType,
+      "missionId": widget.missionId,
+      "recordComment": _commentController.text,
+      "uid": "4",
+      "travelId": widget.travelId
+    };
+
+    try {
+      final response = await NetworkManager.instance
+          .postInImage(ApiUrl.recordCreate, data, imageBytes);
+      print('서버 응답: $response');
+    } catch (error) {
+      print("에러 발생: $error");
+    }
   }
 
   Widget _buildAppBarWidget() {
@@ -163,7 +199,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
-                  //NetworkManager.instance.imagePost(ApiUrl.mateCode, sendData);
+                  _sendRecordCreate();
                 },
                 child: InfinityButton(
                   height: 40,

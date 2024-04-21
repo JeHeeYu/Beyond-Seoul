@@ -9,6 +9,7 @@ class LoginRepository {
   Future<LoginScreenModel> login(Map<String, dynamic> data, Uint8List profileImage) async {
     try {
       dynamic response = await NetworkManager.instance.imagePost(ApiUrl.login, data, profileImage);
+      print("Jehee : ${response}");
       return LoginScreenModel.fromJson(response);
     } catch (e) {
       rethrow;

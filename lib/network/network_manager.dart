@@ -79,15 +79,14 @@ class NetworkManager {
     }
   }
 
-  Future<dynamic> postQuery(String serverUrl, Map<String, String> queryParams) async {
+  Future<dynamic> postQuery(
+      String serverUrl, Map<String, String> queryParams) async {
     try {
       String queryString = Uri(queryParameters: queryParams).query;
       String urlWithQuery = '$serverUrl?$queryString';
 
-      final response = await http.post(
-        Uri.parse(urlWithQuery),
-        headers: commonHeaders
-      );
+      final response =
+          await http.post(Uri.parse(urlWithQuery), headers: commonHeaders);
 
       dynamic responseJson = utf8.decode(response.bodyBytes);
       print("POST Query 성공: ${responseJson}");
@@ -137,6 +136,40 @@ class NetworkManager {
     } catch (error) {
       print('Error uploading: $error');
       throw error;
+    }
+  }
+
+  Future<dynamic> postInImage(
+      String serverUrl, Map<String, String> data, Uint8List? imageBytes) async {
+    var uri = Uri.parse(serverUrl);
+    var request = http.MultipartRequest('POST', uri);
+
+    data.forEach((key, value) {
+      request.fields[key] = value;
+    });
+
+    if (imageBytes != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'file',
+        imageBytes,
+        filename: 'upload.jpg',
+        contentType: MediaType('image', 'jpeg'),
+      ));
+    }
+
+    try {
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        String responseBody = await response.stream.bytesToString();
+        print('서버 응답: $responseBody');
+        return responseBody;
+      } else {
+        print('서버 에러 발생. 상태 코드: ${response.statusCode}');
+        return 'Error: Server responded with status code ${response.statusCode}';
+      }
+    } catch (error) {
+      print("에러 발생: $error");
+      return 'Error: $error';
     }
   }
 
