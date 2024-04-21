@@ -95,7 +95,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
               child: ListView.builder(
                 controller: _scrollController,
                 itemCount: _recordViewModel
-                    .getRecordData.data?.data.travels[widget.selectTravelsIndex].records.length,
+                    .getRecordData.data?.data.content.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,9 +122,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                _recordViewModel.getRecordData.data?.data
-                                        .travels[widget.selectTravelsIndex].title ??
-                                    "",
+                                _recordViewModel.getRecordData.data?.data.content[index].missionTitle ?? '',
                                 style: const TextStyle(
                                   fontFamily: "Pretendard",
                                   fontSize: 12,
@@ -133,14 +131,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                                 ),
                               ),
                               Text(
-                                _recordViewModel
-                                        .getRecordData
-                                        .data
-                                        ?.data
-                                        .travels[widget.selectTravelsIndex]
-                                        .records[index]
-                                        .missionType ??
-                                    "",
+                                _recordViewModel.getRecordData.data?.data.content[index].missionType ?? '',
                                 style: const TextStyle(
                                   fontFamily: "Pretendard",
                                   fontSize: 11,
@@ -155,18 +146,14 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                       SizedBox(height: ScreenUtil().setHeight(8)),
                       // need add image here
                       Image.network(
-                        _recordViewModel.getRecordData.data?.data.travels[widget.selectTravelsIndex]
-                                .records[index].image ??
-                            "",
+                        _recordViewModel.getRecordData.data?.data.content[index].image ?? '',
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: ScreenUtil().setWidth(320),
                       ),
                       SizedBox(height: ScreenUtil().setHeight(8)),
                       Text(
-                        _recordViewModel.getRecordData.data?.data.travels[widget.selectTravelsIndex]
-                                .records[index].comment ??
-                            "",
+                        _recordViewModel.getRecordData.data?.data.content[index].comment ?? '',
                         style: const TextStyle(
                           fontFamily: "Pretendard",
                           fontSize: 16,
@@ -177,9 +164,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                         height: ScreenUtil().setHeight(4),
                       ),
                       Text(
-                        _recordViewModel.getRecordData.data?.data.travels[widget.selectTravelsIndex]
-                                .records[index].uploadAt ??
-                            "",
+                        _recordViewModel.getRecordData.data?.data.content[index].uploadAt ?? '',
                         style: const TextStyle(
                           fontFamily: "Pretendard",
                           fontSize: 12,

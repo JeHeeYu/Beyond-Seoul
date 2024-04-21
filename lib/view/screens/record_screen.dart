@@ -33,7 +33,7 @@ class _RecordScreenState extends State<RecordScreen> {
     super.initState();
 
     Map<String, String> data = {
-      "cursorId": "50",
+      "cursorId": "120",
       "size": "10",
       "uid": "4",
       "travelId": "27"
@@ -41,7 +41,24 @@ class _RecordScreenState extends State<RecordScreen> {
 
     _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
     _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
-    _recordViewModel.fetchRecordView(data);
+    _recordViewModel.fetchRecordView(data).then((_) {
+      updateDateList();
+    });
+  }
+
+  void updateDateList() {
+    if (_recordViewModel.recordData.status == Status.complete) {
+      Set<String> uniqueDates = {};
+      for (var content
+          in _recordViewModel.recordData.data?.data.content ?? []) {
+        DateTime uploadDate = DateTime.parse(content.uploadAt);
+        String formattedDate = DateFormat('yyyy년 MM월').format(uploadDate);
+        uniqueDates.add(formattedDate);
+      }
+      setState(() {
+        _dates = uniqueDates.toList();
+      });
+    }
   }
 
   Widget _buildAppBarWidget() {
@@ -84,9 +101,7 @@ class _RecordScreenState extends State<RecordScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildDayWidget(),
-          value.recordData.data?.data.travels[_selectTravelsIndex].records
-                      .isEmpty ??
-                  false
+          value.recordData.data?.data.content.isEmpty == true
               ? _buildEmptyWidget()
               : _buildImageWidget(value),
         ],
@@ -144,8 +159,7 @@ class _RecordScreenState extends State<RecordScreen> {
   Widget _buildImageWidget(RecordViewModel value) {
     return Expanded(
       child: GridView.builder(
-        itemCount: value
-            .recordData.data?.data.travels[_selectTravelsIndex].records.length,
+        itemCount: value.recordData.data?.data.totalElements,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           mainAxisSpacing: 5,
@@ -160,14 +174,12 @@ class _RecordScreenState extends State<RecordScreen> {
                     builder: (context) => RecordFeedScreen(
                           date: _dates[_selectTravelsIndex],
                           pageIndex: index,
-                          selectTravelsIndex: _selectTravelsIndex,
+                          selectTravelsIndex: 0,
                         )),
               );
             },
             child: Image.network(
-              value.recordData.data?.data.travels[_selectTravelsIndex]
-                      .records[index].image ??
-                  "",
+              value.recordData.data?.data.content[index].image ?? '',
               fit: BoxFit.cover,
             ),
           );
