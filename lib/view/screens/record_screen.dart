@@ -1,17 +1,16 @@
-import 'package:beyond_seoul/view/screens/record_feed_screen.dart';
-import 'package:beyond_seoul/view_model/home_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import 'package:beyond_seoul/view/screens/record_feed_screen.dart';
+import 'package:beyond_seoul/view_model/home_view_model.dart';
+import 'package:beyond_seoul/view_model/record_view_model.dart';
+import '../../models/record/record_read_model.dart';
 import '../../network/api_response.dart';
 import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
-import '../../view_model/record_view_model.dart';
 import 'error_screen.dart';
 
 class RecordScreen extends StatefulWidget {
@@ -48,15 +47,27 @@ class _RecordScreenState extends State<RecordScreen> {
 
   void updateDateList() {
     if (_recordViewModel.recordData.status == Status.complete) {
-      Set<String> uniqueDates = {};
+      List<DateTime> uniqueDates = [];
       for (var content
           in _recordViewModel.recordData.data?.data.content ?? []) {
         DateTime uploadDate = DateTime.parse(content.uploadAt);
         String formattedDate = DateFormat('yyyy년 MM월').format(uploadDate);
-        uniqueDates.add(formattedDate);
+        DateTime formattedDateTime =
+            DateFormat('yyyy년 MM월').parse(formattedDate);
+        if (!uniqueDates.contains(formattedDateTime)) {
+          uniqueDates.add(formattedDateTime);
+        }
       }
+
+      uniqueDates.sort((a, b) => b.compareTo(a));
+      List<String> formattedDates = uniqueDates
+          .map((date) => DateFormat('yyyy년 MM월').format(date))
+          .toList();
+      formattedDates.insert(0, Strings.allViewRecord);
+
       setState(() {
-        _dates = uniqueDates.toList();
+        _dates = formattedDates;
+        _selectDate = _dates.isNotEmpty ? _dates.first : null;
       });
     }
   }
@@ -91,8 +102,9 @@ class _RecordScreenState extends State<RecordScreen> {
 
   Widget _buildEmptyWidget() {
     return Padding(
-        padding: EdgeInsets.only(top: ScreenUtil().setHeight(100)),
-        child: Image.asset(Images.emptyRecord));
+      padding: EdgeInsets.only(top: ScreenUtil().setHeight(100)),
+      child: Image.asset(Images.emptyRecord),
+    );
   }
 
   Widget _buildCompleteWidget(RecordViewModel value) {
@@ -147,7 +159,6 @@ class _RecordScreenState extends State<RecordScreen> {
       onChanged: (value) {
         if (value != null) {
           _selectTravelsIndex = _dates.indexOf(value);
-
           setState(() {
             _selectDate = value;
           });
@@ -157,9 +168,26 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   Widget _buildImageWidget(RecordViewModel value) {
+    List<RecordContent> filteredContent;
+
+    if (_selectDate == Strings.allViewRecord) {
+      filteredContent = value.recordData.data?.data.content ?? [];
+    } else {
+      filteredContent = value.recordData.data?.data.content.where((item) {
+            return DateFormat('yyyy년 MM월')
+                    .format(DateTime.parse(item.uploadAt)) ==
+                _selectDate;
+          }).toList() ??
+          [];
+    }
+
+    if (filteredContent.isEmpty) {
+      return _buildEmptyWidget();
+    }
+
     return Expanded(
       child: GridView.builder(
-        itemCount: value.recordData.data?.data.totalElements,
+        itemCount: filteredContent.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           mainAxisSpacing: 5,
@@ -172,14 +200,14 @@ class _RecordScreenState extends State<RecordScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => RecordFeedScreen(
-                          date: _dates[_selectTravelsIndex],
+                          date: _selectDate!,
                           pageIndex: index,
-                          selectTravelsIndex: 0,
+                          selectTravelsIndex: _selectTravelsIndex,
                         )),
               );
             },
             child: Image.network(
-              value.recordData.data?.data.content[index].image ?? '',
+              filteredContent[index].image ?? '',
               fit: BoxFit.cover,
             ),
           );

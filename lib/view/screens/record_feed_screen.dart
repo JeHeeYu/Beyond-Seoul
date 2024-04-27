@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/record/record_read_model.dart';
 import '../../statics/colors.dart';
 import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
@@ -13,7 +15,10 @@ class RecordFeedScreen extends StatefulWidget {
   final int selectTravelsIndex;
 
   const RecordFeedScreen(
-      {Key? key, required this.date, required this.pageIndex, required this.selectTravelsIndex})
+      {Key? key,
+      required this.date,
+      required this.pageIndex,
+      required this.selectTravelsIndex})
       : super(key: key);
 
   @override
@@ -79,6 +84,19 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<RecordContent> filteredRecords;
+    if (widget.date == Strings.allViewRecord) {
+      filteredRecords = _recordViewModel.getRecordData.data?.data.content ?? [];
+    } else {
+      filteredRecords = _recordViewModel.getRecordData.data?.data.content
+              .where((record) =>
+                  DateFormat('yyyy년 MM월')
+                      .format(DateTime.parse(record.uploadAt)) ==
+                  widget.date)
+              .toList() ??
+          [];
+    }
+
     return Scaffold(
       backgroundColor: const Color(UserColors.mainBackGround),
       body: Padding(
@@ -94,9 +112,9 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
-                itemCount: _recordViewModel
-                    .getRecordData.data?.data.content.length,
+                itemCount: filteredRecords.length,
                 itemBuilder: (BuildContext context, int index) {
+                  RecordContent record = filteredRecords[index];
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -122,7 +140,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                _recordViewModel.getRecordData.data?.data.content[index].missionTitle ?? '',
+                                record.missionTitle,
                                 style: const TextStyle(
                                   fontFamily: "Pretendard",
                                   fontSize: 12,
@@ -131,7 +149,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                                 ),
                               ),
                               Text(
-                                _recordViewModel.getRecordData.data?.data.content[index].missionType ?? '',
+                                record.missionType,
                                 style: const TextStyle(
                                   fontFamily: "Pretendard",
                                   fontSize: 11,
@@ -144,16 +162,15 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                         ],
                       ),
                       SizedBox(height: ScreenUtil().setHeight(8)),
-                      // need add image here
                       Image.network(
-                        _recordViewModel.getRecordData.data?.data.content[index].image ?? '',
+                        record.image,
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: ScreenUtil().setWidth(320),
                       ),
                       SizedBox(height: ScreenUtil().setHeight(8)),
                       Text(
-                        _recordViewModel.getRecordData.data?.data.content[index].comment ?? '',
+                        record.comment,
                         style: const TextStyle(
                           fontFamily: "Pretendard",
                           fontSize: 16,
@@ -164,7 +181,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                         height: ScreenUtil().setHeight(4),
                       ),
                       Text(
-                        _recordViewModel.getRecordData.data?.data.content[index].uploadAt ?? '',
+                        record.uploadAt,
                         style: const TextStyle(
                           fontFamily: "Pretendard",
                           fontSize: 12,
@@ -173,7 +190,6 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
                         ),
                       ),
                       SizedBox(height: ScreenUtil().setHeight(24)),
-                      // listview end
                     ],
                   );
                 },
