@@ -1,4 +1,3 @@
-import 'package:beyond_seoul/view/screens/contents_screen.dart';
 import 'package:beyond_seoul/view/screens/home_screen.dart';
 import 'package:beyond_seoul/view/screens/profile_screen.dart';
 import 'package:beyond_seoul/view/screens/record_screen.dart';
@@ -23,7 +22,6 @@ class _BottomNavigationControllerState
 
   final List<Widget> _pages = <Widget>[
     const HomeScreen(),
-    const ContentsScreen(),
     const RecordScreen(),
     const ProfileScreen(),
   ];
@@ -56,11 +54,6 @@ class _BottomNavigationControllerState
               icon: Image.asset(Images.homeDisable),
               activeIcon: Image.asset(Images.homeEnable),
               label: Strings.home,
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(Images.contentsDisable),
-              activeIcon: Image.asset(Images.contentsEnable),
-              label: Strings.contents,
             ),
             BottomNavigationBarItem(
               icon: Image.asset(Images.recordDisable),
