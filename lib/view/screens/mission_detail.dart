@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
+import '../widgets/button_icon.dart';
 import '../widgets/flexible_text.dart';
 import '../widgets/infinity_button.dart';
 
@@ -88,6 +89,12 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     }
   }
 
+  void _refresh() {
+    setState(() {
+      uploadImage = null;
+    });
+  }
+
   Widget _buildAppBarWidget() {
     return Container(
       width: double.infinity,
@@ -100,30 +107,24 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          GestureDetector(
-            onTap: () {
+          ButtonIcon(
+            icon: Icons.arrow_back_ios,
+            iconColor: Colors.black,
+            callback: () {
               Navigator.pop(context);
             },
-            child: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
-            ),
           ),
           FlexibleText(
             text: widget.title,
             textSize: 18,
             textWeight: FontWeight.w700,
           ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                uploadImage = null;
-              });
+          ButtonIcon(
+            icon: Icons.refresh,
+            iconColor: Colors.black,
+            callback: () {
+              _refresh();
             },
-            child: const Icon(
-              Icons.refresh,
-              color: Colors.black,
-            ),
           ),
         ],
       ),

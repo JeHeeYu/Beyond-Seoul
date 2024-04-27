@@ -11,6 +11,7 @@ import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
+import '../widgets/button_icon.dart';
 import '../widgets/flexible_text.dart';
 import '../widgets/infinity_button.dart';
 import 'mate_code_screen.dart';
@@ -259,14 +260,12 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         bgTextRectangle(71, 22, 8, title, const Color(UserColors.enable), 12),
         SizedBox(width: ScreenUtil().setWidth(10)),
-        GestureDetector(
-          onTap: () {
+        ButtonIcon(
+          icon: Icons.refresh,
+          iconColor: Colors.black,
+          callback: () {
             _missionRefresh(missionId);
           },
-          child: const Icon(
-            Icons.refresh,
-            color: Colors.grey,
-          ),
         ),
       ],
     );

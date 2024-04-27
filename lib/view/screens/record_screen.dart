@@ -207,7 +207,7 @@ class _RecordScreenState extends State<RecordScreen> {
               );
             },
             child: Image.network(
-              filteredContent[index].image ?? '',
+              filteredContent[index].image,
               fit: BoxFit.cover,
             ),
           );
