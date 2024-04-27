@@ -8,6 +8,7 @@ import '../../statics/colors.dart';
 import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
 import '../../view_model/record_view_model.dart';
+import '../widgets/button_icon.dart';
 
 class RecordFeedScreen extends StatefulWidget {
   final String date;
@@ -25,29 +26,30 @@ class RecordFeedScreen extends StatefulWidget {
   State<RecordFeedScreen> createState() => _RecordFeedScreenState();
 }
 
-Widget _buildAppBarWidget(String date) {
-  return Container(
-    width: double.infinity,
-    height: ScreenUtil().setHeight(92),
-    decoration: const BoxDecoration(
-      border: Border(
-        bottom: BorderSide(color: Color(UserColors.disable), width: 1.0),
-      ),
+Widget _buildAppBarWidget(BuildContext context, String date) {
+  return AppBar(
+    title: Text(
+      date,
+      style: const TextStyle(
+          color: Colors.black,
+          fontFamily: "Pretendard",
+          fontWeight: FontWeight.w600,
+          fontSize: 18),
     ),
-    child: Align(
-      alignment: Alignment.center,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            date,
-            style: const TextStyle(
-              fontFamily: "Pretendard",
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
+    centerTitle: true,
+    titleSpacing: 0,
+    backgroundColor: const Color(UserColors.mainBackGround),
+    elevation: 0,
+    leading: IconButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      icon: ButtonIcon(
+        icon: Icons.arrow_back_ios,
+        iconColor: Colors.black,
+        callback: () {
+          Navigator.pop(context);
+        },
       ),
     ),
   );
@@ -107,7 +109,7 @@ class _RecordFeedScreenState extends State<RecordFeedScreen> {
             SizedBox(
               height: ScreenUtil().statusBarHeight + ScreenUtil().setHeight(20),
             ),
-            _buildAppBarWidget(widget.date),
+            _buildAppBarWidget(context, widget.date),
             SizedBox(height: ScreenUtil().setHeight(10)),
             Expanded(
               child: ListView.builder(
