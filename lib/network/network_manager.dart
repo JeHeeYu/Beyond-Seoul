@@ -152,7 +152,7 @@ class NetworkManager {
       request.files.add(http.MultipartFile.fromBytes(
         'file',
         imageBytes,
-        filename: 'upload.jpg',
+        filename: 'upload.png',
         contentType: MediaType('image', 'jpeg'),
       ));
     }

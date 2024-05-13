@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../network/network_manager.dart';
 import '../../statics/images.dart';
+import '../../statics/strings.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -135,34 +136,91 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Align(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(64)),
-          child: Column(
-            children: [
-              Expanded(child: Image.asset(Images.bgLogin)),
-              GestureDetector(
-                  onTap: () {
-                    kakaoLogin();
-                  },
-                  child: Image.asset(Images.loginKakao)),
-              SizedBox(height: ScreenUtil().setHeight(16)),
-              GestureDetector(
-                  onTap: () {
-                    naverLogin();
-                  },
-                  child: Image.asset(Images.loginNaver)),
-              SizedBox(height: ScreenUtil().setHeight(16)),
-              GestureDetector(
-                  onTap: () {
-                    googleLogin();
-                  },
-                  child: Image.asset(Images.loginGoogle)),
-              SizedBox(height: ScreenUtil().setHeight(16)),
-              Image.asset(Images.loginApple),
-            ],
-          ),
+      body: Padding(
+        padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(64)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: ScreenUtil().setHeight(64.0)),
+            Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(16)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    Strings.loginGuide1,
+                    style: TextStyle(
+                      fontFamily: "Pretendard",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  RichText(
+                    text: const TextSpan(
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: Strings.loginGuide2,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        TextSpan(
+                          text: Strings.loginGuide3,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: Container(
+                  width: ScreenUtil().setWidth(300.0),
+                  height: ScreenUtil().setHeight(300.0),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Image.asset(Images.travelIcon),
+                ),
+              ),
+            ),
+            Center(
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: kakaoLogin,
+                    child: Image.asset(Images.loginKakao),
+                  ),
+                  SizedBox(height: ScreenUtil().setHeight(16)),
+                  GestureDetector(
+                    onTap: naverLogin,
+                    child: Image.asset(Images.loginNaver),
+                  ),
+                  SizedBox(height: ScreenUtil().setHeight(16)),
+                  GestureDetector(
+                    onTap: googleLogin,
+                    child: Image.asset(Images.loginGoogle),
+                  ),
+                  SizedBox(height: ScreenUtil().setHeight(16)),
+                  Image.asset(Images.loginApple),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -76,6 +76,9 @@ class Strings {
   static const String codeNextTime = "다음에 등록하기";
   static const String mateCodeInput = "코드를 입력해주세요.";
   static const String allViewRecord = "모두 보기";
+  static const String loginGuide1 = "로그인하고";
+  static const String loginGuide2 = "여행지 맞춤 미션";
+  static const String loginGuide3 = "을 받아보세요!";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";

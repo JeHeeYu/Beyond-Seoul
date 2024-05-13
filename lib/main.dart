@@ -4,6 +4,7 @@ import 'package:beyond_seoul/utils/app_key.dart';
 import 'package:beyond_seoul/view/screens/home_screen.dart';
 import 'package:beyond_seoul/view/screens/login_screen.dart';
 import 'package:beyond_seoul/view/screens/onboarding/onboarding_screen.dart';
+import 'package:beyond_seoul/view/screens/splash_screen.dart';
 import 'package:beyond_seoul/view_model/home_view_model.dart';
 import 'package:beyond_seoul/view_model/login_view_model.dart';
 import 'package:beyond_seoul/view_model/onboarding_view_model.dart';
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
           ),
           // home: const OnboardingScreen(),
-          home: const App(),
+          home: const SplashScreen(),
         ),
       ),
     );
