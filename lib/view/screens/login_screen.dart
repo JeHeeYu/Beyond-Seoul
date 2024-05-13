@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -24,12 +25,20 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   LoginViewModel _loginViewModel = LoginViewModel();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   @override
   void initState() {
     super.initState();
 
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+  }
+
+  void _writeLogin(String result) async {
+    await _storage.write(
+      key: 'login',
+      value: result,
+    );
   }
 
   void googleLogin() async {
@@ -42,6 +51,11 @@ class _LoginScreenState extends State<LoginScreen> {
       print('name = ${googleUser.displayName}');
       print('email = ${googleUser.email}');
       print('id = ${googleUser.id}');
+
+      _writeLogin("true");
+    }
+    else {
+      _writeLogin("false");
     }
   }
 
@@ -50,18 +64,22 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
         print('카카오톡으로 로그인 성공');
+        _writeLogin("true");
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
 
         if (error is PlatformException && error.code == 'CANCELED') {
+          _writeLogin("false");
           return;
         }
 
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
           print('카카오계정으로 로그인 성공');
+          _writeLogin("true");
         } catch (error) {
           print('카카오계정으로 로그인 실패 $error');
+          _writeLogin("false");
         }
       }
     } else {
@@ -69,6 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
         OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
 
         print('카카오계정으로 로그인 성공');
+        _writeLogin("true");
         User user = await UserApi.instance.me();
         print('\n회원번호: ${user.id}'
             '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
@@ -84,6 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
         //_loginViewModel.login(jsonData);
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
+        _writeLogin("false");
       }
     }
   }
@@ -106,15 +126,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
       Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
 
+      _writeLogin("onboarding");
+
       try {
         await _loginViewModel.login(userData, thumbnailData);
 
         if (_loginViewModel.loginData.data?.data.registerYN == 'Y') {
+          _writeLogin("true");
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const App()),
           );
         } else {
+          _writeLogin("false");
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const OnboardingScreen()),
