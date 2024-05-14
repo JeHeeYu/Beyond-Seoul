@@ -8,6 +8,14 @@ import '../network/api_response.dart';
 class OnboardingViewModel with ChangeNotifier {
   final _onboardingRepo = OnboardingRepository();
 
+  ApiResponse<dynamic> apiResponse = ApiResponse.loading();
+
+  void setApiResponse(ApiResponse<dynamic> response) {
+    apiResponse = response;
+
+    notifyListeners();
+  }
+
   ApiResponse<ThemeListModel> themaData = ApiResponse.loading();
 
   void setThemaList(ApiResponse<ThemeListModel> response) {
@@ -29,11 +37,14 @@ class OnboardingViewModel with ChangeNotifier {
       if (value.code != 0) {
         setThemaList(
             ApiResponse.error("Error: Unexpected response code ${value.code}"));
+            setApiResponse(ApiResponse.error());
       } else {
+        setApiResponse(ApiResponse.complete());
         setThemaList(ApiResponse.complete(value));
       }
     }).onError((error, stackTrace) {
       setThemaList(ApiResponse.error(error.toString()));
+      setApiResponse(ApiResponse.error());
       return Future.value(null);
     });
   }
@@ -43,12 +54,14 @@ class OnboardingViewModel with ChangeNotifier {
       if (value.code != 0) {
         setDestinationList(
             ApiResponse.error("Error: Unexpected response code ${value.code}"));
+            setApiResponse(ApiResponse.error());
       } else {
         setDestinationList(ApiResponse.complete(value));
-
+        setApiResponse(ApiResponse.complete());
       }
     }).onError((error, stackTrace) {
       setDestinationList(ApiResponse.error(error.toString()));
+      setApiResponse(ApiResponse.error());
       return Future.value(null);
     });
   }

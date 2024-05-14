@@ -13,9 +13,9 @@ class ApiResponse<T> {
 
   ApiResponse.loading() : status = Status.loading;
 
-  ApiResponse.complete(this.data) : status = Status.complete;
+  ApiResponse.complete([this.data]) : status = Status.complete;
 
-  ApiResponse.error(this.message) : status = Status.error, data = null;
+  ApiResponse.error([this.message]) : status = Status.error, data = null;
 
   @override
   String toString() {

@@ -54,7 +54,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   LoginViewModel _loginViewModel = LoginViewModel();
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController(initialPage: 4);
   int _selectedIndex = -1;
   String _birthday = "";
   String _sex = "";
@@ -241,47 +241,56 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
           border: Border.all(
-            color: const Color(0xFFD2D2D2),
-            width: 1.0,
+            color: (_selectedIndex == index) ? const Color(0xFF2E3192) : const Color(0xFFD2D2D2),
+            width: ScreenUtil().setWidth(2.0),
           ),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(width: ScreenUtil().setWidth(15.0)),
+            SizedBox(width: ScreenUtil().setWidth(5.0)),
             Image.network(
               imageUrl,
               width: ScreenUtil().setWidth(143),
               height: ScreenUtil().setHeight(143),
             ),
             SizedBox(width: ScreenUtil().setWidth(12.0)),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: ScreenUtil().setHeight(7.0)),
-                Text(
-                  _onboardingViewModel.destinationData.data?.data
-                          .destinations[index].destination ??
-                      '',
-                  style: const TextStyle(
-                    fontFamily: "Pretendard",
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height: ScreenUtil().setHeight(7.0)),
+                  Text(
+                    _onboardingViewModel.destinationData.data?.data
+                            .destinations[index].destination ??
+                        '',
+                    style: const TextStyle(
+                      fontFamily: "Pretendard",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                SizedBox(height: ScreenUtil().setHeight(11.0)),
-                Text(
-                  "themeName",
-                  style: const TextStyle(
-                    fontFamily: "Pretendard",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF7E7E7E),
+                  SizedBox(height: ScreenUtil().setHeight(11.0)),
+                  Text(
+                    _onboardingViewModel.destinationData.data?.data
+                            .destinations[index].detail ??
+                        '',
+                    style: const TextStyle(
+                      fontFamily: "Pretendard",
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF7E7E7E),
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 8,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
+            SizedBox(width: ScreenUtil().setWidth(10.0)),
           ],
         ),
       ),
@@ -300,7 +309,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "travelEndDate": _travelEndDate,
       "travelStartDate": _travelStartDate,
       "travelWith": _withTravel,
-      "uid": _loginViewModel.loginData.data?.data.id,
+      "uid": _loginViewModel.getUid,
     };
 
     NetworkManager.instance
@@ -315,9 +324,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         );
       } else {
         print("POST 실패 123: ${response.statusCode}");
+        _onboardingViewModel.setApiResponse(ApiResponse.error());
       }
     }).catchError((error) {
-      print("에러 발생: $error");
+      _onboardingViewModel.setApiResponse(ApiResponse.error());
     });
   }
 
@@ -360,12 +370,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         Map<String, String> queryParams = {
           "themeId": _selectedIndex.toString()
         };
+
         _setThemeId(_selectedIndex);
-        _onboardingViewModel.fetchDestinationListApi(queryParams);
-        _pageController.jumpToPage(Page.destionPage.index);
+        _onboardingViewModel.fetchDestinationListApi(queryParams).then((_) {
+          _pageController.jumpToPage(Page.destionPage.index);
+        }).catchError((error) {});
+
         break;
       case Page.destionPage:
         _destination = destinationMap[_selectedIndex] ?? "";
+        _onboardingViewModel.setApiResponse(ApiResponse.loading());
         sendOnboardingComplete();
 
         break;
@@ -942,17 +956,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return PageView(
-      controller: _pageController,
-      physics: const NeverScrollableScrollPhysics(),
-      children: [
-        _buildAgeBirthdayPage(),
-        _buildWithTravelMatePage(),
-        _buildWhatRolePage(),
-        _buildSchedulePage(),
-        _buildThemaPage(),
-        _buildDestinationPage(),
-      ],
+    return ChangeNotifierProvider<OnboardingViewModel>(
+      create: (BuildContext context) => _onboardingViewModel,
+      child: Consumer<OnboardingViewModel>(
+        builder: (context, value, _) {
+          switch (value.apiResponse.status) {
+            case Status.loading:
+              return Center(child: CircularProgressIndicator());
+            case Status.complete:
+              return _buildCompleteWidget(value);
+            case Status.error:
+            default:
+              return const ErrorScreen();
+          }
+        },
+      ),
     );
   }
 }
