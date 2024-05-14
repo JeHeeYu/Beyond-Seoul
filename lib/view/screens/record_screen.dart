@@ -11,6 +11,7 @@ import '../../network/api_response.dart';
 import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
+import '../../view_model/login_view_model.dart';
 import 'error_screen.dart';
 
 class RecordScreen extends StatefulWidget {
@@ -23,6 +24,7 @@ class RecordScreen extends StatefulWidget {
 class _RecordScreenState extends State<RecordScreen> {
   RecordViewModel _recordViewModel = RecordViewModel();
   HomeViewModel _homeViewModel = HomeViewModel();
+  LoginViewModel _loginViewModel = LoginViewModel();
   List<String> _dates = [];
   String? _selectDate;
   int _selectTravelsIndex = 0;
@@ -30,16 +32,17 @@ class _RecordScreenState extends State<RecordScreen> {
   @override
   void initState() {
     super.initState();
+    _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+    _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
+    _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
 
     Map<String, String> data = {
       "cursorId": "120",
       "size": "10",
-      "uid": "4",
+      "uid": _loginViewModel.getUid,
       "travelId": "27"
     };
 
-    _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
-    _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
     _recordViewModel.fetchRecordView(data).then((_) {
       updateDateList();
     });

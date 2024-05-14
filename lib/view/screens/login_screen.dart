@@ -1,5 +1,6 @@
 import 'package:beyond_seoul/app.dart';
 import 'package:beyond_seoul/network/api_url.dart';
+import 'package:beyond_seoul/view/screens/error_screen.dart';
 import 'package:beyond_seoul/view/screens/home_screen.dart';
 import 'package:beyond_seoul/view/screens/onboarding/onboarding_screen.dart';
 import 'package:beyond_seoul/view_model/login_view_model.dart';
@@ -34,9 +35,9 @@ class _LoginScreenState extends State<LoginScreen> {
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
   }
 
-  void _writeLogin(String result) async {
+  void _writeStorage(String key, String result) async {
     await _storage.write(
-      key: 'login',
+      key: key,
       value: result,
     );
   }
@@ -52,10 +53,9 @@ class _LoginScreenState extends State<LoginScreen> {
       print('email = ${googleUser.email}');
       print('id = ${googleUser.id}');
 
-      _writeLogin("true");
-    }
-    else {
-      _writeLogin("false");
+      _writeStorage(Strings.loginKey, "true");
+    } else {
+      _writeStorage(Strings.loginKey, "false");
     }
   }
 
@@ -64,22 +64,22 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
         print('카카오톡으로 로그인 성공');
-        _writeLogin("true");
+        _writeStorage(Strings.loginKey, "true");
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
 
         if (error is PlatformException && error.code == 'CANCELED') {
-          _writeLogin("false");
+          _writeStorage(Strings.loginKey, "false");
           return;
         }
 
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
           print('카카오계정으로 로그인 성공');
-          _writeLogin("true");
+          _writeStorage(Strings.loginKey, "true");
         } catch (error) {
           print('카카오계정으로 로그인 실패 $error');
-          _writeLogin("false");
+          _writeStorage(Strings.loginKey, "false");
         }
       }
     } else {
@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
         OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
 
         print('카카오계정으로 로그인 성공');
-        _writeLogin("true");
+        _writeStorage(Strings.loginKey, "true");
         User user = await UserApi.instance.me();
         print('\n회원번호: ${user.id}'
             '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
@@ -103,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
         //_loginViewModel.login(jsonData);
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
-        _writeLogin("false");
+        _writeStorage(Strings.loginKey, "false");
       }
     }
   }
@@ -126,29 +126,45 @@ class _LoginScreenState extends State<LoginScreen> {
 
       Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
 
-      _writeLogin("onboarding");
-
       try {
         await _loginViewModel.login(userData, thumbnailData);
 
-        if (_loginViewModel.loginData.data?.data.registerYN == 'Y') {
-          _writeLogin("true");
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const App()),
-          );
-        } else {
-          _writeLogin("false");
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-          );
+        _writeStorage(
+            Strings.uidKey, _loginViewModel.loginData.data?.data.id ?? '');
+            _loginViewModel.setUid(_loginViewModel.loginData.data?.data.id ?? '');
+
+        if (mounted) {
+          if (_loginViewModel.loginData.data?.data.registerYN == 'Y') {
+            _writeStorage(Strings.loginKey, "true");
+            
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const App()),
+            );
+          } else {
+            _writeStorage(Strings.loginKey, "false");
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+            );
+          }
         }
       } catch (e) {
-        print("Error calling imagePost: $e");
+        if (mounted) {
+          _writeStorage(Strings.uidKey, '');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ErrorScreen()),
+          );
+        }
       }
     } else {
-      print('Login failed: ${result.status}');
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ErrorScreen()),
+        );
+      }
     }
   }
 

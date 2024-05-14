@@ -91,7 +91,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
       "missionType": widget.missionType,
       "missionId": widget.missionId,
       "recordComment": _commentController.text,
-      "uid": _loginViewModel.loginData.data?.data.id ?? '',
+      "uid": _loginViewModel.getUid,
       "travelId": widget.travelId
     };
 

@@ -11,8 +11,18 @@ class LoginViewModel with ChangeNotifier {
 
   ApiResponse<LoginScreenModel> loginData = ApiResponse.loading();
 
+  String _uid = "";
+
+  String get getUid => _uid;
+
   void setLoginData(ApiResponse<LoginScreenModel> response) {
     loginData = response;
+  }
+
+  void setUid(String id) {
+    _uid = id;
+
+    notifyListeners();
   }
 
   Future<void> login(Map<String, dynamic> data, Uint8List profileImage) async {

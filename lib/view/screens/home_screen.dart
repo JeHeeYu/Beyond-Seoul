@@ -11,6 +11,7 @@ import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
+import '../../view_model/login_view_model.dart';
 import '../widgets/button_icon.dart';
 import '../widgets/flexible_text.dart';
 import '../widgets/infinity_button.dart';
@@ -26,6 +27,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   HomeViewModel _homeViewModel = HomeViewModel();
+  LoginViewModel _loginViewModel = LoginViewModel();
   final String _foodMissionType = "food";
 
   @override
@@ -33,7 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
-    Map<String, String> queryParams = {"uid": "4"};
+    _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+
+    Map<String, String> queryParams = {"uid": _loginViewModel.getUid};
     _homeViewModel.fetchTravelListApi(queryParams);
   }
 
@@ -46,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .postQuery(ApiUrl.missionRefresh, data)
         .then((response) {
       print("POST 성공 145623: ${response}");
-      Map<String, String> queryParams = {"uid": "4"};
+      Map<String, String> queryParams = {"uid": _loginViewModel.getUid};
       _homeViewModel.fetchTravelListApi(queryParams);
     }).catchError((error) {
       print("에러 발생 123123: $error");
