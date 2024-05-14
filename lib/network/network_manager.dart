@@ -153,7 +153,7 @@ class NetworkManager {
         'file',
         imageBytes,
         filename: 'upload.png',
-        contentType: MediaType('image', 'jpeg'),
+        contentType: MediaType('image', 'png'),
       ));
     }
 

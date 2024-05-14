@@ -79,6 +79,7 @@ class Strings {
   static const String loginGuide1 = "로그인하고";
   static const String loginGuide2 = "여행지 맞춤 미션";
   static const String loginGuide3 = "을 받아보세요!";
+  static const String recordComplete = "기록이 완료되었습니다.";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";

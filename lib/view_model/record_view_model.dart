@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import '../models/record/record_read_model.dart';
@@ -24,5 +26,14 @@ class RecordViewModel with ChangeNotifier {
       return Future.value(null);
     });
   }
-}
 
+  Future<int> createRecord(
+      Map<String, String> data, Uint8List? imageBytes) async {
+    try {
+      final result = await _recordRepo.createRecord(data, imageBytes);
+      return result.code;
+    } catch (error) {
+      return 400;
+    }
+  }
+}

@@ -4,12 +4,17 @@ import 'dart:typed_data';
 import 'package:beyond_seoul/network/api_url.dart';
 import 'package:beyond_seoul/network/network_manager.dart';
 import 'package:beyond_seoul/statics/colors.dart';
+import 'package:beyond_seoul/view/screens/error_screen.dart';
+import 'package:beyond_seoul/view/widgets/complete_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
+import '../../view_model/login_view_model.dart';
+import '../../view_model/record_view_model.dart';
 import '../widgets/button_icon.dart';
 import '../widgets/flexible_text.dart';
 import '../widgets/infinity_button.dart';
@@ -38,10 +43,20 @@ class MissionDetailScreen extends StatefulWidget {
 }
 
 class _MissionDetailScreenState extends State<MissionDetailScreen> {
+  LoginViewModel _loginViewModel = LoginViewModel();
+  RecordViewModel _recordViewModel = RecordViewModel();
   final _commentController = TextEditingController();
   XFile? uploadImage;
   final ImagePicker picker = ImagePicker();
   dynamic sendData;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+    _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
+  }
 
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile =
@@ -76,16 +91,34 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
       "missionType": widget.missionType,
       "missionId": widget.missionId,
       "recordComment": _commentController.text,
-      "uid": "4",
+      "uid": _loginViewModel.loginData.data?.data.id ?? '',
       "travelId": widget.travelId
     };
 
     try {
-      final response = await NetworkManager.instance
-          .postInImage(ApiUrl.recordCreate, data, imageBytes);
+      final response = await _recordViewModel.createRecord(data, imageBytes);
+
+      if (response == 0 && mounted) {
+        if (mounted) {
+          Navigator.pop(context);
+        }
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) =>
+                const CompleteDialog(title: Strings.recordComplete),
+          ).then((_) {});
+        }
+      }
       print('서버 응답: $response');
     } catch (error) {
       print("에러 발생: $error");
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ErrorScreen()),
+        );
+      }
     }
   }
 
