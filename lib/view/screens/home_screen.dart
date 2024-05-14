@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../app.dart';
 import '../../network/api_response.dart';
 import '../../network/api_url.dart';
 import '../../network/network_manager.dart';
@@ -17,6 +18,7 @@ import '../widgets/flexible_text.dart';
 import '../widgets/infinity_button.dart';
 import 'mate_code_screen.dart';
 import 'mission_detail.dart';
+import 'onboarding/onboarding_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -184,6 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         _buildUserInfoWidget(value),
+        SizedBox(height: ScreenUtil().setHeight(150.0)),
         _buildBeforeBodyWidget(value),
       ],
     );
@@ -193,13 +196,31 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         _buildUserInfoWidget(value),
+        SizedBox(height: ScreenUtil().setHeight(150.0)),
         _buildAfterBodyWidget(value),
       ],
     );
   }
 
   Widget _buildCompleteWidget(HomeViewModel value) {
-    return _buildDuringTravelWidget(value);
+    String travelDate = value.homeData.data?.data.travel.travelDate ?? "";
+    List<String> dates = travelDate.split(' ~ ');
+    if (dates.length != 2) {
+      return _buildBeforeTravelWidget(value);
+    }
+
+    DateTime startDate = DateTime.parse(dates[0]);
+    DateTime endDate = DateTime.parse(dates[1]);
+    DateTime currentDate = DateTime.now();
+
+    if (currentDate.isBefore(startDate) ||
+        value.homeData.data?.data.travel.travelDate == "") {
+      return _buildBeforeTravelWidget(value);
+    } else if (currentDate.isAfter(endDate)) {
+      return _buildAfterTravelWidget(value);
+    } else {
+      return _buildDuringTravelWidget(value);
+    }
   }
 
   Widget _buildDuringTravelWidget(HomeViewModel value) {
@@ -236,13 +257,55 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(height: ScreenUtil().setHeight(12)),
         _buildMissionTitleWidget(Strings.tourMission),
         SizedBox(height: ScreenUtil().setHeight(7)),
-        _buildMissionWidget(
-            value.homeData.data?.data.ongoingMission.tourMission ?? ''),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MissionDetailScreen(
+                        title: value.homeData.data?.data.ongoingMission
+                                .tourMission ??
+                            '',
+                        missionType: _foodMissionType,
+                        missionId: value.homeData.data?.data.ongoingMission
+                                .tourMissionId
+                                .toString() ??
+                            '',
+                        travelId: value.homeData.data?.data.travel.travelId
+                                .toString() ??
+                            '',
+                      )),
+            );
+          },
+          child: _buildMissionWidget(
+              value.homeData.data?.data.ongoingMission.tourMission ?? ''),
+        ),
         SizedBox(height: ScreenUtil().setHeight(12)),
         _buildMissionTitleWidget(Strings.sosoMission),
         SizedBox(height: ScreenUtil().setHeight(7)),
-        _buildMissionWidget(
-            value.homeData.data?.data.ongoingMission.sosoMission ?? ''),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MissionDetailScreen(
+                        title: value.homeData.data?.data.ongoingMission
+                                .sosoMission ??
+                            '',
+                        missionType: _foodMissionType,
+                        missionId: value.homeData.data?.data.ongoingMission
+                                .sosoMissionId
+                                .toString() ??
+                            '',
+                        travelId: value.homeData.data?.data.travel.travelId
+                                .toString() ??
+                            '',
+                      )),
+            );
+          },
+          child: _buildMissionWidget(
+              value.homeData.data?.data.ongoingMission.sosoMission ?? ''),
+        ),
       ],
     );
   }
@@ -463,14 +526,19 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(height: ScreenUtil().setHeight(40)),
         Padding(
           padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(77)),
-          child: const InfinityButton(
-            height: 40,
-            radius: 4,
-            backgroundColor: Color(UserColors.disable),
-            text: Strings.findFriend,
-            textSize: 16,
-            textWeight: FontWeight.w700,
-            textColor: Colors.white,
+          child: GestureDetector(
+            onTap: () {
+              (context.findAncestorStateOfType<AppState>())?.changeTab(1);
+            },
+            child: const InfinityButton(
+              height: 40,
+              radius: 4,
+              backgroundColor: Color(0xFF819AC0),
+              text: Strings.viewBeforeTravel,
+              textSize: 16,
+              textWeight: FontWeight.w700,
+              textColor: Colors.white,
+            ),
           ),
         ),
       ],
@@ -484,14 +552,23 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(height: ScreenUtil().setHeight(40)),
         Padding(
           padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(77)),
-          child: const InfinityButton(
-            height: 40,
-            radius: 4,
-            backgroundColor: Color(UserColors.disable),
-            text: Strings.findFriend,
-            textSize: 16,
-            textWeight: FontWeight.w700,
-            textColor: Colors.white,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const OnboardingScreen()),
+              );
+            },
+            child: const InfinityButton(
+              height: 40,
+              radius: 4,
+              backgroundColor: Color(0xFF819AC0),
+              text: Strings.startTravel,
+              textSize: 16,
+              textWeight: FontWeight.w700,
+              textColor: Colors.white,
+            ),
           ),
         ),
       ],

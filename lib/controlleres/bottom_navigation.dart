@@ -13,10 +13,10 @@ class BottomNavigationController extends StatefulWidget {
 
   @override
   State<BottomNavigationController> createState() =>
-      _BottomNavigationControllerState();
+      BottomNavigationControllerState();
 }
 
-class _BottomNavigationControllerState
+class BottomNavigationControllerState
     extends State<BottomNavigationController> {
   int _selectIndex = 0;
 
@@ -27,6 +27,12 @@ class _BottomNavigationControllerState
   ];
 
   void _onBottomTapped(int index) {
+    setState(() {
+      _selectIndex = index;
+    });
+  }
+
+  void setPageIndex(int index) {
     setState(() {
       _selectIndex = index;
     });

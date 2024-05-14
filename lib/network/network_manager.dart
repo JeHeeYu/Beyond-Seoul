@@ -127,6 +127,8 @@ class NetworkManager {
         ),
       );
 
+      print("ImagePost Result : ${response}");
+
       if (response.statusCode == 200) {
         print('Image upload successful');
       } else {

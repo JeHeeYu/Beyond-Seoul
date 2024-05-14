@@ -54,7 +54,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   LoginViewModel _loginViewModel = LoginViewModel();
-  final PageController _pageController = PageController(initialPage: 4);
+  final PageController _pageController = PageController(initialPage: 0);
   int _selectedIndex = -1;
   String _birthday = "";
   String _sex = "";
