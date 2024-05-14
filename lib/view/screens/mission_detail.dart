@@ -11,6 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../../network/api_response.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
 import '../../view_model/login_view_model.dart';
@@ -49,6 +50,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   XFile? uploadImage;
   final ImagePicker picker = ImagePicker();
   dynamic sendData;
+  VoidCallback? _retryCallback;
 
   @override
   void initState() {
@@ -56,6 +58,24 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
 
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
     _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
+
+    _fetchMissionDetail();
+  }
+
+  void _fetchMissionDetail() {
+    Map<String, String> missionId = {"missionId": ""};
+
+    try {
+      _recordViewModel.fetchMissionDetail(missionId).then((_) {
+        _retryCallback = null;
+      }).catchError((error) {
+        _retryCallback = () => _fetchMissionDetail();
+        _recordViewModel.setApiResponse(ApiResponse.error());
+      });
+    } catch (error) {
+      _retryCallback = () => _fetchMissionDetail();
+      _recordViewModel.setApiResponse(ApiResponse.error());
+    }
   }
 
   Future getImage(ImageSource imageSource) async {
@@ -96,9 +116,9 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     };
 
     try {
-      final response = await _recordViewModel.createRecord(data, imageBytes);
+      await _recordViewModel.createRecord(data, imageBytes).then((_) {
+        _retryCallback = null;
 
-      if (response == 0 && mounted) {
         if (mounted) {
           Navigator.pop(context);
         }
@@ -109,16 +129,13 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                 const CompleteDialog(title: Strings.recordComplete),
           ).then((_) {});
         }
-      }
-      print('서버 응답: $response');
+      }).catchError((error) {
+        _retryCallback = () => _sendRecordCreate();
+        _recordViewModel.setApiResponse(ApiResponse.error());
+      });
     } catch (error) {
-      print("에러 발생: $error");
-      if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ErrorScreen()),
-        );
-      }
+      _retryCallback = () => _sendRecordCreate();
+      _recordViewModel.setApiResponse(ApiResponse.error());
     }
   }
 
@@ -216,8 +233,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildCompleteWidget(RecordViewModel value) {
     return Scaffold(
       backgroundColor: const Color(UserColors.mainBackGround),
       body: Padding(
@@ -250,6 +266,26 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<RecordViewModel>(
+      create: (BuildContext context) => _recordViewModel,
+      child: Consumer<RecordViewModel>(
+        builder: (context, value, _) {
+          switch (value.apiResponse.status) {
+            case Status.loading:
+              return const Center(child: CircularProgressIndicator());
+            case Status.complete:
+              return _buildCompleteWidget(value);
+            case Status.error:
+            default:
+              return ErrorScreen(onRetry: _retryCallback);
+          }
+        },
       ),
     );
   }

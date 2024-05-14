@@ -51,16 +51,6 @@ class _ErrorScreenState extends State<ErrorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        backgroundColor: const Color(UserColors.mainBackGround),
-        elevation: 0,
-      ),
       body: Container(
         color: const Color(UserColors.mainBackGround),
         child: Center(

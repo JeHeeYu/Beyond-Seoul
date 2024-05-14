@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import '../models/record/mission_detail_model.dart';
 import '../models/record/record_create_model.dart';
 import '../models/record/record_read_model.dart';
 import '../network/api_url.dart';
@@ -24,6 +25,17 @@ class RecordRepository {
       String response = await NetworkManager.instance
           .postInImage(ApiUrl.recordCreate, data, imageBytes);
       return RecordCreateModel.fromJson(jsonDecode(response));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<MissionDetailModel> missionDetail(
+      Map<String, String> queryParams) async {
+    try {
+      String response = await NetworkManager.instance
+          .getQuery(ApiUrl.missionDetail, queryParams);
+      return MissionDetailModel.fromJson(jsonDecode(response));
     } catch (e) {
       rethrow;
     }
