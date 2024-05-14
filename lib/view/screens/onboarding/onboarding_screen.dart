@@ -65,6 +65,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _themeId = 0;
   String _destination = "";
   OnboardingViewModel _onboardingViewModel = OnboardingViewModel();
+  VoidCallback? _retryCallback;
 
   @override
   void initState() {
@@ -241,7 +242,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
           border: Border.all(
-            color: (_selectedIndex == index) ? const Color(0xFF2E3192) : const Color(0xFFD2D2D2),
+            color: (_selectedIndex == index)
+                ? const Color(0xFF2E3192)
+                : const Color(0xFFD2D2D2),
             width: ScreenUtil().setWidth(2.0),
           ),
         ),
@@ -285,7 +288,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       color: Color(0xFF7E7E7E),
                     ),
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 8,
+                    maxLines: 7,
                   ),
                 ],
               ),
@@ -297,7 +300,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  void sendOnboardingComplete() async {
+  Future<void> _sendOnboardingComplete() async {
+    _onboardingViewModel.setApiResponse(ApiResponse.loading());
+
     Map<String, dynamic> data = {
       "age": "",
       "sex": _sex,
@@ -312,11 +317,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "uid": _loginViewModel.getUid,
     };
 
-    NetworkManager.instance
+    return NetworkManager.instance
         .post(ApiUrl.onboardingComplete, data)
         .then((response) {
       if (response.statusCode == 200) {
         print("POST 성공 123: ${response.body}");
+        _retryCallback = null;
 
         Navigator.push(
           context,
@@ -324,9 +330,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         );
       } else {
         print("POST 실패 123: ${response.statusCode}");
+        _retryCallback = () => _sendOnboardingComplete();
         _onboardingViewModel.setApiResponse(ApiResponse.error());
       }
     }).catchError((error) {
+      _retryCallback = () => _sendOnboardingComplete();
       _onboardingViewModel.setApiResponse(ApiResponse.error());
     });
   }
@@ -354,7 +362,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         if (_selectedIndex == 0) {
           _pageController.jumpToPage(Page.travelDatePage.index);
         } else {
-          sendOnboardingComplete();
+          _sendOnboardingComplete();
 
           Navigator.push(
             context,
@@ -380,7 +388,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       case Page.destionPage:
         _destination = destinationMap[_selectedIndex] ?? "";
         _onboardingViewModel.setApiResponse(ApiResponse.loading());
-        sendOnboardingComplete();
+        _sendOnboardingComplete();
 
         break;
     }
@@ -932,7 +940,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               return _buildCompleteWidget(value);
             case Status.error:
             default:
-              return const ErrorScreen();
+              return ErrorScreen(onRetry: _retryCallback);
           }
         },
       ),
@@ -967,7 +975,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               return _buildCompleteWidget(value);
             case Status.error:
             default:
-              return const ErrorScreen();
+              return ErrorScreen(onRetry: _retryCallback);
           }
         },
       ),

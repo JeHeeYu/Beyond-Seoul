@@ -82,6 +82,7 @@ class Strings {
   static const String recordComplete = "기록이 완료되었습니다.";
   static const String loginKey = 'login';
   static const String uidKey = 'uid';
+  static const String retry = "다시 시도";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";
