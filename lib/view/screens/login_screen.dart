@@ -31,7 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
   }
 
@@ -42,18 +41,47 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<void> _loginHandler(Map<String, dynamic> userData, Uint8List? thumbnailData) async {
+    try {
+      await _loginViewModel.login(userData, thumbnailData ?? Uint8List(0)); // Default value if thumbnailData is null
+      _writeStorage(Strings.uidKey, _loginViewModel.loginData.data?.data.id ?? '');
+      _loginViewModel.setUid(_loginViewModel.loginData.data?.data.id ?? '');
+
+      if (mounted) {
+        if (_loginViewModel.loginData.data?.data.registerYN == 'Y') {
+          _writeStorage(Strings.loginKey, "true");
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const App()));
+        } else {
+          _writeStorage(Strings.loginKey, "false");
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const OnboardingScreen()));
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        _writeStorage(Strings.uidKey, '');
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const ErrorScreen()));
+      }
+    }
+  }
+
   void googleLogin() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
     if (googleUser != null) {
       print('name = ${googleUser.displayName}');
       print('email = ${googleUser.email}');
       print('id = ${googleUser.id}');
 
-      _writeStorage(Strings.loginKey, "true");
+      Map<String, dynamic> userData = {
+        "idToken": googleUser.id,
+        "email": googleUser.email,
+        "name": googleUser.displayName,
+        "sns": "google",
+      };
+
+      Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
+      _loginHandler(userData, thumbnailData);
     } else {
       _writeStorage(Strings.loginKey, "false");
     }
@@ -64,7 +92,18 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
         print('카카오톡으로 로그인 성공');
-        _writeStorage(Strings.loginKey, "true");
+
+        User user = await UserApi.instance.me();
+        Map<String, dynamic> userData = {
+          "idToken": user.id,
+          "email": user.kakaoAccount?.email,
+          "name": user.kakaoAccount?.profile?.nickname,
+          "sns": "kakao",
+        };
+
+        Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
+        _loginHandler(userData, thumbnailData);
+
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
 
@@ -76,7 +115,18 @@ class _LoginScreenState extends State<LoginScreen> {
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
           print('카카오계정으로 로그인 성공');
-          _writeStorage(Strings.loginKey, "true");
+
+          User user = await UserApi.instance.me();
+          Map<String, dynamic> userData = {
+            "idToken": user.id,
+            "email": user.kakaoAccount?.email,
+            "name": user.kakaoAccount?.profile?.nickname,
+            "sns": "kakao",
+          };
+
+          Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
+          _loginHandler(userData, thumbnailData);
+
         } catch (error) {
           print('카카오계정으로 로그인 실패 $error');
           _writeStorage(Strings.loginKey, "false");
@@ -85,22 +135,19 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       try {
         OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-
         print('카카오계정으로 로그인 성공');
-        _writeStorage(Strings.loginKey, "true");
-        User user = await UserApi.instance.me();
-        print('\n회원번호: ${user.id}'
-            '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
-            '\n이메일: ${user.kakaoAccount?.email}');
 
-        Map<String, dynamic> jsonData = {
-          'email': user.kakaoAccount?.email,
-          'idToken': user.id,
-          'nickName': user.kakaoAccount?.profile?.nickname,
-          'sns': 'kakao',
+        User user = await UserApi.instance.me();
+        Map<String, dynamic> userData = {
+          "idToken": user.id,
+          "email": user.kakaoAccount?.email,
+          "name": user.kakaoAccount?.profile?.nickname,
+          "sns": "kakao",
         };
 
-        //_loginViewModel.login(jsonData);
+        Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
+        _loginHandler(userData, thumbnailData);
+
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
         _writeStorage(Strings.loginKey, "false");
@@ -125,45 +172,11 @@ class _LoginScreenState extends State<LoginScreen> {
       };
 
       Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
+      _loginHandler(userData, thumbnailData);
 
-      try {
-        await _loginViewModel.login(userData, thumbnailData);
-
-        _writeStorage(
-            Strings.uidKey, _loginViewModel.loginData.data?.data.id ?? '');
-            _loginViewModel.setUid(_loginViewModel.loginData.data?.data.id ?? '');
-
-        if (mounted) {
-          if (_loginViewModel.loginData.data?.data.registerYN == 'Y') {
-            _writeStorage(Strings.loginKey, "true");
-            
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const App()),
-            );
-          } else {
-            _writeStorage(Strings.loginKey, "false");
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-            );
-          }
-        }
-      } catch (e) {
-        if (mounted) {
-          _writeStorage(Strings.uidKey, '');
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ErrorScreen()),
-          );
-        }
-      }
     } else {
       if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ErrorScreen()),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const ErrorScreen()));
       }
     }
   }
@@ -183,8 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             SizedBox(height: ScreenUtil().setHeight(64.0)),
             Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(16)),
+              padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(16)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

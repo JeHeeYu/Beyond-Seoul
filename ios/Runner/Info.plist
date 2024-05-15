@@ -47,5 +47,54 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+   <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>BeyondSeoul</string>
+		<!-- google login -->
+		<string>com.googleusercontent.apps.568147733054-qg5fesunns1qpb7mjbo1790m1v1qpvp8</string>
+      </array>
+      </dict>
+    </array>
+	    <key>LSApplicationQueriesSchemes</key>
+    <array>
+       <string>naversearchapp</string>
+       <string>naversearchthirdlogin</string>
+    </array>
+    <key>naverServiceAppUrlScheme</key>
+    <string>BeyondSeoul</string>
+    <key>naverConsumerKey</key>
+    <string>oGWRFJoxzP5IGs3s9Wbz</string>
+    <key>naverConsumerSecret</key>
+    <string>cN8Pj63yv3</string>
+    <key>naverServiceAppName</key>
+    <string>BeyondSeoul</string>
+
+	<key>NSAppTransportSecurity</key>
+    <dict>
+       <key>NSAllowsArbitraryLoads</key>
+       <true/>
+       <key>NSExceptionDomains</key>
+       <dict>
+          <key>naver.com</key>
+          <dict>
+             <key>NSExceptionRequiresForwardSecrecy</key>
+             <false/>
+             <key>NSIncludesSubdomains</key>
+             <true/>
+          </dict>
+          <key>naver.net</key>
+          <dict>
+             <key>NSExceptionRequiresForwardSecrecy</key>
+             <false/>
+             <key>NSIncludesSubdomains</key>
+             <true/>
+          </dict>
+        </dict>
+    </dict>
+	<key>GIDClientID</key>
+    <string>568147733054-qg5fesunns1qpb7mjbo1790m1v1qpvp8.apps.googleusercontent.com</string>
 </dict>
 </plist>
