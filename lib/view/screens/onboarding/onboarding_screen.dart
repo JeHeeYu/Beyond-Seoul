@@ -2,6 +2,7 @@ import 'package:beyond_seoul/network/network_manager.dart';
 import 'package:beyond_seoul/view/widgets/infinity_button.dart';
 import 'package:beyond_seoul/view_model/onboarding_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -66,6 +67,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String _destination = "";
   OnboardingViewModel _onboardingViewModel = OnboardingViewModel();
   VoidCallback? _retryCallback;
+  final TextEditingController _controller = TextEditingController();
+  Color _textColor = Colors.black;
 
   @override
   void initState() {
@@ -101,6 +104,46 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _setThemeId(int index) {
     _themeId = index;
+  }
+
+  String _formatDateInput(String text) {
+    text = text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (text.length > 4 && text.length <= 6) {
+      text = text.substring(0, 4) + '-' + text.substring(4);
+    } else if (text.length > 6) {
+      text = text.substring(0, 4) +
+          '-' +
+          text.substring(4, 6) +
+          '-' +
+          text.substring(6);
+    }
+    return text;
+  }
+
+  void _handleDateChange(String text) {
+    String formattedText = _formatDateInput(text);
+    if (formattedText.length == 10) {
+      try {
+        DateFormat inputFormat = DateFormat('yyyy-MM-dd');
+        DateTime dateTime = inputFormat.parseStrict(formattedText);
+        _setBirthday(dateTime);
+        setState(() {
+          _textColor = Colors.black;
+        });
+      } catch (e) {
+        setState(() {
+          _textColor = Colors.red;
+        });
+      }
+    } else {
+      setState(() {
+        _textColor = Colors.red;
+      });
+    }
+    _controller.value = TextEditingValue(
+      text: formattedText,
+      selection: TextSelection.collapsed(offset: formattedText.length),
+    );
   }
 
   Widget buildOnboardingButton(int index, String text, double height) {
@@ -398,7 +441,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     });
   }
 
-  _buildAgeBirthdayPage() {
+  Widget _buildAgeBirthdayPage() {
     return Scaffold(
       backgroundColor: const Color(UserColors.mainBackGround),
       body: Padding(
@@ -443,44 +486,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                     ),
                     SizedBox(height: ScreenUtil().setHeight(32)),
-                    GestureDetector(
-                      onTap: () {
-                        showScheduleBottomSheet(
-                          context,
-                          _setBirthday,
-                        );
-                      },
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: ScreenUtil().setHeight(58),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: Colors.white,
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: ScreenUtil().setHeight(58),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.white,
+                          ),
+                          child: TextField(
+                            controller: _controller,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9-]')),
+                            ],
+                            onChanged: _handleDateChange,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: _textColor,
+                              fontFamily: "Pretendard",
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
+                            decoration: const InputDecoration(
+                              hintText: Strings.birthdayGuide,
+                              border: InputBorder.none,
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: ScreenUtil().setWidth(29)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  _birthday,
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontFamily: "Pretendard",
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16),
-                                ),
-                                SizedBox(width: ScreenUtil().setWidth(29)),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -490,6 +527,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
+                  if (_selectedIndex == -1 || _birthday.length < 8) return;
                   _nextClickEvent(Page.infoPage);
                 },
                 child: InfinityButton(
@@ -553,6 +591,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
+                  if (_selectedIndex == -1) return;
                   _nextClickEvent(Page.withTravelPage);
                 },
                 child: InfinityButton(
@@ -626,6 +665,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
+                  if (_selectedIndex == -1) return;
                   _nextClickEvent(Page.rolePage);
                 },
                 child: InfinityButton(
@@ -777,6 +817,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
+                  if(_travelStartDate.isEmpty || _travelEndDate.isEmpty) return;
                   _nextClickEvent(Page.travelDatePage);
                 },
                 child: InfinityButton(
@@ -843,6 +884,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
+                  if (_selectedIndex == -1) return;
                   _nextClickEvent(Page.themaPage);
                 },
                 child: InfinityButton(
@@ -908,6 +950,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
+                  if (_selectedIndex == -1) return;
                   _nextClickEvent(Page.destionPage);
                 },
                 child: InfinityButton(
