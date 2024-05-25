@@ -21,7 +21,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   KakaoSdk.init(nativeAppKey: AppKey.kakaoNaviteKey);
 
-  initializeDateFormatting().then((_) => runApp(MyApp()));
+  initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -43,8 +43,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          // home: const OnboardingScreen(),
-          home: const LoginScreen(),
+          home: const SplashScreen(),
         ),
       ),
     );
