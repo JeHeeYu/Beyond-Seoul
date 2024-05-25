@@ -41,32 +41,43 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _loginHandler(Map<String, dynamic> userData, Uint8List? thumbnailData) async {
+  Future<void> _loginHandler(
+      Map<String, dynamic> userData, Uint8List? thumbnailData) async {
     try {
-      await _loginViewModel.login(userData, thumbnailData ?? Uint8List(0)); // Default value if thumbnailData is null
-      _writeStorage(Strings.uidKey, _loginViewModel.loginData.data?.data.id ?? '');
+      await _loginViewModel.login(
+          userData,
+          thumbnailData ??
+              Uint8List(0)); // Default value if thumbnailData is null
+      _writeStorage(
+          Strings.uidKey, _loginViewModel.loginData.data?.data.id ?? '');
       _loginViewModel.setUid(_loginViewModel.loginData.data?.data.id ?? '');
 
       if (mounted) {
         if (_loginViewModel.loginData.data?.data.registerYN == 'Y') {
           _writeStorage(Strings.loginKey, "true");
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const App()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => const App()));
         } else {
           _writeStorage(Strings.loginKey, "false");
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const OnboardingScreen()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const OnboardingScreen()));
         }
       }
     } catch (e) {
       if (mounted) {
         _writeStorage(Strings.uidKey, '');
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const ErrorScreen()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ErrorScreen()));
       }
     }
   }
 
   void googleLogin() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
 
     if (googleUser != null) {
       print('name = ${googleUser.displayName}');
@@ -103,7 +114,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
         Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
         _loginHandler(userData, thumbnailData);
-
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
 
@@ -126,7 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
           Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
           _loginHandler(userData, thumbnailData);
-
         } catch (error) {
           print('카카오계정으로 로그인 실패 $error');
           _writeStorage(Strings.loginKey, "false");
@@ -147,7 +156,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
         Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
         _loginHandler(userData, thumbnailData);
-
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
         _writeStorage(Strings.loginKey, "false");
@@ -173,10 +181,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
       _loginHandler(userData, thumbnailData);
-
     } else {
       if (mounted) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const ErrorScreen()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ErrorScreen()));
       }
     }
   }
@@ -196,7 +204,8 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             SizedBox(height: ScreenUtil().setHeight(64.0)),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(16)),
+              padding:
+                  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(16)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -239,14 +248,23 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Expanded(
               child: Center(
-                child: Container(
-                  width: ScreenUtil().setWidth(300.0),
-                  height: ScreenUtil().setHeight(300.0),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Image.asset(Images.travelIcon),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: ScreenUtil().setWidth(300.0),
+                      height: ScreenUtil().setHeight(300.0),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Center(
+                      child: Image.asset(Images.bgLogin,
+                          width: ScreenUtil().setWidth(250.0),
+                          height: ScreenUtil().setHeight(250.0)),
+                    )
+                  ],
                 ),
               ),
             ),

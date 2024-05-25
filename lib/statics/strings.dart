@@ -1,4 +1,5 @@
 class Strings {
+  static const String appName = "비욘드 서울";
   static const String home = "홈";
   static const String contents = "콘텐츠";
   static const String record = "기록";

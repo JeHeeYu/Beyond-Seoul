@@ -4,10 +4,12 @@ import 'package:beyond_seoul/view/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 import '../../app.dart';
+import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
 import '../../view_model/login_view_model.dart';
@@ -38,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (!mounted) return;
 
-    if(uidInfo != null && uidInfo.isNotEmpty) {
+    if (uidInfo != null && uidInfo.isNotEmpty) {
       _loginViewModel.setUid(uidInfo);
     }
 
@@ -64,13 +66,35 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     });
 
+    double iconSize =
+        min(ScreenUtil().screenWidth, ScreenUtil().screenHeight) * 0.6;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Image.asset(Images.bgLogin),
+      body: Stack(
+        children: [
+          Center(
+            child: Image.asset(
+              Images.bgLogin,
+              width: iconSize,
+              height: iconSize,
+            ),
+          ),
+          const Positioned(
+            bottom: 16,
+            right: 16,
+            child: Text(
+              "Ver. 1.0",
+              style: TextStyle(
+                color: Colors.black,
+                fontFamily: "Pretendard",
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-
-class _storage {}
