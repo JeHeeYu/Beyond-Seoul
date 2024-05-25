@@ -255,8 +255,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
           Positioned(
-            right: ScreenUtil().setWidth(8.0),
-            bottom: ScreenUtil().setHeight(8.0),
+            right: ScreenUtil().setWidth(15.0),
+            bottom: ScreenUtil().setHeight(15.0),
             child: Text(
               themeName,
               style: const TextStyle(
