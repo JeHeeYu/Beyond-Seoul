@@ -331,7 +331,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       color: Color(0xFF7E7E7E),
                     ),
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 7,
+                    maxLines: 5,
                   ),
                 ],
               ),

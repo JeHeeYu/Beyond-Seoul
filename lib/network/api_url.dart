@@ -9,7 +9,7 @@ class ApiUrl {
   static const String login = "http://43.202.106.98:8080/users/login";
   static const String recordCreate = "http://43.202.106.98:8080/record/create";
   static const String recordView = "http://43.202.106.98:8080/record/view";
-  static const String missionDetail = "http://43.202.106.98:8080//mission/detail";
+  static const String missionDetail = "http://43.202.106.98:8080/mission/detail";
 
   // local test url
   //static const String home = "http://10.0.2.2:8080/get/home";

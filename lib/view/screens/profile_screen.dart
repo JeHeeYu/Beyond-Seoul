@@ -1,8 +1,10 @@
+import 'package:beyond_seoul/view/screens/onboarding/onboarding_screen.dart';
 import 'package:beyond_seoul/view/widgets/profile_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/home/home_screen_model.dart';
@@ -11,6 +13,7 @@ import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -21,6 +24,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   HomeViewModel _homeViewModel = HomeViewModel();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -97,8 +101,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Row(
             children: [
               GestureDetector(
-                onTap: (){
-                  ProfileDialogWidget.show(context, _homeViewModel);
+                onTap: () {
+                  // ProfileDialogWidget.show(context, _homeViewModel);
                 },
                 child: Container(
                   width: ScreenUtil().setWidth(60),
@@ -129,13 +133,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(height: ScreenUtil().setHeight(5)),
                   Row(
                     children: [
-                      _buildEmptyInfoWidget(),
+                      // _buildEmptyInfoWidget(),
                       SizedBox(width: ScreenUtil().setWidth(5)),
-                      Icon(
-                        Icons.edit,
-                        size: ScreenUtil().setWidth(15),
-                        color: Colors.grey,
-                      ),
+                      // Icon(
+                      //   Icons.edit,
+                      //   size: ScreenUtil().setWidth(15),
+                      //   color: Colors.grey,
+                      // ),
                     ],
                   ),
                 ],
@@ -143,18 +147,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         ),
-        Positioned(
-          top: 35,
-          right: 28,
-          child: Text(
-            "총 2회의 여행",
-            style: const TextStyle(
-                fontFamily: "Pretendard",
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: Colors.grey),
-          ),
-        ),
+        // Positioned(
+        //   top: 35,
+        //   right: 28,
+        //   child: Text(
+        //     "총 2회의 여행",
+        //     style: const TextStyle(
+        //         fontFamily: "Pretendard",
+        //         fontSize: 11,
+        //         fontWeight: FontWeight.w700,
+        //         color: Colors.grey),
+        //   ),
+        // ),
       ],
     );
   }
@@ -169,12 +173,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Stack(
               alignment: Alignment.center,
               children: [
-                Container(
-                  width: ScreenUtil().setWidth(165),
-                  height: ScreenUtil().setHeight(30),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: const Color(UserColors.disable),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const OnboardingScreen()),
+                    );
+                  },
+                  child: Container(
+                    width: ScreenUtil().setWidth(185),
+                    height: ScreenUtil().setHeight(30),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: const Color(UserColors.disable),
+                    ),
                   ),
                 ),
                 const Text(
@@ -224,37 +237,68 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   fontWeight: FontWeight.w700,
                 ),
               ),
+              SizedBox(height: ScreenUtil().setHeight(8.0)),
               _buildMainContent(),
               SizedBox(height: ScreenUtil().setHeight(34)),
-              const Text(
-                Strings.travelInformation,
-                style: TextStyle(
-                  fontFamily: "Pretendard",
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(height: ScreenUtil().setHeight(19)),
               Padding(
                 padding: const EdgeInsets.only(right: 35.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text(
-                      Strings.editTravelInformation,
-                      style: TextStyle(
-                        fontFamily: "Pretendard",
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                child: GestureDetector(
+                  onTap: () {
+                    _storage.deleteAll();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        Strings.logout,
+                        style: TextStyle(
+                          fontFamily: "Pretendard",
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.black,
-                    ),
-                  ],
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              // const Text(
+              //   Strings.travelInformation,
+              //   style: TextStyle(
+              //     fontFamily: "Pretendard",
+              //     fontSize: 16,
+              //     fontWeight: FontWeight.w700,
+              //   ),
+              // ),
+              // SizedBox(height: ScreenUtil().setHeight(19)),
+              // Padding(
+              //   padding: const EdgeInsets.only(right: 35.0),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: const [
+              //       Text(
+              //         Strings.editTravelInformation,
+              //         style: TextStyle(
+              //           fontFamily: "Pretendard",
+              //           fontSize: 14,
+              //           fontWeight: FontWeight.w500,
+              //         ),
+              //       ),
+              //       Icon(
+              //         Icons.arrow_forward_ios,
+              //         color: Colors.black,
+              //       ),
+              //     ],
+              //   ),
+              // ),
               SizedBox(height: ScreenUtil().setHeight(56)),
               Align(
                 alignment: Alignment.bottomCenter,
