@@ -6,9 +6,9 @@ import '../network/api_url.dart';
 import '../network/network_manager.dart';
 
 class LoginRepository {
-  Future<LoginScreenModel> login(Map<String, dynamic> data, Uint8List profileImage) async {
+  Future<LoginScreenModel> login(Map<String, dynamic> data) async {
     try {
-      dynamic response = await NetworkManager.instance.imagePost(ApiUrl.login, data, profileImage);
+      dynamic response = await NetworkManager.instance.imagePost(ApiUrl.login, data);
       return LoginScreenModel.fromJson(response);
     } catch (e) {
       rethrow;

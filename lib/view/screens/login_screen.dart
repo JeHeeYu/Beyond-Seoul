@@ -42,35 +42,41 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loginHandler(
-      Map<String, dynamic> userData, Uint8List? thumbnailData) async {
+      Map<String, dynamic> userData) async {
     try {
-      await _loginViewModel.login(
-          userData,
-          thumbnailData ??
-              Uint8List(0)); // Default value if thumbnailData is null
-      _writeStorage(
-          Strings.uidKey, _loginViewModel.loginData.data?.data.id ?? '');
-      _loginViewModel.setUid(_loginViewModel.loginData.data?.data.id ?? '');
+      await _loginViewModel
+          .login(userData)
+          .then((_) {
+        _writeStorage(
+            Strings.uidKey, _loginViewModel.loginData.data?.data.id ?? '');
+        _loginViewModel.setUid(_loginViewModel.loginData.data?.data.id ?? '');
 
-      if (mounted) {
-        if (_loginViewModel.loginData.data?.data.registerYN == 'Y') {
-          _writeStorage(Strings.loginKey, "true");
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const App()));
-        } else {
-          _writeStorage(Strings.loginKey, "false");
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const OnboardingScreen()));
+        if (mounted) {
+          if (_loginViewModel.loginData.data?.data.registerYN == 'Y') {
+            _writeStorage(Strings.loginKey, "true");
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => const App()));
+          } else {
+            _writeStorage(Strings.loginKey, "false");
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const OnboardingScreen()));
+          }
         }
-      }
+      }).catchError((error) {
+        _storage.deleteAll();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ErrorScreen()));
+      });
     } catch (e) {
       if (mounted) {
         _writeStorage(Strings.uidKey, '');
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const ErrorScreen()));
       }
+
+      _storage.deleteAll();
     }
   }
 
@@ -91,8 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
         "sns": "google",
       };
 
-      Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
-      _loginHandler(userData, thumbnailData);
+      _loginHandler(userData);
     } else {
       _writeStorage(Strings.loginKey, "false");
     }
@@ -112,8 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
           "sns": "kakao",
         };
 
-        Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
-        _loginHandler(userData, thumbnailData);
+        _loginHandler(userData);
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
 
@@ -134,8 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
             "sns": "kakao",
           };
 
-          Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
-          _loginHandler(userData, thumbnailData);
+          _loginHandler(userData);
         } catch (error) {
           print('카카오계정으로 로그인 실패 $error');
           _writeStorage(Strings.loginKey, "false");
@@ -154,8 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
           "sns": "kakao",
         };
 
-        Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
-        _loginHandler(userData, thumbnailData);
+        _loginHandler(userData);
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
         _writeStorage(Strings.loginKey, "false");
@@ -179,8 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
         "sns": "naver",
       };
 
-      Uint8List? thumbnailData = await loadImageAsset(Images.bgLogin);
-      _loginHandler(userData, thumbnailData);
+      _loginHandler(userData);
     } else {
       if (mounted) {
         Navigator.push(context,
@@ -188,12 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
-
-  Future<Uint8List> loadImageAsset(String path) async {
-    final byteData = await rootBundle.load(path);
-    return byteData.buffer.asUint8List();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

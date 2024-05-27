@@ -4,6 +4,7 @@ import 'package:beyond_seoul/view_model/onboarding_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -44,8 +45,6 @@ Map<int, String> themeMap = {
   5: "쇼핑"
 };
 
-Map<int, String> destinationMap = {0: "부산", 1: "전주", 2: "여수"};
-
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -69,6 +68,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   VoidCallback? _retryCallback;
   final TextEditingController _controller = TextEditingController();
   Color _textColor = Colors.black;
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -343,6 +343,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
+  void _writeStorage(String key, String result) async {
+    await _storage.write(
+      key: key,
+      value: result,
+    );
+  }
+
   Future<void> _sendOnboardingComplete() async {
     _onboardingViewModel.setApiResponse(ApiResponse.loading());
 
@@ -366,6 +373,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       if (response.statusCode == 200) {
         print("POST 성공 123: ${response.body}");
         _retryCallback = null;
+
+        _writeStorage(Strings.loginKey, "true");
 
         Navigator.push(
           context,
@@ -417,10 +426,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         _pageController.jumpToPage(Page.themaPage.index);
         break;
       case Page.themaPage:
-        _themeId = _selectedIndex;
-        Map<String, String> queryParams = {
-          "themeId": _selectedIndex.toString()
-        };
+        _themeId = _selectedIndex + 1;
+        Map<String, String> queryParams = {"themeId": _themeId.toString()};
 
         _setThemeId(_selectedIndex);
         _onboardingViewModel.fetchDestinationListApi(queryParams).then((_) {
@@ -429,7 +436,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
         break;
       case Page.destionPage:
-        _destination = destinationMap[_selectedIndex] ?? "";
+        _destination = _onboardingViewModel.destinationData.data?.data.destinations[_selectedIndex].destination ?? "";
         _onboardingViewModel.setApiResponse(ApiResponse.loading());
         _sendOnboardingComplete();
 
@@ -817,7 +824,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
-                  if(_travelStartDate.isEmpty || _travelEndDate.isEmpty) return;
+                  if (_travelStartDate.isEmpty || _travelEndDate.isEmpty)
+                    return;
                   _nextClickEvent(Page.travelDatePage);
                 },
                 child: InfinityButton(

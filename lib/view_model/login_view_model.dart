@@ -25,8 +25,8 @@ class LoginViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> login(Map<String, dynamic> data, Uint8List profileImage) async {
-    await _loginRepository.login(data, profileImage).then((value) {
+  Future<void> login(Map<String, dynamic> data) async {
+    await _loginRepository.login(data).then((value) {
       if (value.code != 0) {
         setLoginData(
             ApiResponse.error("Error: Unexpected response code ${value.code}"));

@@ -4,7 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:http_parser/http_parser.dart';
+import '../statics/images.dart';
 import 'api_response.dart';
+
+import 'package:flutter/services.dart' show rootBundle;
 
 class NetworkManager {
   Map<String, String> commonHeaders = {
@@ -69,7 +72,7 @@ class NetworkManager {
       if (response.statusCode == 200) {
         print("POST 성공: ${responseJson}");
       } else {
-        print("POST 실패: ${response.statusCode}");
+        print("POST 실패: ${response.body},   ${responseJson} ${response}");
       }
 
       return response;
@@ -97,26 +100,40 @@ class NetworkManager {
     }
   }
 
-  Future<dynamic> imagePost(String serverUrl, Map<String, dynamic> userData,
-      Uint8List? thumbnailData) async {
-    Map<String, dynamic> sendData = userData;
-
+  Future<dynamic> imagePost(String serverUrl, Map<String, dynamic> data) async {
     var dio = Dio();
-
-    FormData formData = FormData.fromMap({
-      "files": await MultipartFile.fromBytes(
-        thumbnailData!,
-        filename: 'files.png',
-        contentType: MediaType('image', 'png'),
-      ),
-      "dto": MultipartFile.fromString(
-        jsonEncode(sendData),
-        contentType: MediaType('application', 'json'),
-      ),
-    });
+    FormData formData;
 
     try {
-      Response response = await dio.post(
+      ByteData byteData = await rootBundle.load(Images.profileDisable);
+      List<int> imageBytes = byteData.buffer.asUint8List();
+
+      formData = FormData.fromMap({
+        "image": MultipartFile.fromBytes(
+          imageBytes,
+          filename: "image.png",
+          contentType: MediaType("image", "png"),
+        ),
+        "idToken": data["idToken"],
+        "email": data["email"],
+        "name": data["name"],
+        "sns": data["sns"],
+      });
+
+      formData.fields.forEach((field) {
+        print("Field: ${field.key} = ${field.value}");
+      });
+      formData.files.forEach((file) {
+        print(
+            "File: ${file.key} = ${file.value.filename}, ${file.value.contentType}");
+      });
+    } catch (error) {
+      print("에러: $error");
+      return null;
+    }
+
+    try {
+      var response = await dio.post(
         serverUrl,
         data: formData,
         options: Options(
@@ -127,17 +144,12 @@ class NetworkManager {
         ),
       );
 
-      print("ImagePost Result : ${response}");
-
-      if (response.statusCode == 200) {
-        print('Image upload successful');
-      } else {
-        print('Image upload failed with status: ${response.statusCode}');
-      }
+      print("성공: ${response.data}");
       return response.data;
     } catch (error) {
-      print('Error uploading: $error');
-      throw error;
+      print(
+          " 에러 발생: $error, FormData: ${formData.fields}, ${formData.files}");
+      return null;
     }
   }
 
