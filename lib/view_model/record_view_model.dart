@@ -68,7 +68,6 @@ class RecordViewModel with ChangeNotifier {
     }).catchError((error, stackTrace) {
       setMissionDetail(ApiResponse.error(error.toString()));
       setApiResponse(ApiResponse.error());
-      print("Jehee 3 : ${error}");
       throw error;
     });
   }

@@ -57,9 +57,9 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     super.initState();
 
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
-    _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
-
-    _fetchMissionDetail();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchMissionDetail();
+    });
   }
 
   void _fetchMissionDetail() {
@@ -118,9 +118,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     try {
       await _recordViewModel.createRecord(data, imageBytes).then((_) {
         _retryCallback = null;
-
-        print("Jehee : Test");
-
+        
         if (mounted) {
           Navigator.pop(context);
         }
