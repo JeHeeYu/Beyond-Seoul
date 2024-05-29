@@ -257,8 +257,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Center(
                       child: Image.asset(Images.bgLogin,
-                          width: ScreenUtil().setWidth(250.0),
-                          height: ScreenUtil().setHeight(250.0)),
+                          width: ScreenUtil().setWidth(200.0),
+                          height: ScreenUtil().setHeight(200.0)),
                     )
                   ],
                 ),

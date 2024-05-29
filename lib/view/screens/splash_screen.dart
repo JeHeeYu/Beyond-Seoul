@@ -70,7 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
         min(ScreenUtil().screenWidth, ScreenUtil().screenHeight) * 0.6;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromRGBO(242, 244, 246, 1.0),
       body: Stack(
         children: [
           Center(
