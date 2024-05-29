@@ -11,9 +11,9 @@ class RecordCreateModel {
 
   factory RecordCreateModel.fromJson(Map<String, dynamic> json) {
     return RecordCreateModel(
-      success: json['success'],
-      code: json['code'],
-      msg: json['msg'],
+      success: json['success'] ?? {},
+      code: json['code'] ?? 0,
+      msg: json['msg'] ?? '',
     );
   }
 }

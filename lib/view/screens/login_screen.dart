@@ -41,12 +41,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _loginHandler(
-      Map<String, dynamic> userData) async {
+  Future<void> _loginHandler(Map<String, dynamic> userData) async {
     try {
-      await _loginViewModel
-          .login(userData)
-          .then((_) {
+      await _loginViewModel.login(userData).then((_) {
         _writeStorage(
             Strings.uidKey, _loginViewModel.loginData.data?.data.id ?? '');
         _loginViewModel.setUid(_loginViewModel.loginData.data?.data.id ?? '');
@@ -189,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -107,9 +107,9 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
       imageBytes = await File(imagePath).readAsBytes();
     }
 
-    Map<String, String> data = {
+    Map<String, dynamic> data = {
       "missionType": widget.missionType,
-      // "missionId": widget.missionId,
+      "missionId": widget.missionId,
       "recordComment": _commentController.text,
       "uid": _loginViewModel.getUid,
       "travelId": widget.travelId
@@ -118,6 +118,8 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     try {
       await _recordViewModel.createRecord(data, imageBytes).then((_) {
         _retryCallback = null;
+
+        print("Jehee : Test");
 
         if (mounted) {
           Navigator.pop(context);

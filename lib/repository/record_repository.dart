@@ -20,7 +20,7 @@ class RecordRepository {
   }
 
   Future<RecordCreateModel> createRecord(
-      Map<String, String> data, Uint8List? imageBytes) async {
+      Map<String, dynamic> data, Uint8List? imageBytes) async {
     try {
       String response = await NetworkManager.instance
           .postInImage(ApiUrl.recordCreate, data, imageBytes);

@@ -55,7 +55,7 @@ class RecordViewModel with ChangeNotifier {
   }
 
   Future<void> createRecord(
-      Map<String, String> data, Uint8List? imageBytes) async {
+      Map<String, dynamic> data, Uint8List? imageBytes) async {
     await _recordRepo.createRecord(data, imageBytes).then((value) {
       if (value.code != 0) {
         setMissionDetail(
@@ -65,10 +65,11 @@ class RecordViewModel with ChangeNotifier {
         setApiResponse(ApiResponse.complete());
         setCreateRecord(ApiResponse.complete(value));
       }
-    }).onError((error, stackTrace) {
+    }).catchError((error, stackTrace) {
       setMissionDetail(ApiResponse.error(error.toString()));
       setApiResponse(ApiResponse.error());
-      return Future.value(null);
+      print("Jehee 3 : ${error}");
+      throw error;
     });
   }
 

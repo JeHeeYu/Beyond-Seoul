@@ -241,6 +241,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
+          print("Jehee : ${_selectedIndex}");
           _selectedIndex = index;
         });
       },
@@ -366,6 +367,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "travelWith": _withTravel,
       "uid": _loginViewModel.getUid,
     };
+
+    print("Jehee : ${data}");
 
     return NetworkManager.instance
         .post(ApiUrl.onboardingComplete, data)

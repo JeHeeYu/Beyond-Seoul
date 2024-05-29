@@ -156,13 +156,13 @@ class NetworkManager {
     }
   }
 
-  Future<dynamic> postInImage(
-      String serverUrl, Map<String, String> data, Uint8List? imageBytes) async {
+  Future<dynamic> postInImage(String serverUrl, Map<String, dynamic> data,
+      Uint8List? imageBytes) async {
     var uri = Uri.parse(serverUrl);
     var request = http.MultipartRequest('POST', uri);
 
     data.forEach((key, value) {
-      request.fields[key] = value;
+      request.fields[key] = value.toString();
     });
 
     if (imageBytes != null) {
@@ -181,7 +181,9 @@ class NetworkManager {
         print('서버 응답: $responseBody');
         return responseBody;
       } else {
+        String responseBody = await response.stream.bytesToString();
         print('서버 에러 발생. 상태 코드: ${response.statusCode}');
+        print('서버 응답: $responseBody');
         return 'Error: Server responded with status code ${response.statusCode}';
       }
     } catch (error) {
