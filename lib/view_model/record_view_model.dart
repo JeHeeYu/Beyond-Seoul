@@ -72,7 +72,7 @@ class RecordViewModel with ChangeNotifier {
     });
   }
 
-  Future<void> fetchMissionDetail(Map<String, String> queryParams) async {
+  Future<void> fetchMissionDetail(Map<String, dynamic> queryParams) async {
     await _recordRepo.missionDetail(queryParams).then((value) {
       if (value.code != 0) {
         setMissionDetail(

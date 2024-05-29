@@ -40,18 +40,22 @@ class NetworkManager {
   }
 
   Future<dynamic> getQuery(
-      String serverUrl, Map<String, String> queryParams) async {
+      String serverUrl, Map<String, dynamic> queryParams) async {
     dynamic responseJson;
     try {
-      String queryString = Uri(queryParameters: queryParams).query;
+      Map<String, String> stringParams =
+          queryParams.map((key, value) => MapEntry(key, value.toString()));
+
+      String queryString = Uri(queryParameters: stringParams).query;
       String urlWithQuery = '$serverUrl?$queryString';
+
       final response =
           await http.get(Uri.parse(urlWithQuery), headers: commonHeaders);
       responseJson = utf8.decode(response.bodyBytes);
       print("GET Query 성공: ${responseJson}");
       return responseJson;
     } catch (error) {
-      print("에러 발생: $error");
+      print("에러 발생 123: $error");
       return "";
     }
   }
@@ -147,8 +151,7 @@ class NetworkManager {
       print("성공: ${response.data}");
       return response.data;
     } catch (error) {
-      print(
-          " 에러 발생: $error, FormData: ${formData.fields}, ${formData.files}");
+      print(" 에러 발생: $error, FormData: ${formData.fields}, ${formData.files}");
       return null;
     }
   }

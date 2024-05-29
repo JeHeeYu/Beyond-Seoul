@@ -243,9 +243,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               '',
                           missionType: _foodMissionType,
                           missionId: value.homeData.data?.data.ongoingMission
-                                  .foodMissionId
-                                  .toString() ??
-                              '',
+                                  .foodMissionId ??
+                              0,
                           travelId: value.homeData.data?.data.travel.travelId
                                   .toString() ??
                               '',
@@ -268,9 +267,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             '',
                         missionType: _foodMissionType,
                         missionId: value.homeData.data?.data.ongoingMission
-                                .tourMissionId
-                                .toString() ??
-                            '',
+                                .tourMissionId ??
+                            0,
                         travelId: value.homeData.data?.data.travel.travelId
                                 .toString() ??
                             '',
@@ -294,9 +292,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             '',
                         missionType: _foodMissionType,
                         missionId: value.homeData.data?.data.ongoingMission
-                                .sosoMissionId
-                                .toString() ??
-                            '',
+                                .sosoMissionId ??
+                            0,
                         travelId: value.homeData.data?.data.travel.travelId
                                 .toString() ??
                             '',

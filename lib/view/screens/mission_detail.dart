@@ -36,7 +36,7 @@ class MissionDetailScreen extends StatefulWidget {
 
   final String title;
   final String missionType;
-  final String missionId;
+  final int missionId;
   final String travelId;
 
   @override
@@ -63,7 +63,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   }
 
   void _fetchMissionDetail() {
-    Map<String, String> missionId = {"missionId": ""};
+    Map<String, int> missionId = {"missionId": widget.missionId};
 
     try {
       _recordViewModel.fetchMissionDetail(missionId).then((_) {
@@ -109,7 +109,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
 
     Map<String, String> data = {
       "missionType": widget.missionType,
-      "missionId": widget.missionId,
+      // "missionId": widget.missionId,
       "recordComment": _commentController.text,
       "uid": _loginViewModel.getUid,
       "travelId": widget.travelId

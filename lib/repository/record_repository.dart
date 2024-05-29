@@ -31,7 +31,7 @@ class RecordRepository {
   }
 
   Future<MissionDetailModel> missionDetail(
-      Map<String, String> queryParams) async {
+      Map<String, dynamic> queryParams) async {
     try {
       String response = await NetworkManager.instance
           .getQuery(ApiUrl.missionDetail, queryParams);
