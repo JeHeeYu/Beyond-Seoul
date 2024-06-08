@@ -88,6 +88,7 @@ class Strings {
   static const String startTravel = "여행 시작하기";
   static const String birthdayGuide = "Ex) 1996-09-29";
   static const String logout = "로그아웃";
+  static const String location = "[위치]";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";

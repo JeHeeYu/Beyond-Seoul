@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:flutter/services.dart';
 import 'package:beyond_seoul/network/api_url.dart';
 import 'package:beyond_seoul/network/network_manager.dart';
 import 'package:beyond_seoul/statics/colors.dart';
@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../network/api_response.dart';
+import '../../services/naver_map_service.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
 import '../../view_model/login_view_model.dart';
@@ -57,7 +58,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     super.initState();
 
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchMissionDetail();
     });
   }
@@ -118,7 +119,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     try {
       await _recordViewModel.createRecord(data, imageBytes).then((_) {
         _retryCallback = null;
-        
+
         if (mounted) {
           Navigator.pop(context);
         }
@@ -143,6 +144,26 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     setState(() {
       uploadImage = null;
     });
+  }
+
+  Future<Uint8List?> getStaticMap() async {
+    double lat =
+        35.1587; //_recordViewModel.missionDetail.data?.data.lat ?? 0.0;
+    double lon =
+        129.1604; //_recordViewModel.missionDetail.data?.data.lon ?? 0.0;
+    if (lat == 0.0 || lon == 0.0) {
+      return null;
+    }
+    Uint8List? staticMapBytes =
+        await NaverMapService.getStaticMapImage(lat, lon);
+    return staticMapBytes;
+  }
+
+  void _locationCopy(String location) {
+    Clipboard.setData(ClipboardData(text: location));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('복사 되었습니다!')),
+    );
   }
 
   Widget _buildAppBarWidget() {
@@ -181,6 +202,73 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     );
   }
 
+  Widget _buildTravelDetail() {
+    return Text(
+      'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ',
+      style: TextStyle(
+        color: const Color(UserColors.guideText),
+        fontFamily: "Pretendard",
+        fontSize: ScreenUtil().setSp(14.0),
+        fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+
+  Widget _buildLocationWidget() {
+    return FutureBuilder<Uint8List?>(
+      future: getStaticMap(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError || !snapshot.hasData) {
+          return Container();
+        } else {
+          Uint8List? staticMapBytes = snapshot.data;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                Strings.location,
+                style: TextStyle(
+                  color: const Color(UserColors.guideText),
+                  fontFamily: "Pretendard",
+                  fontSize: ScreenUtil().setSp(14.0),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: ScreenUtil().setHeight(4.0)),
+              Row(
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    color: Colors.red,
+                    size: ScreenUtil().setWidth(14.0),
+                  ),
+                  const Text(
+                    "부산 해운대구 우동",
+                    style: TextStyle(
+                      color: Color(UserColors.guideText),
+                      fontFamily: "Pretendard",
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  ButtonIcon(
+                      icon: Icons.copy,
+                      callback: () => _locationCopy("location"),
+                      iconColor: Colors.grey,
+                      iconSize: ScreenUtil().setWidth(14.0)),
+                ],
+              ),
+              SizedBox(height: ScreenUtil().setHeight(9.0)),
+              if (staticMapBytes != null) Image.memory(staticMapBytes),
+            ],
+          );
+        }
+      },
+    );
+  }
+
   Widget _buildMainContent() {
     return Expanded(
       child: SingleChildScrollView(
@@ -188,7 +276,11 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
           padding: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(22)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _buildTravelDetail(),
+              SizedBox(height: ScreenUtil().setHeight(29)),
+              _buildLocationWidget(),
               GestureDetector(
                 onTap: () async {
                   getImage(ImageSource.gallery);

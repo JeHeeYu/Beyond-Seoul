@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ButtonIcon extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
+  final double? iconSize;
   final VoidCallback callback;
 
   const ButtonIcon({
@@ -10,6 +11,7 @@ class ButtonIcon extends StatelessWidget {
     required this.icon,
     this.callback = _callback,
     this.iconColor = Colors.white,
+    this.iconSize,
   }) : super(key: key);
 
   static void _callback() {}
@@ -21,6 +23,7 @@ class ButtonIcon extends StatelessWidget {
       child: Icon(
         icon,
         color: iconColor,
+        size: iconSize,
       ),
     );
   }

@@ -25,6 +25,8 @@ class RecordViewModel with ChangeNotifier {
 
   ApiResponse<MissionDetailModel> missionDetail = ApiResponse.loading();
 
+  ApiResponse<MissionDetailModel> get getMissionDetail => missionDetail;
+
   ApiResponse<RecordCreateModel> recordCreate = ApiResponse.loading();
 
   void setRecordImageList(ApiResponse<RecordReadModel> response) {

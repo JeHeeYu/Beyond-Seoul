@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
 
     Map<String, String> queryParams = {"uid": _loginViewModel.getUid};
+    print("Jehee : ${_loginViewModel.getUid}");
     _homeViewModel.fetchTravelListApi(queryParams);
   }
 
