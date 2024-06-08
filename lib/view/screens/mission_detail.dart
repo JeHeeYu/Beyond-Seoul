@@ -52,6 +52,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   final ImagePicker picker = ImagePicker();
   dynamic sendData;
   VoidCallback? _retryCallback;
+  String _address = "";
 
   @override
   void initState() {
@@ -60,6 +61,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchMissionDetail();
+      _fetchAddress();
     });
   }
 
@@ -147,10 +149,8 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   }
 
   Future<Uint8List?> getStaticMap() async {
-    double lat =
-        35.1587; //_recordViewModel.missionDetail.data?.data.lat ?? 0.0;
-    double lon =
-        129.1604; //_recordViewModel.missionDetail.data?.data.lon ?? 0.0;
+    double lat = _recordViewModel.missionDetail.data?.data.lat ?? 0.0;
+    double lon = _recordViewModel.missionDetail.data?.data.lon ?? 0.0;
     if (lat == 0.0 || lon == 0.0) {
       return null;
     }
@@ -164,6 +164,17 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('복사 되었습니다!')),
     );
+  }
+
+  Future<void> _fetchAddress() async {
+    double lat = 35.1587;
+    double lon = 129.1604;
+    String? address = await NaverMapService.getAddressFromLatLng(lat, lon);
+    if (mounted) {
+      setState(() {
+        _address = address ?? '';
+      });
+    }
   }
 
   Widget _buildAppBarWidget() {
@@ -204,7 +215,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
 
   Widget _buildTravelDetail() {
     return Text(
-      'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ',
+      _recordViewModel.missionDetail.data?.data.detail ?? '',
       style: TextStyle(
         color: const Color(UserColors.guideText),
         fontFamily: "Pretendard",
@@ -244,12 +255,12 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                     color: Colors.red,
                     size: ScreenUtil().setWidth(14.0),
                   ),
-                  const Text(
-                    "부산 해운대구 우동",
+                  Text(
+                    _address,
                     style: TextStyle(
-                      color: Color(UserColors.guideText),
+                      color: const Color(UserColors.guideText),
                       fontFamily: "Pretendard",
-                      fontSize: 12,
+                      fontSize: ScreenUtil().setSp(12.0),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
