@@ -13,6 +13,7 @@ import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
+import '../../view_model/login_view_model.dart';
 import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   HomeViewModel _homeViewModel = HomeViewModel();
+  LoginViewModel _loginViewModel = LoginViewModel();
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   @override
@@ -31,6 +33,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
 
     _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+    _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+  }
+
+  int _calculateAge(String birthDateStr) {
+    try {
+      final birthDate = DateTime.parse(birthDateStr);
+      final today = DateTime.now();
+      int age = today.year - birthDate.year;
+      if (today.month < birthDate.month ||
+          (today.month == birthDate.month && today.day < birthDate.day)) {
+        age--;
+      }
+      return age;
+    } catch (e) {
+      return 0;
+    }
   }
 
   Widget bgRectangle(double height, double radius) {
@@ -49,14 +67,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildEmptyInfoWidget() {
-    return const Text(
-      Strings.profileGuide,
-      style: TextStyle(
+  Widget _buildAgeWidget(BuildContext context) {
+    if (_loginViewModel.loginData.data?.data == null) {
+      return const Text(
+        Strings.profileGuide,
+        style: TextStyle(
           fontFamily: "Pretendard",
           fontSize: 11,
           fontWeight: FontWeight.w600,
-          color: Color(UserColors.disable)),
+          color: Color(UserColors.disable),
+        ),
+      );
+    }
+
+    final String sex = _loginViewModel.loginData.data?.data.sex ?? '';
+    final String birthDateStr =
+        _loginViewModel.loginData.data?.data.birth ?? '';
+    final int age = _calculateAge(birthDateStr);
+
+    return Text(
+      '$age세, $sex',
+      style: const TextStyle(
+        fontFamily: "Pretendard",
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        color: Color(UserColors.disable),
+      ),
     );
   }
 
@@ -100,21 +136,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: () {
-                  // ProfileDialogWidget.show(context, _homeViewModel);
-                },
-                child: Container(
-                  width: ScreenUtil().setWidth(60),
-                  height: ScreenUtil().setHeight(60),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: ClipOval(
-                    child: Image.network(
-                      value.homeData.data?.data.profile.userImage ?? "",
-                      fit: BoxFit.cover,
-                    ),
+              Container(
+                width: ScreenUtil().setWidth(60),
+                height: ScreenUtil().setHeight(60),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: ClipOval(
+                  child: Image.network(
+                    value.homeData.data?.data.profile.userImage ?? "",
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -131,16 +162,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   SizedBox(height: ScreenUtil().setHeight(5)),
-                  Row(
-                    children: [
-                      // _buildEmptyInfoWidget(),
-                      SizedBox(width: ScreenUtil().setWidth(5)),
-                      // Icon(
-                      //   Icons.edit,
-                      //   size: ScreenUtil().setWidth(15),
-                      //   color: Colors.grey,
-                      // ),
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      print(
+                          "Jehee : ${_loginViewModel.loginData.data?.data.birth}");
+                      ProfileDialogWidget.show(
+                          context, _homeViewModel, _loginViewModel);
+                    },
+                    child: Row(
+                      children: [
+                        _buildAgeWidget(context),
+                        SizedBox(width: ScreenUtil().setWidth(5)),
+                        Icon(
+                          Icons.edit,
+                          size: ScreenUtil().setWidth(15),
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

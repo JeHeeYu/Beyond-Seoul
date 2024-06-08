@@ -156,6 +156,58 @@ class NetworkManager {
     }
   }
 
+  Future<dynamic> imagePut(String serverUrl, Map<String, dynamic> data) async {
+    var dio = Dio();
+    FormData formData;
+
+    try {
+      ByteData byteData = await rootBundle.load(Images.profileDisable);
+      List<int> imageBytes = byteData.buffer.asUint8List();
+
+      formData = FormData.fromMap({
+        "image": MultipartFile.fromBytes(
+          imageBytes,
+          filename: "image.png",
+          contentType: MediaType("image", "png"),
+        ),
+        "uid": data["uid"],
+        "sex": data["sex"],
+        "nickname": data["nickname"],
+        "birth": data["birth"],
+      });
+
+      formData.fields.forEach((field) {
+        print("Field: ${field.key} = ${field.value}");
+      });
+      formData.files.forEach((file) {
+        print(
+            "File: ${file.key} = ${file.value.filename}, ${file.value.contentType}");
+      });
+    } catch (error) {
+      print("에러: $error");
+      return null;
+    }
+
+    try {
+      var response = await dio.put(
+        serverUrl,
+        data: formData,
+        options: Options(
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Accept": "application/json",
+          },
+        ),
+      );
+
+      print("성공: ${response.data}");
+      return response.data;
+    } catch (error) {
+      print(" 에러 발생: $error, FormData: ${formData.fields}, ${formData.files}");
+      return null;
+    }
+  }
+
   Future<dynamic> postInImage(String serverUrl, Map<String, dynamic> data,
       Uint8List? imageBytes) async {
     var uri = Uri.parse(serverUrl);

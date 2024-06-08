@@ -38,4 +38,18 @@ class LoginViewModel with ChangeNotifier {
       return Future.value(null);
     });
   }
+
+  Future<void> edit(Map<String, dynamic> data) async {
+    await _loginRepository.edit(data).then((value) {
+      if (value.code != 0) {
+        setLoginData(
+            ApiResponse.error("Error: Unexpected response code ${value.code}"));
+      } else {
+        setLoginData(ApiResponse.complete(value));
+      }
+    }).onError((error, stackTrace) {
+      setLoginData(ApiResponse.error(error.toString()));
+      return Future.value(null);
+    });
+  }
 }
