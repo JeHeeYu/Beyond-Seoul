@@ -35,7 +35,6 @@ class NaverMapService {
   }
 
   static Future<String?> getAddressFromLatLng(double lat, double lon) async {
-    print("Jehee ${lat} ${lon}");
     final response = await http.get(
       Uri.parse(
           '$_reverseGeocodeUrl?coords=$lon,$lat&output=json'),

@@ -14,19 +14,14 @@ import '../../../statics/colors.dart';
 import '../../../statics/images.dart';
 import '../../../statics/strings.dart';
 import '../../../view_model/login_view_model.dart';
+import '../../widgets/back_app_bar.dart';
 import '../../widgets/image_button.dart';
 import '../../widgets/schedule_widget.dart';
 import '../error_screen.dart';
 import '../mate_code_screen.dart';
 import 'onboarding_button.dart';
 
-enum Page {
-  withTravelPage,
-  rolePage,
-  travelDatePage,
-  themaPage,
-  destionPage
-}
+enum Page { withTravelPage, rolePage, travelDatePage, themaPage, destionPage }
 
 Map<int, String> sexMap = {0: "남", 1: "여"};
 
@@ -109,6 +104,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
     return text;
   }
+
   Widget buildOnboardingButton(int index, String text, double height) {
     return GestureDetector(
       onTap: () {
@@ -405,8 +401,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     });
   }
 
+  void _backKeyHandler() {
+    if (_pageController.page == 0) {
+      Navigator.pop(context);
+    } else {
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   _buildWithTravelMatePage() {
     return Scaffold(
+      appBar: BackAppBar(
+        title: '',
+        callBack: _backKeyHandler,
+      ),
       backgroundColor: const Color(UserColors.mainBackGround),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
@@ -471,6 +482,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   _buildWhatRolePage() {
     return Scaffold(
+      appBar: BackAppBar(
+        title: '',
+        callBack: _backKeyHandler,
+      ),
       backgroundColor: const Color(UserColors.mainBackGround),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
@@ -545,6 +560,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   _buildSchedulePage() {
     return Scaffold(
+      appBar: BackAppBar(
+        title: '',
+        callBack: _backKeyHandler,
+      ),
       backgroundColor: const Color(UserColors.mainBackGround),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
@@ -701,6 +720,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   _buildThemaPage() {
     return Scaffold(
+      appBar: BackAppBar(
+        title: '',
+        callBack: _backKeyHandler,
+      ),
       backgroundColor: const Color(UserColors.mainBackGround),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
@@ -767,6 +790,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _buildDestinationPage() {
     return Scaffold(
+      appBar: BackAppBar(
+        title: '',
+        callBack: _backKeyHandler,
+      ),
       backgroundColor: const Color(UserColors.mainBackGround),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
