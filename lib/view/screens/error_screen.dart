@@ -1,4 +1,5 @@
 import 'package:beyond_seoul/statics/colors.dart';
+import 'package:beyond_seoul/view/widgets/back_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
@@ -18,7 +19,7 @@ class ErrorScreen extends StatefulWidget {
 class _ErrorScreenState extends State<ErrorScreen> {
   Widget _buildRetryButton() {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         if (widget.onRetry != null) {
           widget.onRetry!();
         }
@@ -51,6 +52,9 @@ class _ErrorScreenState extends State<ErrorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const BackAppBar(
+        title: '',
+      ),
       body: Container(
         color: const Color(UserColors.mainBackGround),
         child: Center(
