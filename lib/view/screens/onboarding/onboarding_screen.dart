@@ -2,7 +2,6 @@ import 'package:beyond_seoul/network/network_manager.dart';
 import 'package:beyond_seoul/view/widgets/infinity_button.dart';
 import 'package:beyond_seoul/view_model/onboarding_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +21,6 @@ import '../mate_code_screen.dart';
 import 'onboarding_button.dart';
 
 enum Page {
-  infoPage,
   withTravelPage,
   rolePage,
   travelDatePage,
@@ -56,8 +54,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   LoginViewModel _loginViewModel = LoginViewModel();
   final PageController _pageController = PageController(initialPage: 0);
   int _selectedIndex = -1;
-  String _birthday = "";
-  String _sex = "";
   String _withTravel = "";
   String _travelStartDate = "";
   String _travelEndDate = "";
@@ -67,7 +63,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   OnboardingViewModel _onboardingViewModel = OnboardingViewModel();
   VoidCallback? _retryCallback;
   final TextEditingController _controller = TextEditingController();
-  Color _textColor = Colors.black;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   @override
@@ -83,11 +78,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String dateToStringFormat(DateTime time) {
     DateFormat format = DateFormat('yyyy-MM-dd');
     return format.format(time);
-  }
-
-  void _setBirthday(DateTime time) {
-    _birthday = dateToStringFormat(time);
-    setState(() {});
   }
 
   void _setTravelStartDate(DateTime time) {
@@ -119,33 +109,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
     return text;
   }
-
-  void _handleDateChange(String text) {
-    String formattedText = _formatDateInput(text);
-    if (formattedText.length == 10) {
-      try {
-        DateFormat inputFormat = DateFormat('yyyy-MM-dd');
-        DateTime dateTime = inputFormat.parseStrict(formattedText);
-        _setBirthday(dateTime);
-        setState(() {
-          _textColor = Colors.black;
-        });
-      } catch (e) {
-        setState(() {
-          _textColor = Colors.red;
-        });
-      }
-    } else {
-      setState(() {
-        _textColor = Colors.red;
-      });
-    }
-    _controller.value = TextEditingValue(
-      text: formattedText,
-      selection: TextSelection.collapsed(offset: formattedText.length),
-    );
-  }
-
   Widget buildOnboardingButton(int index, String text, double height) {
     return GestureDetector(
       onTap: () {
@@ -241,7 +204,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          print("Jehee : ${_selectedIndex}");
           _selectedIndex = index;
         });
       },
@@ -356,8 +318,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     Map<String, dynamic> data = {
       "age": "",
-      "sex": _sex,
-      "birth": _birthday,
       "destination": _destination,
       "lang": "한국어",
       "role": _role,
@@ -368,13 +328,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "uid": _loginViewModel.getUid,
     };
 
-    print("Jehee : ${data}");
-
     return NetworkManager.instance
         .post(ApiUrl.onboardingComplete, data)
         .then((response) {
       if (response.statusCode == 200) {
-        print("POST 성공 123: ${response.body}");
         _retryCallback = null;
 
         _writeStorage(Strings.loginKey, "true");
@@ -384,7 +341,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           MaterialPageRoute(builder: (context) => const App()),
         );
       } else {
-        print("POST 실패 123: ${response.statusCode}");
         _retryCallback = () => _sendOnboardingComplete();
         _onboardingViewModel.setApiResponse(ApiResponse.error());
       }
@@ -398,10 +354,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     switch (page) {
-      case Page.infoPage:
-        _sex = sexMap[_selectedIndex] ?? "";
-        _pageController.jumpToPage(Page.withTravelPage.index);
-        break;
       case Page.withTravelPage:
         _withTravel = withTravelMap[_selectedIndex] ?? "";
 
@@ -439,7 +391,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
         break;
       case Page.destionPage:
-        _destination = _onboardingViewModel.destinationData.data?.data.destinations[_selectedIndex].destination ?? "";
+        _destination = _onboardingViewModel.destinationData.data?.data
+                .destinations[_selectedIndex].destination ??
+            "";
         _onboardingViewModel.setApiResponse(ApiResponse.loading());
         _sendOnboardingComplete();
 
@@ -449,113 +403,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     setState(() {
       _selectedIndex = -1;
     });
-  }
-
-  Widget _buildAgeBirthdayPage() {
-    return Scaffold(
-      backgroundColor: const Color(UserColors.mainBackGround),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: ScreenUtil().setHeight(64)),
-                    Align(
-                        alignment: Alignment.center,
-                        child: Image.asset(Images.onboardingProgress1)),
-                    SizedBox(height: ScreenUtil().setHeight(65)),
-                    const Text(
-                      Strings.pleaseGender,
-                      style: TextStyle(
-                        fontFamily: "Pretendard",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(32)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildOnboardingButton(
-                            0, Strings.man, ScreenUtil().setHeight(54)),
-                        buildOnboardingButton(
-                            1, Strings.girl, ScreenUtil().setHeight(54)),
-                      ],
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(131)),
-                    const Text(
-                      Strings.pleaseBirthday,
-                      style: TextStyle(
-                        fontFamily: "Pretendard",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(32)),
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: ScreenUtil().setHeight(58),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            color: Colors.white,
-                          ),
-                          child: TextField(
-                            controller: _controller,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9-]')),
-                            ],
-                            onChanged: _handleDateChange,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: _textColor,
-                              fontFamily: "Pretendard",
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
-                            ),
-                            decoration: const InputDecoration(
-                              hintText: Strings.birthdayGuide,
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
-              child: GestureDetector(
-                onTap: () {
-                  if (_selectedIndex == -1 || _birthday.length < 8) return;
-                  _nextClickEvent(Page.infoPage);
-                },
-                child: InfinityButton(
-                    height: 40,
-                    radius: 4,
-                    backgroundColor: (_selectedIndex == -1 || _birthday.isEmpty)
-                        ? const Color(UserColors.disable)
-                        : const Color(UserColors.enable),
-                    text: Strings.next,
-                    textColor: Colors.white,
-                    textSize: 16,
-                    textWeight: FontWeight.w700),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   _buildWithTravelMatePage() {
@@ -827,8 +674,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
                 onTap: () {
-                  if (_travelStartDate.isEmpty || _travelEndDate.isEmpty)
+                  if (_travelStartDate.isEmpty || _travelEndDate.isEmpty) {
                     return;
+                  }
+
                   _nextClickEvent(Page.travelDatePage);
                 },
                 child: InfinityButton(
@@ -982,31 +831,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget _buildMainContent() {
-    return ChangeNotifierProvider<OnboardingViewModel>(
-      create: (BuildContext context) => _onboardingViewModel,
-      child: Consumer<OnboardingViewModel>(
-        builder: (context, value, _) {
-          switch (value.themaData.status) {
-            case Status.loading:
-              return CircularProgressIndicator();
-            case Status.complete:
-              return _buildCompleteWidget(value);
-            case Status.error:
-            default:
-              return ErrorScreen(onRetry: _retryCallback);
-          }
-        },
-      ),
-    );
-  }
-
   Widget _buildCompleteWidget(OnboardingViewModel value) {
     return PageView(
       controller: _pageController,
       physics: const NeverScrollableScrollPhysics(),
       children: [
-        _buildAgeBirthdayPage(),
         _buildWithTravelMatePage(),
         _buildWhatRolePage(),
         _buildSchedulePage(),
@@ -1024,7 +853,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         builder: (context, value, _) {
           switch (value.apiResponse.status) {
             case Status.loading:
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             case Status.complete:
               return _buildCompleteWidget(value);
             case Status.error:
