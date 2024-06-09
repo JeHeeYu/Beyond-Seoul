@@ -28,8 +28,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  HomeViewModel _homeViewModel = HomeViewModel();
-  LoginViewModel _loginViewModel = LoginViewModel();
+  late HomeViewModel _homeViewModel;
+  late LoginViewModel _loginViewModel;
   final String _foodMissionType = "food";
 
   @override
@@ -160,21 +160,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildMainContent() {
-    return ChangeNotifierProvider<HomeViewModel>(
-      create: (BuildContext context) => _homeViewModel,
-      child: Consumer<HomeViewModel>(
-        builder: (context, value, _) {
-          switch (value.homeData.status) {
-            case Status.loading:
-              return _buildLoadingWidget();
-            case Status.complete:
-              return _buildCompleteWidget(value);
-            case Status.error:
-            default:
-              return const ErrorScreen();
-          }
-        },
-      ),
+    return Consumer<HomeViewModel>(
+      builder: (context, value, _) {
+        switch (value.homeData.status) {
+          case Status.loading:
+            return _buildLoadingWidget();
+          case Status.complete:
+            return _buildCompleteWidget(value);
+          case Status.error:
+          default:
+            return const ErrorScreen();
+        }
+      },
     );
   }
 

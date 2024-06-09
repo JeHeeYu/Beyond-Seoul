@@ -22,9 +22,9 @@ class RecordScreen extends StatefulWidget {
 }
 
 class _RecordScreenState extends State<RecordScreen> {
-  RecordViewModel _recordViewModel = RecordViewModel();
-  HomeViewModel _homeViewModel = HomeViewModel();
-  LoginViewModel _loginViewModel = LoginViewModel();
+  late RecordViewModel _recordViewModel;
+  late HomeViewModel _homeViewModel;
+  late LoginViewModel _loginViewModel;
   List<String> _dates = [];
   String? _selectDate;
   int _selectTravelsIndex = 0;
@@ -51,12 +51,10 @@ class _RecordScreenState extends State<RecordScreen> {
   void updateDateList() {
     if (_recordViewModel.recordData.status == Status.complete) {
       List<DateTime> uniqueDates = [];
-      for (var content
-          in _recordViewModel.recordData.data?.data.content ?? []) {
+      for (var content in _recordViewModel.recordData.data?.data.content ?? []) {
         DateTime uploadDate = DateTime.parse(content.uploadAt);
         String formattedDate = DateFormat('yyyy년 MM월').format(uploadDate);
-        DateTime formattedDateTime =
-            DateFormat('yyyy년 MM월').parse(formattedDate);
+        DateTime formattedDateTime = DateFormat('yyyy년 MM월').parse(formattedDate);
         if (!uniqueDates.contains(formattedDateTime)) {
           uniqueDates.add(formattedDateTime);
         }
@@ -125,21 +123,18 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   Widget _buildMainContent() {
-    return ChangeNotifierProvider<RecordViewModel>(
-      create: (BuildContext context) => _recordViewModel,
-      child: Consumer<RecordViewModel>(
-        builder: (context, value, _) {
-          switch (value.recordData.status) {
-            case Status.loading:
-              return const Center(child: CircularProgressIndicator());
-            case Status.complete:
-              return _buildCompleteWidget(value);
-            case Status.error:
-            default:
-              return const ErrorScreen();
-          }
-        },
-      ),
+    return Consumer<RecordViewModel>(
+      builder: (context, value, _) {
+        switch (value.recordData.status) {
+          case Status.loading:
+            return const Center(child: CircularProgressIndicator());
+          case Status.complete:
+            return _buildCompleteWidget(value);
+          case Status.error:
+          default:
+            return const ErrorScreen();
+        }
+      },
     );
   }
 
@@ -221,20 +216,23 @@ class _RecordScreenState extends State<RecordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(UserColors.mainBackGround),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22)),
-        child: Column(
-          children: [
-            SizedBox(
-                height:
-                    ScreenUtil().statusBarHeight + ScreenUtil().setHeight(20)),
-            _buildAppBarWidget(),
-            SizedBox(height: ScreenUtil().setHeight(16)),
-            _buildMainContent(),
-            SizedBox(height: ScreenUtil().setHeight(32)),
-          ],
+    return ChangeNotifierProvider<RecordViewModel>.value(
+      value: _recordViewModel,
+      child: Scaffold(
+        backgroundColor: const Color(UserColors.mainBackGround),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22)),
+          child: Column(
+            children: [
+              SizedBox(
+                  height:
+                      ScreenUtil().statusBarHeight + ScreenUtil().setHeight(20)),
+              _buildAppBarWidget(),
+              SizedBox(height: ScreenUtil().setHeight(16)),
+              _buildMainContent(),
+              SizedBox(height: ScreenUtil().setHeight(32)),
+            ],
+          ),
         ),
       ),
     );
