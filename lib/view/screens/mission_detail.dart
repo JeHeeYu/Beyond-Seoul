@@ -61,7 +61,6 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchMissionDetail();
-      _fetchAddress();
     });
   }
 
@@ -164,17 +163,6 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('복사 되었습니다!')),
     );
-  }
-
-  Future<void> _fetchAddress() async {
-    double lat = 35.1587;
-    double lon = 129.1604;
-    String? address = await NaverMapService.getAddressFromLatLng(lat, lon);
-    if (mounted) {
-      setState(() {
-        _address = address ?? '';
-      });
-    }
   }
 
   Widget _buildAppBarWidget() {
