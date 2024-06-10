@@ -390,29 +390,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               SizedBox(width: ScreenUtil().setWidth(80)),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    Strings.withText,
-                    style: TextStyle(
-                      color: Color(UserColors.guideText),
-                      fontFamily: "Pretendard",
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const MateReCodeScreen()),
-                        );
-                      },
-                      child: Image.asset(Images.add)),
-                ],
-              ),
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     const Text(
+              //       Strings.withText,
+              //       style: TextStyle(
+              //         color: Color(UserColors.guideText),
+              //         fontFamily: "Pretendard",
+              //         fontSize: 11,
+              //         fontWeight: FontWeight.w700,
+              //       ),
+              //     ),
+              //     GestureDetector(
+              //         onTap: () {
+              //           Navigator.push(
+              //             context,
+              //             MaterialPageRoute(
+              //                 builder: (context) => const MateReCodeScreen()),
+              //           );
+              //         },
+              //         child: Image.asset(Images.add)),
+              //   ],
+              // ),
             ],
           ),
         ),
