@@ -164,8 +164,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(height: ScreenUtil().setHeight(5)),
                   GestureDetector(
                     onTap: () {
-                      print(
-                          "Jehee : ${_loginViewModel.loginData.data?.data.birth}");
                       ProfileDialogWidget.show(
                           context, _homeViewModel, _loginViewModel);
                     },
@@ -209,18 +207,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         bgRectangle(92, 12),
         Column(
           children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const OnboardingScreen()),
-                    );
-                  },
-                  child: Container(
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const OnboardingScreen()),
+                );
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
                     width: ScreenUtil().setWidth(185),
                     height: ScreenUtil().setHeight(30),
                     decoration: BoxDecoration(
@@ -228,16 +226,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: const Color(UserColors.disable),
                     ),
                   ),
-                ),
-                const Text(
-                  Strings.startOtherTravel,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "Pretendard",
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14),
-                ),
-              ],
+                  const Text(
+                    Strings.startOtherTravel,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Pretendard",
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: ScreenUtil().setHeight(10)),
             const Text(

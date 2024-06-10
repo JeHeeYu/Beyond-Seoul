@@ -55,17 +55,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String _role = "";
   int _themeId = 0;
   String _destination = "";
-  OnboardingViewModel _onboardingViewModel = OnboardingViewModel();
+  late OnboardingViewModel _onboardingViewModel;
   VoidCallback? _retryCallback;
-  final TextEditingController _controller = TextEditingController();
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   @override
   void initState() {
     super.initState();
-
-    _onboardingViewModel =
-        Provider.of<OnboardingViewModel>(context, listen: false);
+    _onboardingViewModel = OnboardingViewModel();
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
     _onboardingViewModel.fetchThemaListApi();
   }
