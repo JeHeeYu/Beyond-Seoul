@@ -264,16 +264,16 @@ class _LoginScreenState extends State<LoginScreen> {
             Center(
               child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: kakaoLogin,
-                    child: Image.asset(Images.loginKakao),
-                  ),
-                  SizedBox(height: ScreenUtil().setHeight(16)),
-                  GestureDetector(
-                    onTap: naverLogin,
-                    child: Image.asset(Images.loginNaver),
-                  ),
-                  SizedBox(height: ScreenUtil().setHeight(16)),
+                  // GestureDetector(
+                  //   onTap: kakaoLogin,
+                  //   child: Image.asset(Images.loginKakao),
+                  // ),
+                  // SizedBox(height: ScreenUtil().setHeight(16)),
+                  // GestureDetector(
+                  //   onTap: naverLogin,
+                  //   child: Image.asset(Images.loginNaver),
+                  // ),
+                  // SizedBox(height: ScreenUtil().setHeight(16)),
                   GestureDetector(
                     onTap: googleLogin,
                     child: Image.asset(Images.loginGoogle),
