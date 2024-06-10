@@ -375,8 +375,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         break;
       case Page.themaPage:
         _themeId = _selectedIndex + 1;
+        _selectedIndex += 1;
         Map<String, String> queryParams = {"themeId": _themeId.toString()};
-
+        
         _setThemeId(_selectedIndex);
         _onboardingViewModel.fetchDestinationListApi(queryParams).then((_) {
           _pageController.jumpToPage(Page.destionPage.index);
@@ -425,7 +426,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: ScreenUtil().setHeight(64)),
                     Align(
                         alignment: Alignment.center,
                         child: Image.asset(Images.onboardingProgress3)),
@@ -493,7 +493,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: ScreenUtil().setHeight(64)),
                     Align(
                         alignment: Alignment.center,
                         child: Image.asset(Images.onboardingProgress4)),
@@ -571,7 +570,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: ScreenUtil().setHeight(64)),
                     Align(
                         alignment: Alignment.center,
                         child: Image.asset(Images.onboardingProgress5)),
@@ -731,7 +729,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: ScreenUtil().setHeight(64)),
                     Align(
                         alignment: Alignment.center,
                         child: Image.asset(Images.onboardingProgress7)),
@@ -801,7 +798,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: ScreenUtil().setHeight(64)),
                     Align(
                         alignment: Alignment.center,
                         child: Image.asset(Images.onboardingProgress8)),
