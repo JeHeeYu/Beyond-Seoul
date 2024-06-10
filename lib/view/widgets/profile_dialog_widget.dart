@@ -122,195 +122,197 @@ class __ProfileDialogContentState extends State<_ProfileDialogContent> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: SizedBox(
-        width: ScreenUtil().setWidth(294),
-        height: ScreenUtil().setHeight(431),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(height: ScreenUtil().setHeight(10)),
-            Text(
-              widget.loginViewModel.loginData.data?.data.nickName ?? '',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontFamily: "Pretendard",
-                fontSize: 25,
-                fontWeight: FontWeight.w600,
+      content: SingleChildScrollView(
+        child: SizedBox(
+          width: ScreenUtil().setWidth(294),
+          height: ScreenUtil().setHeight(431),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: ScreenUtil().setHeight(10)),
+              Text(
+                widget.loginViewModel.loginData.data?.data.nickName ?? '',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontFamily: "Pretendard",
+                  fontSize: 25,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            SizedBox(height: ScreenUtil().setHeight(25)),
-            Expanded(
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: _pickImage,
-                    child: Container(
-                      width: ScreenUtil().setWidth(100),
-                      height: ScreenUtil().setHeight(100),
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: ClipOval(
-                        child: selectedImage != null
-                            ? Image.file(
-                                File(selectedImage!.path),
-                                fit: BoxFit.cover,
-                              )
-                            : Image.network(
-                                widget.homeViewModel.getHomeData.data?.data
-                                        .profile.userImage ??
-                                    '',
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.person, size: 50);
-                                },
-                              ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: ScreenUtil().setHeight(17)),
-                  Text(
-                    widget.loginViewModel.loginData.data?.data.email ?? '',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontFamily: "Pretendard",
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: Color(UserColors.disable),
-                    ),
-                  ),
-                  SizedBox(height: ScreenUtil().setHeight(22)),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: ScreenUtil().setWidth(20)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          Strings.gender,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: "Pretendard",
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
+              SizedBox(height: ScreenUtil().setHeight(25)),
+              Expanded(
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: Container(
+                        width: ScreenUtil().setWidth(100),
+                        height: ScreenUtil().setHeight(100),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
                         ),
-                        Container(
-                          width: ScreenUtil().setWidth(80),
-                          height: ScreenUtil().setHeight(35),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.white,
-                            border: Border.all(
-                                width: 1,
-                                color: const Color(UserColors.disable)),
-                          ),
-                          child: Center(
-                            child: TextField(
-                              controller: widget.genderController,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontFamily: "Pretendard",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                              ),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'[가-힣]')),
-                                LengthLimitingTextInputFormatter(1),
-                              ],
+                        child: ClipOval(
+                          child: selectedImage != null
+                              ? Image.file(
+                                  File(selectedImage!.path),
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.network(
+                                  widget.homeViewModel.getHomeData.data?.data
+                                          .profile.userImage ??
+                                      '',
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Icon(Icons.person, size: 50);
+                                  },
+                                ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: ScreenUtil().setHeight(17)),
+                    Text(
+                      widget.loginViewModel.loginData.data?.data.email ?? '',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontFamily: "Pretendard",
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Color(UserColors.disable),
+                      ),
+                    ),
+                    SizedBox(height: ScreenUtil().setHeight(22)),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: ScreenUtil().setWidth(20)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            Strings.gender,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: "Pretendard",
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: ScreenUtil().setHeight(20)),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: ScreenUtil().setWidth(20)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          Strings.birthday,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: "Pretendard",
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Container(
-                          width: ScreenUtil().setWidth(80),
-                          height: ScreenUtil().setHeight(35),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.white,
-                            border: Border.all(
-                                width: 1,
-                                color: const Color(UserColors.disable)),
-                          ),
-                          child: Center(
-                            child: TextField(
-                              controller: widget.birthController,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontFamily: "Pretendard",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
+                          Container(
+                            width: ScreenUtil().setWidth(80),
+                            height: ScreenUtil().setHeight(35),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                              border: Border.all(
+                                  width: 1,
+                                  color: const Color(UserColors.disable)),
+                            ),
+                            child: Center(
+                              child: TextField(
+                                controller: widget.genderController,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: "Pretendard",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[가-힣]')),
+                                  LengthLimitingTextInputFormatter(1),
+                                ],
                               ),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                              ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(4),
-                              ],
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: ScreenUtil().setHeight(20)),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: ScreenUtil().setWidth(20)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            Strings.birthday,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: "Pretendard",
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Container(
+                            width: ScreenUtil().setWidth(80),
+                            height: ScreenUtil().setHeight(35),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                              border: Border.all(
+                                  width: 1,
+                                  color: const Color(UserColors.disable)),
+                            ),
+                            child: Center(
+                              child: TextField(
+                                controller: widget.birthController,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: "Pretendard",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(4),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: ScreenUtil().setHeight(30)),
-            GestureDetector(
-              onTap: _sendProfileEdit,
-              child: InfinityButton(
-                height: ScreenUtil().setHeight(32),
-                radius: 4,
-                backgroundColor: const Color(UserColors.enable),
-                text: Strings.editComplete,
-                textSize: 13,
-                textWeight: FontWeight.w700,
-                textColor: Colors.white,
+              SizedBox(height: ScreenUtil().setHeight(30)),
+              GestureDetector(
+                onTap: _sendProfileEdit,
+                child: InfinityButton(
+                  height: ScreenUtil().setHeight(32),
+                  radius: 4,
+                  backgroundColor: const Color(UserColors.enable),
+                  text: Strings.editComplete,
+                  textSize: 13,
+                  textWeight: FontWeight.w700,
+                  textColor: Colors.white,
+                ),
               ),
-            ),
-            SizedBox(height: ScreenUtil().setHeight(10)),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: InfinityButton(
-                height: ScreenUtil().setHeight(32),
-                radius: 4,
-                backgroundColor: const Color(UserColors.disable),
-                text: Strings.close,
-                textSize: 13,
-                textWeight: FontWeight.w700,
-                textColor: Colors.white,
+              SizedBox(height: ScreenUtil().setHeight(10)),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: InfinityButton(
+                  height: ScreenUtil().setHeight(32),
+                  radius: 4,
+                  backgroundColor: const Color(UserColors.disable),
+                  text: Strings.close,
+                  textSize: 13,
+                  textWeight: FontWeight.w700,
+                  textColor: Colors.white,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
