@@ -1,8 +1,11 @@
 import 'package:beyond_seoul/routes/routes.dart';
 import 'package:beyond_seoul/routes/routes_name.dart';
 import 'package:beyond_seoul/utils/app_key.dart';
+import 'package:beyond_seoul/view/screens/error_screen.dart';
 import 'package:beyond_seoul/view/screens/home_screen.dart';
+import 'package:beyond_seoul/view/screens/leader_code_screen.dart';
 import 'package:beyond_seoul/view/screens/login_screen.dart';
+import 'package:beyond_seoul/view/screens/mate_code_screen.dart';
 import 'package:beyond_seoul/view/screens/onboarding/onboarding_screen.dart';
 import 'package:beyond_seoul/view/screens/splash_screen.dart';
 import 'package:beyond_seoul/view_model/home_view_model.dart';
@@ -43,8 +46,8 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const SplashScreen(),
-          onGenerateRoute: Routes.generateRoute, 
+          initialRoute: RoutesName.splash,
+          onGenerateRoute: Routes.generateRoute,
         ),
       ),
     );

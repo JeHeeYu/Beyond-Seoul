@@ -15,19 +15,17 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: WillPopScope(
-        onWillPop: () async {
-          if (currentBackPressTime == null ||
-              DateTime.now().difference(currentBackPressTime!) >
-                  const Duration(seconds: 2)) {
-            currentBackPressTime = DateTime.now();
-            return false;
-          }
-          return true;
-        },
-        child: BottomNavigationController(key: _bottomNavigationKey),
-      ),
+    return WillPopScope(
+      onWillPop: () async {
+        if (currentBackPressTime == null ||
+            DateTime.now().difference(currentBackPressTime!) >
+                const Duration(seconds: 2)) {
+          currentBackPressTime = DateTime.now();
+          return false;
+        }
+        return true;
+      },
+      child: BottomNavigationController(key: _bottomNavigationKey),
     );
   }
 
