@@ -12,6 +12,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../network/network_manager.dart';
 import '../../statics/images.dart';
@@ -97,6 +98,35 @@ class _LoginScreenState extends State<LoginScreen> {
       _loginHandler(userData);
     } else {
       _writeStorage(Strings.loginKey, "false");
+    }
+  }
+
+  void appleLogin() async {
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      print(credential);
+
+      // Extract user data from the credential
+      Map<String, dynamic> userData = {
+        "idToken": credential.userIdentifier,
+        "email": credential.email,
+        "name": '${credential.givenName} ${credential.familyName}',
+        "sns": "apple",
+      };
+
+      // Handle login with userData
+      _loginHandler(userData);
+    } catch (error) {
+      print('Apple login failed $error');
+      _writeStorage(Strings.loginKey, "false");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const ErrorScreen()));
     }
   }
 
@@ -279,7 +309,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Image.asset(Images.loginGoogle),
                   ),
                   SizedBox(height: ScreenUtil().setHeight(16)),
-                  Image.asset(Images.loginApple),
+                  GestureDetector(
+                      onTap: appleLogin, child: Image.asset(Images.loginApple)),
                 ],
               ),
             ),
