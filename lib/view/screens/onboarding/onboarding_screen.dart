@@ -1,4 +1,5 @@
 import 'package:beyond_seoul/network/network_manager.dart';
+import 'package:beyond_seoul/view/screens/leader_code_screen.dart';
 import 'package:beyond_seoul/view/widgets/button_icon.dart';
 import 'package:beyond_seoul/view/widgets/infinity_button.dart';
 import 'package:beyond_seoul/view_model/onboarding_view_model.dart';
@@ -75,13 +76,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _setTravelStartDate(DateTime time) {
     _travelStartDate = dateToStringFormat(time);
-
     setState(() {});
   }
 
   void _setTravelEndDate(DateTime time) {
     _travelEndDate = dateToStringFormat(time);
-
     setState(() {});
   }
 
@@ -375,7 +374,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         if (_selectedIndex == 0) {
           _pageController.jumpToPage(Page.travelDatePage.index);
         } else {
-          _sendOnboardingComplete();
+          // _sendOnboardingComplete();
 
           Navigator.push(
             context,
@@ -423,7 +422,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  _buildWithTravelMatePage() {
+  Widget _buildOnboardingPage({
+    required String progressImage,
+    required String title,
+    required List<Widget> children,
+    required VoidCallback onNext,
+    required bool nextEnabled,
+  }) {
     return Scaffold(
       appBar: BackAppBar(
         title: '',
@@ -440,294 +445,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Align(
-                        alignment: Alignment.center,
-                        child: Image.asset(Images.onboardingProgress3)),
+                      alignment: Alignment.center,
+                      child: Image.asset(progressImage),
+                    ),
                     SizedBox(height: ScreenUtil().setHeight(65)),
-                    const Text(
-                      Strings.howManyMate,
-                      style: TextStyle(
+                    Text(
+                      title,
+                      style: const TextStyle(
                         fontFamily: "Pretendard",
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(height: ScreenUtil().setHeight(198)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildOnboardingButton(
-                            0, Strings.alone, ScreenUtil().setHeight(78)),
-                        buildOnboardingButton(1, Strings.withTravelMate,
-                            ScreenUtil().setHeight(78)),
-                      ],
-                    ),
+                    SizedBox(height: ScreenUtil().setHeight(20)),
+                    ...children,
                   ],
                 ),
               ),
             ),
+            SizedBox(height: ScreenUtil().setHeight(40)),
             Padding(
               padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
               child: GestureDetector(
-                onTap: () {
-                  if (_selectedIndex == -1) return;
-                  _nextClickEvent(Page.withTravelPage);
-                },
-                child: InfinityButton(
-                    height: 40,
-                    radius: 4,
-                    backgroundColor: _selectedIndex == -1
-                        ? const Color(UserColors.disable)
-                        : const Color(UserColors.enable),
-                    text: Strings.next,
-                    textColor: Colors.white,
-                    textSize: 16,
-                    textWeight: FontWeight.w700),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  _buildWhatRolePage() {
-    return Scaffold(
-      appBar: BackAppBar(
-        title: '',
-        callBack: _backKeyHandler,
-      ),
-      backgroundColor: const Color(UserColors.mainBackGround),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Align(
-                        alignment: Alignment.center,
-                        child: Image.asset(Images.onboardingProgress4)),
-                    SizedBox(height: ScreenUtil().setHeight(65)),
-                    const Text(
-                      Strings.whatRole,
-                      style: TextStyle(
-                        fontFamily: "Pretendard",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(8)),
-                    const Text(
-                      Strings.whatRoleGuide,
-                      style: TextStyle(
-                        color: Color(UserColors.guideText),
-                        fontFamily: "Pretendard",
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(154)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildOnboardingButton(
-                            0, Strings.isReader, ScreenUtil().setHeight(78)),
-                        buildOnboardingButton(1, Strings.togetherMage,
-                            ScreenUtil().setHeight(78)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
-              child: GestureDetector(
-                onTap: () {
-                  if (_selectedIndex == -1) return;
-                  _nextClickEvent(Page.rolePage);
-                },
-                child: InfinityButton(
-                    height: 40,
-                    radius: 4,
-                    backgroundColor: _selectedIndex == -1
-                        ? const Color(UserColors.disable)
-                        : const Color(UserColors.enable),
-                    text: Strings.next,
-                    textColor: Colors.white,
-                    textSize: 16,
-                    textWeight: FontWeight.w700),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  _buildSchedulePage() {
-    return Scaffold(
-      appBar: BackAppBar(
-        title: '',
-        callBack: _backKeyHandler,
-      ),
-      backgroundColor: const Color(UserColors.mainBackGround),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Align(
-                        alignment: Alignment.center,
-                        child: Image.asset(Images.onboardingProgress5)),
-                    SizedBox(height: ScreenUtil().setHeight(65)),
-                    const Text(
-                      Strings.pleaseSchedule,
-                      style: TextStyle(
-                        fontFamily: "Pretendard",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(75)),
-                    const Text(
-                      Strings.koreanArrivalDate,
-                      style: TextStyle(
-                        fontFamily: "Pretendard",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(12)),
-                    GestureDetector(
-                      onTap: () {
-                        showScheduleBottomSheet(
-                          context,
-                          _setTravelStartDate,
-                          endDateDisable: DateTime.tryParse(_travelEndDate),
-                        );
-                      },
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: ScreenUtil().setHeight(58),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: Colors.white,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: ScreenUtil().setWidth(29)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    _travelStartDate.isNotEmpty
-                                        ? _travelStartDate
-                                        : Strings.travelStartGuide,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontFamily: "Pretendard",
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                                ButtonIcon(icon: Icons.close, iconColor: Colors.black, callback: ()=> _clearStartDate()),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(75)),
-                    const Text(
-                      Strings.returnHomewtownDate,
-                      style: TextStyle(
-                        fontFamily: "Pretendard",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(12)),
-                    GestureDetector(
-                      onTap: () {
-                        showScheduleBottomSheet(
-                          context,
-                          _setTravelEndDate,
-                          startDate: DateTime.tryParse(_travelStartDate),
-                        );
-                      },
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: ScreenUtil().setHeight(58),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: Colors.white,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: ScreenUtil().setWidth(29)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    _travelEndDate.isNotEmpty
-                                        ? _travelEndDate
-                                        : Strings.travelEndGuide,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontFamily: "Pretendard",
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                                ButtonIcon(icon: Icons.close, iconColor: Colors.black, callback: ()=> _clearEndDate()),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
-              child: GestureDetector(
-                onTap: () {
-                  if (_travelStartDate.isEmpty || _travelEndDate.isEmpty) {
-                    return;
-                  }
-
-                  _nextClickEvent(Page.travelDatePage);
-                },
+                onTap: onNext,
                 child: InfinityButton(
                   height: 40,
                   radius: 4,
-                  backgroundColor:
-                      (_travelStartDate.isEmpty || _travelEndDate.isEmpty)
-                          ? const Color(UserColors.disable)
-                          : const Color(UserColors.enable),
+                  backgroundColor: nextEnabled
+                      ? const Color(UserColors.enable)
+                      : const Color(UserColors.disable),
                   text: Strings.next,
                   textColor: Colors.white,
                   textSize: 16,
@@ -741,158 +487,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  _buildThemaPage() {
-    return Scaffold(
-      appBar: BackAppBar(
-        title: '',
-        callBack: _backKeyHandler,
-      ),
-      backgroundColor: const Color(UserColors.mainBackGround),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Align(
-                        alignment: Alignment.center,
-                        child: Image.asset(Images.onboardingProgress7)),
-                    SizedBox(height: ScreenUtil().setHeight(65)),
-                    const Text(
-                      Strings.pleaseTravelThema,
-                      style: TextStyle(
-                        fontFamily: "Pretendard",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(4)),
-                    const Text(
-                      Strings.pleaseTravelThemaGuide,
-                      style: TextStyle(
-                        color: Color(UserColors.guideText),
-                        fontFamily: "Pretendard",
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(20)),
-                    ..._buildThemeImageRows(),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
-              child: GestureDetector(
-                onTap: () {
-                  if (_selectedIndex == -1) return;
-                  _nextClickEvent(Page.themaPage);
-                },
-                child: InfinityButton(
-                    height: 40,
-                    radius: 4,
-                    backgroundColor: _selectedIndex == -1
-                        ? const Color(UserColors.disable)
-                        : const Color(UserColors.enable),
-                    text: Strings.next,
-                    textColor: Colors.white,
-                    textSize: 16,
-                    textWeight: FontWeight.w700),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDestinationPage() {
-    return Scaffold(
-      appBar: BackAppBar(
-        title: '',
-        callBack: _backKeyHandler,
-      ),
-      backgroundColor: const Color(UserColors.mainBackGround),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Align(
-                        alignment: Alignment.center,
-                        child: Image.asset(Images.onboardingProgress8)),
-                    SizedBox(height: ScreenUtil().setHeight(65)),
-                    const Text(
-                      Strings.pleaseDestination,
-                      style: TextStyle(
-                        fontFamily: "Pretendard",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(4)),
-                    const Text(
-                      Strings.pleaseDestinationGuide,
-                      style: TextStyle(
-                        color: Color(UserColors.guideText),
-                        fontFamily: "Pretendard",
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(25)),
-                    ..._buildDestinationImageColumns(),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(63)),
-              child: GestureDetector(
-                onTap: () {
-                  if (_selectedIndex == -1) return;
-                  _nextClickEvent(Page.destionPage);
-                },
-                child: InfinityButton(
-                    height: 40,
-                    radius: 4,
-                    backgroundColor: _selectedIndex == -1
-                        ? const Color(UserColors.disable)
-                        : const Color(UserColors.enable),
-                    text: Strings.leaveHere,
-                    textColor: Colors.white,
-                    textSize: 16,
-                    textWeight: FontWeight.w700),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCompleteWidget(OnboardingViewModel value) {
-    return PageView(
-      controller: _pageController,
-      physics: const NeverScrollableScrollPhysics(),
-      children: [
-        _buildWithTravelMatePage(),
-        _buildWhatRolePage(),
-        _buildSchedulePage(),
-        _buildThemaPage(),
-        _buildDestinationPage(),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<OnboardingViewModel>(
@@ -903,7 +497,208 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             case Status.loading:
               return const Center(child: CircularProgressIndicator());
             case Status.complete:
-              return _buildCompleteWidget(value);
+              return PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  _buildOnboardingPage(
+                    progressImage: Images.onboardingProgress3,
+                    title: Strings.howManyMate,
+                    children: [
+                      SizedBox(height: ScreenUtil().setHeight(198)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          buildOnboardingButton(
+                              0, Strings.alone, ScreenUtil().setHeight(78)),
+                          buildOnboardingButton(1, Strings.withTravelMate,
+                              ScreenUtil().setHeight(78)),
+                        ],
+                      ),
+                    ],
+                    onNext: () {
+                      if (_selectedIndex != -1) {
+                        _nextClickEvent(Page.withTravelPage);
+                      }
+                    },
+                    nextEnabled: _selectedIndex != -1,
+                  ),
+                  _buildOnboardingPage(
+                    progressImage: Images.onboardingProgress4,
+                    title: Strings.whatRole,
+                    children: [
+                      SizedBox(height: ScreenUtil().setHeight(154)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          buildOnboardingButton(
+                              0, Strings.isReader, ScreenUtil().setHeight(78)),
+                          buildOnboardingButton(1, Strings.togetherMage,
+                              ScreenUtil().setHeight(78)),
+                        ],
+                      ),
+                    ],
+                    onNext: () {
+                      if (_selectedIndex != -1) {
+                        _nextClickEvent(Page.rolePage);
+                      }
+                    },
+                    nextEnabled: _selectedIndex != -1,
+                  ),
+                  _buildOnboardingPage(
+                    progressImage: Images.onboardingProgress5,
+                    title: Strings.pleaseSchedule,
+                    children: [
+                      SizedBox(height: ScreenUtil().setHeight(75)),
+                      const Text(
+                        Strings.koreanArrivalDate,
+                        style: TextStyle(
+                          fontFamily: "Pretendard",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(height: ScreenUtil().setHeight(12)),
+                      GestureDetector(
+                        onTap: () {
+                          showScheduleBottomSheet(
+                            context,
+                            _setTravelStartDate,
+                            endDateDisable: DateTime.tryParse(_travelEndDate),
+                          );
+                        },
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              height: ScreenUtil().setHeight(58),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: ScreenUtil().setWidth(29)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _travelStartDate.isNotEmpty
+                                          ? _travelStartDate
+                                          : Strings.travelStartGuide,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontFamily: "Pretendard",
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                  ButtonIcon(icon: Icons.close, iconColor: Colors.black, callback: ()=> _clearStartDate()),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: ScreenUtil().setHeight(75)),
+                      const Text(
+                        Strings.returnHomewtownDate,
+                        style: TextStyle(
+                          fontFamily: "Pretendard",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(height: ScreenUtil().setHeight(12)),
+                      GestureDetector(
+                        onTap: () {
+                          showScheduleBottomSheet(
+                            context,
+                            _setTravelEndDate,
+                            startDate: DateTime.tryParse(_travelStartDate),
+                          );
+                        },
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              height: ScreenUtil().setHeight(58),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: ScreenUtil().setWidth(29)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _travelEndDate.isNotEmpty
+                                          ? _travelEndDate
+                                          : Strings.travelEndGuide,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontFamily: "Pretendard",
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                  ButtonIcon(icon: Icons.close, iconColor: Colors.black, callback: ()=> _clearEndDate()),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    onNext: () {
+                      if (_travelStartDate.isNotEmpty && _travelEndDate.isNotEmpty) {
+                        _nextClickEvent(Page.travelDatePage);
+                      }
+                    },
+                    nextEnabled: _travelStartDate.isNotEmpty && _travelEndDate.isNotEmpty,
+                  ),
+                  _buildOnboardingPage(
+                    progressImage: Images.onboardingProgress7,
+                    title: Strings.pleaseTravelThema,
+                    children: [
+                      SizedBox(height: ScreenUtil().setHeight(20)),
+                      ..._buildThemeImageRows(),
+                    ],
+                    onNext: () {
+                      if (_selectedIndex != -1) {
+                        _nextClickEvent(Page.themaPage);
+                      }
+                    },
+                    nextEnabled: _selectedIndex != -1,
+                  ),
+                  _buildOnboardingPage(
+                    progressImage: Images.onboardingProgress8,
+                    title: Strings.pleaseDestination,
+                    children: [
+                      SizedBox(height: ScreenUtil().setHeight(25)),
+                      ..._buildDestinationImageColumns(),
+                    ],
+                    onNext: () {
+                      if (_selectedIndex != -1) {
+                        _nextClickEvent(Page.destionPage);
+                      }
+                    },
+                    nextEnabled: _selectedIndex != -1,
+                  ),
+                ],
+              );
             case Status.error:
             default:
               return ErrorScreen(onRetry: _retryCallback);

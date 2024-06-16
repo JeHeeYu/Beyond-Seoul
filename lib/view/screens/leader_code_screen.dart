@@ -15,14 +15,14 @@ import '../../view_model/home_view_model.dart';
 import '../widgets/infinity_button.dart';
 import 'error_screen.dart';
 
-class ReaderCodeScreen extends StatefulWidget {
-  const ReaderCodeScreen({super.key});
+class LeaderCodeScreen extends StatefulWidget {
+  const LeaderCodeScreen({super.key});
 
   @override
-  State<ReaderCodeScreen> createState() => _ReaderCodeScreenState();
+  State<LeaderCodeScreen> createState() => _LeaderCodeScreenState();
 }
 
-class _ReaderCodeScreenState extends State<ReaderCodeScreen> {
+class _LeaderCodeScreenState extends State<LeaderCodeScreen> {
   late HomeViewModel _homeViewModel;
 
   int _second = 0;
@@ -39,6 +39,8 @@ class _ReaderCodeScreenState extends State<ReaderCodeScreen> {
       'travelId':
           _homeViewModel.homeData.data?.data.travel.travelId.toString() ?? ''
     };
+
+    print("Jehee : ${data}");
 
     _homeViewModel.fetchMateCodetApi(data);
     _startTimer();
