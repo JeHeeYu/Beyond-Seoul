@@ -25,10 +25,6 @@ class BottomNavigationControllerState
   ];
 
   void _onBottomTapped(int index) {
-    if (index == 1) {
-      final recordScreen = _pages[index] as RecordScreen;
-      recordScreen.fetchRecords(context);
-    }
     setState(() {
       _selectIndex = index;
     });

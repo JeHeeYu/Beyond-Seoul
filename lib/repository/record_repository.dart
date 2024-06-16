@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import '../models/record/mission_detail_model.dart';
 import '../models/record/record_create_model.dart';
 import '../models/record/record_read_model.dart';
+import '../models/record/travel_name_model.dart';
 import '../network/api_url.dart';
 import '../network/network_manager.dart';
 
@@ -14,6 +15,28 @@ class RecordRepository {
           .postQuery(ApiUrl.recordView, queryParams);
 
       return RecordReadModel.fromJson(jsonDecode(response));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<RecordReadModel> getRecordViewLatest(Map<String, String> queryParams) async {
+    try {
+      String response = await NetworkManager.instance
+          .postQuery(ApiUrl.recordViewLatest, queryParams);
+
+      return RecordReadModel.fromJson(jsonDecode(response));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+    Future<TravelNameModel> getTravelName(Map<String, String> queryParams) async {
+    try {
+      String response = await NetworkManager.instance
+          .postQuery(ApiUrl.travelName, queryParams);
+
+      return TravelNameModel.fromJson(jsonDecode(response));
     } catch (e) {
       rethrow;
     }

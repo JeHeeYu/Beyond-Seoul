@@ -12,58 +12,49 @@ import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
 import '../../view_model/login_view_model.dart';
 import '../../view_model/record_view_model.dart';
+import '../../models/record/travel_name_model.dart';
 
 class RecordScreen extends StatefulWidget {
   const RecordScreen({super.key});
 
   @override
   State<RecordScreen> createState() => _RecordScreenState();
-
-  void fetchRecords(BuildContext context) {
-    final _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
-    final _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
-
-    Map<String, String> data = {
-      "cursorId": "0",
-      "size": "0",
-      "uid": _loginViewModel.getUid,
-      "travelId": "0"
-    };
-
-    _recordViewModel.fetchRecordView(data).then((_) {
-      _RecordScreenState().updateDateList(context);
-    });
-  }
 }
 
 class _RecordScreenState extends State<RecordScreen> {
   late RecordViewModel _recordViewModel;
-  late HomeViewModel _homeViewModel;
   late LoginViewModel _loginViewModel;
   List<String> _dates = [];
-  String? _selectDate;
+  List<String> _travelTitles = [];
+  String _selectDate = Strings.allViewRecord;
+  String? _selectedTravelTitle;
   int _selectTravelsIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
     _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
-
     fetchRecords();
   }
 
   void fetchRecords() {
     Map<String, String> data = {
-      "cursorId": "0",
-      "size": "0",
+      "cursorId": "10",
+      "size": "10",
       "uid": _loginViewModel.getUid,
-      "travelId": "0"
     };
 
-    _recordViewModel.fetchRecordView(data).then((_) {
+    _recordViewModel.fetchRecordViewLatest(data).then((_) {
       updateDateList(context);
+    });
+
+    Map<String, String> travelData = {
+      "uid": _loginViewModel.getUid,
+    };
+
+    _recordViewModel.fetchTravelName(travelData).then((_) {
+      updateTravelList(context);
     });
   }
 
@@ -73,7 +64,8 @@ class _RecordScreenState extends State<RecordScreen> {
       for (var content in _recordViewModel.recordData.data?.data.content ?? []) {
         DateTime uploadDate = DateTime.parse(content.uploadAt);
         String formattedDate = DateFormat('yyyy년 MM월').format(uploadDate);
-        DateTime formattedDateTime = DateFormat('yyyy년 MM월').parse(formattedDate);
+        DateTime formattedDateTime =
+            DateFormat('yyyy년 MM월').parse(formattedDate);
         if (!uniqueDates.contains(formattedDateTime)) {
           uniqueDates.add(formattedDateTime);
         }
@@ -87,7 +79,23 @@ class _RecordScreenState extends State<RecordScreen> {
 
       setState(() {
         _dates = formattedDates;
-        _selectDate = _dates.isNotEmpty ? _dates.first : null;
+      });
+    }
+  }
+
+  void updateTravelList(BuildContext context) {
+    if (_recordViewModel.travelName.status == Status.complete) {
+      List<TravelData> travelDataList =
+          _recordViewModel.travelName.data?.data ?? [];
+      List<String> travelTitles =
+          travelDataList.map((travel) => travel.title).toList();
+
+      // Remove duplicates
+      travelTitles = travelTitles.toSet().toList();
+
+      setState(() {
+        _travelTitles = travelTitles;
+        _selectedTravelTitle = _travelTitles.isNotEmpty ? _travelTitles.first : null;
       });
     }
   }
@@ -128,23 +136,21 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   Widget _buildCompleteWidget(RecordViewModel value) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildDayWidget(),
-          value.recordData.data?.data.content.isEmpty == true
-              ? _buildEmptyWidget()
-              : _buildImageWidget(value),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildDayWidget(),
+        value.recordData.data?.data.content.isEmpty == true
+            ? _buildEmptyWidget()
+            : _buildImageWidget(value),
+      ],
     );
   }
 
   Widget _buildMainContent() {
     return Consumer<RecordViewModel>(
       builder: (context, value, _) {
-        switch (value.recordData.status) {
+        switch (value.latestRecordData.status) {
           case Status.loading:
             return const Center(child: CircularProgressIndicator());
           case Status.complete:
@@ -158,9 +164,13 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   Widget _buildDayWidget() {
+    // Combine _dates and _travelTitles, and add "모두 보기" at the first position
+    List<String> combinedList = [Strings.allViewRecord] + _dates + _travelTitles;
+
     return DropdownButton(
       value: _selectDate,
-      items: _dates
+      items: combinedList
+          .toSet()
           .map((e) => DropdownMenuItem(
                 value: e,
                 child: Text(
@@ -174,12 +184,9 @@ class _RecordScreenState extends State<RecordScreen> {
               ))
           .toList(),
       onChanged: (value) {
-        if (value != null) {
-          _selectTravelsIndex = _dates.indexOf(value);
-          setState(() {
-            _selectDate = value;
-          });
-        }
+        setState(() {
+          _selectDate = value as String;
+        });
       },
     );
   }
@@ -188,13 +195,14 @@ class _RecordScreenState extends State<RecordScreen> {
     List<RecordContent> filteredContent;
 
     if (_selectDate == Strings.allViewRecord) {
+      // Show all records when "모두 보기" is selected
       filteredContent = value.recordData.data?.data.content ?? [];
     } else {
       filteredContent = value.recordData.data?.data.content.where((item) {
-        return DateFormat('yyyy년 MM월')
-                .format(DateTime.parse(item.uploadAt)) ==
-            _selectDate;
-      }).toList() ??
+            return DateFormat('yyyy년 MM월')
+                    .format(DateTime.parse(item.uploadAt)) ==
+                _selectDate;
+          }).toList() ??
           [];
     }
 
@@ -249,7 +257,7 @@ class _RecordScreenState extends State<RecordScreen> {
                       ScreenUtil().setHeight(20)),
               _buildAppBarWidget(),
               SizedBox(height: ScreenUtil().setHeight(16)),
-              _buildMainContent(),
+              Expanded(child: _buildMainContent()),
               SizedBox(height: ScreenUtil().setHeight(32)),
             ],
           ),

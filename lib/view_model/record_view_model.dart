@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../models/record/record_create_model.dart';
 import '../models/record/record_read_model.dart';
+import '../models/record/travel_name_model.dart';
 import '../network/api_response.dart';
 import '../repository/record_repository.dart';
 
@@ -20,6 +21,8 @@ class RecordViewModel with ChangeNotifier {
   }
 
   ApiResponse<RecordReadModel> recordData = ApiResponse.loading();
+  ApiResponse<RecordReadModel> latestRecordData = ApiResponse.loading();
+  ApiResponse<TravelNameModel> travelName = ApiResponse.loading();
 
   ApiResponse<RecordReadModel> get getRecordData => recordData;
 
@@ -31,6 +34,16 @@ class RecordViewModel with ChangeNotifier {
 
   void setRecordImageList(ApiResponse<RecordReadModel> response) {
     recordData = response;
+    notifyListeners();
+  }
+
+  void setRecordLatest(ApiResponse<RecordReadModel> response) {
+    latestRecordData = response;
+    notifyListeners();
+  }
+
+  void setTravelName(ApiResponse<TravelNameModel> response) {
+    travelName = response;
     notifyListeners();
   }
 
@@ -52,6 +65,26 @@ class RecordViewModel with ChangeNotifier {
       setApiResponse(ApiResponse.complete());
     }).catchError((error, stackTrace) {
       setRecordImageList(ApiResponse.error(error.toString()));
+      return Future.value(null);
+    });
+  }
+
+  Future<void> fetchRecordViewLatest(Map<String, String> queryParams) async {
+    await _recordRepo.getRecordViewLatest(queryParams).then((value) {
+      setRecordLatest(ApiResponse.complete(value));
+      setApiResponse(ApiResponse.complete());
+    }).catchError((error, stackTrace) {
+      setRecordLatest(ApiResponse.error(error.toString()));
+      return Future.value(null);
+    });
+  }
+
+  Future<void> fetchTravelName(Map<String, String> queryParams) async {
+    await _recordRepo.getTravelName(queryParams).then((value) {
+      setTravelName(ApiResponse.complete(value));
+      setApiResponse(ApiResponse.complete());
+    }).catchError((error, stackTrace) {
+      setTravelName(ApiResponse.error(error.toString()));
       return Future.value(null);
     });
   }
