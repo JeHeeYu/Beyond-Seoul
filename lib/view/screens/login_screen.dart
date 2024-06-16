@@ -110,9 +110,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       );
 
-      print(credential);
-
-      // Extract user data from the credential
       Map<String, dynamic> userData = {
         "idToken": credential.userIdentifier,
         "email": credential.email,
@@ -120,13 +117,9 @@ class _LoginScreenState extends State<LoginScreen> {
         "sns": "apple",
       };
 
-      // Handle login with userData
       _loginHandler(userData);
     } catch (error) {
-      print('Apple login failed $error');
       _writeStorage(Strings.loginKey, "false");
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const ErrorScreen()));
     }
   }
 
