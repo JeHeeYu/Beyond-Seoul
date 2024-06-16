@@ -118,6 +118,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return today;
   }
 
+  void _onMissionComplete() {
+    setState(() {
+      Map<String, String> queryParams = {"uid": _loginViewModel.getUid};
+      _homeViewModel.fetchTravelListApi(queryParams);
+    });
+  }
+
   Widget _buildMissionComplete(int index, int complete) {
     String mission = "";
 
@@ -256,6 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   .toString() ??
                               '',
                           missionValue: MissionType.food,
+                          onMissionComplete: _onMissionComplete,
                         )),
               );
             },
@@ -281,6 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 .toString() ??
                             '',
                         missionValue: MissionType.tour,
+                        onMissionComplete: _onMissionComplete,
                       )),
             );
           },
@@ -307,6 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 .toString() ??
                             '',
                         missionValue: MissionType.soso,
+                        onMissionComplete: _onMissionComplete,
                       )),
             );
           },

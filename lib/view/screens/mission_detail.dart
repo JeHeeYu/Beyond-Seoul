@@ -37,6 +37,7 @@ class MissionDetailScreen extends StatefulWidget {
     required this.missionId,
     required this.travelId,
     required this.missionValue,
+    required this.onMissionComplete,
   }) : super(key: key);
 
   String title;
@@ -44,6 +45,7 @@ class MissionDetailScreen extends StatefulWidget {
   int missionId;
   final String travelId;
   final MissionType missionValue;
+  final VoidCallback onMissionComplete;
 
   @override
   State<MissionDetailScreen> createState() => _MissionDetailScreenState();
@@ -167,8 +169,10 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
         _retryCallback = null;
 
         if (mounted) {
+          _homeViewModel.homeData.data?.data.missionCount.foodMissionCount++;
           Navigator.pop(context);
-        }
+          widget.onMissionComplete();
+        } 
         if (mounted) {
           showDialog(
             context: context,
