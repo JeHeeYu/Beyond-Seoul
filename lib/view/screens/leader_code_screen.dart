@@ -40,8 +40,6 @@ class _LeaderCodeScreenState extends State<LeaderCodeScreen> {
           _homeViewModel.homeData.data?.data.travel.travelId.toString() ?? ''
     };
 
-    print("Jehee : ${data}");
-
     _homeViewModel.fetchMateCodetApi(data);
     _startTimer();
   }
