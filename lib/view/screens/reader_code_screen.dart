@@ -23,7 +23,7 @@ class ReaderCodeScreen extends StatefulWidget {
 }
 
 class _ReaderCodeScreenState extends State<ReaderCodeScreen> {
-  HomeViewModel homeViewModel = HomeViewModel();
+  late HomeViewModel _homeViewModel;
 
   int _second = 0;
   int _minute = 30;
@@ -33,7 +33,14 @@ class _ReaderCodeScreenState extends State<ReaderCodeScreen> {
   void initState() {
     super.initState();
 
-    homeViewModel.fetchMateCodetApi();
+    _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+
+    Map<String, String> data = {
+      'travelId':
+          _homeViewModel.homeData.data?.data.travel.travelId.toString() ?? ''
+    };
+
+    _homeViewModel.fetchMateCodetApi(data);
     _startTimer();
   }
 
@@ -64,7 +71,7 @@ class _ReaderCodeScreenState extends State<ReaderCodeScreen> {
 
   Widget _buildMainContent() {
     return ChangeNotifierProvider<HomeViewModel>(
-      create: (BuildContext context) => homeViewModel,
+      create: (BuildContext context) => _homeViewModel,
       child: Consumer<HomeViewModel>(
         builder: (context, value, _) {
           switch (value.mateCodeData.status) {

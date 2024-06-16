@@ -16,10 +16,10 @@ class HomeRepository {
     }
   }
 
-  Future<MateCodeScreenModel> getMateCode() async {
+  Future<MateCodeScreenModel> getMateCode(Map<String, String> queryParams) async {
     try {
       dynamic response =
-          await NetworkManager.instance.get(ApiUrl.mateCode);
+          await NetworkManager.instance.getQuery(ApiUrl.mateCode, queryParams);
       return MateCodeScreenModel.fromJson(jsonDecode(response));
     } catch (e) {
       rethrow;

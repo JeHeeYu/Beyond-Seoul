@@ -31,8 +31,9 @@ class MateCodeScreenModelData {
   });
 
   factory MateCodeScreenModelData.fromJson(Map<String, dynamic> json) {
+    String expiredTimeStr = json['expiredTime']?.toString() ?? "";
     return MateCodeScreenModelData(
-      expiredTime: json['expiredTime'] ?? "",
+      expiredTime: expiredTimeStr,
       code: json['code'] ?? "",
     );
   }

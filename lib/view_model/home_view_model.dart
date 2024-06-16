@@ -40,8 +40,8 @@ class HomeViewModel with ChangeNotifier {
     });
   }
 
-  Future<void> fetchMateCodetApi() async {
-    await _homeRepo.getMateCode().then((value) {
+  Future<void> fetchMateCodetApi(Map<String, String> queryParams) async {
+    await _homeRepo.getMateCode(queryParams).then((value) {
       setMadeCode(ApiResponse.complete(value));
     }).onError((error, stackTrace) {
       setMadeCode(ApiResponse.error(error.toString()));

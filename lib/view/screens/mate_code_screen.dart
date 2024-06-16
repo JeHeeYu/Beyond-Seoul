@@ -26,32 +26,34 @@ class MateReCodeScreen extends StatefulWidget {
 }
 
 class _MateCodeScreenState extends State<MateReCodeScreen> {
-  HomeViewModel homeViewModel = HomeViewModel();
+  late HomeViewModel _homeViewModel;
   final mateCodeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
-    homeViewModel.fetchMateCodetApi();
+    _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Map<String, String> data = {
+        'travelId': _homeViewModel.homeData.data?.data.travel.travelId.toString() ?? ''
+      };
+      _homeViewModel.fetchMateCodetApi(data);
+    });
   }
 
   Widget _buildMainContent() {
-    return ChangeNotifierProvider<HomeViewModel>(
-      create: (BuildContext context) => homeViewModel,
-      child: Consumer<HomeViewModel>(
-        builder: (context, value, _) {
-          switch (value.mateCodeData.status) {
-            case Status.loading:
-              return const Center(child: CircularProgressIndicator());
-            case Status.complete:
-              return _buildCompleteWidget(value);
-            case Status.error:
-            default:
-              return const ErrorScreen();
-          }
-        },
-      ),
+    return Consumer<HomeViewModel>(
+      builder: (context, value, _) {
+        switch (value.mateCodeData.status) {
+          case Status.loading:
+            return const Center(child: CircularProgressIndicator());
+          case Status.complete:
+            return _buildCompleteWidget(value);
+          case Status.error:
+          default:
+            return const ErrorScreen();
+        }
+      },
     );
   }
 
@@ -178,11 +180,14 @@ class _MateCodeScreenState extends State<MateReCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(UserColors.mainBackGround),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
-        child: _buildMainContent(),
+    return ChangeNotifierProvider<HomeViewModel>.value(
+      value: _homeViewModel,
+      child: Scaffold(
+        backgroundColor: const Color(UserColors.mainBackGround),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(24)),
+          child: _buildMainContent(),
+        ),
       ),
     );
   }

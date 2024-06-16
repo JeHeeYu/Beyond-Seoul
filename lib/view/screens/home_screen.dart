@@ -49,8 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Map<String, String> queryParams = {"uid": _loginViewModel.getUid};
     _homeViewModel.fetchTravelListApi(queryParams);
-
-    print("Jehee");
   }
 
   void _missionRefresh(int missionId) async {
