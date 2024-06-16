@@ -2,23 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-import 'package:beyond_seoul/view/screens/record_feed_screen.dart';
-import 'package:beyond_seoul/view_model/home_view_model.dart';
-import 'package:beyond_seoul/view_model/record_view_model.dart';
+import 'record_feed_screen.dart';
+import 'error_screen.dart';
 import '../../models/record/record_read_model.dart';
 import '../../network/api_response.dart';
 import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
+import '../../view_model/home_view_model.dart';
 import '../../view_model/login_view_model.dart';
-import 'error_screen.dart';
+import '../../view_model/record_view_model.dart';
 
 class RecordScreen extends StatefulWidget {
   const RecordScreen({super.key});
 
   @override
   State<RecordScreen> createState() => _RecordScreenState();
+
+  void fetchRecords(BuildContext context) {
+    final _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
+    final _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+
+    Map<String, String> data = {
+      "cursorId": "0",
+      "size": "0",
+      "uid": _loginViewModel.getUid,
+      "travelId": "0"
+    };
+
+    _recordViewModel.fetchRecordView(data).then((_) {
+      _RecordScreenState().updateDateList(context);
+    });
+  }
 }
 
 class _RecordScreenState extends State<RecordScreen> {
@@ -36,6 +51,10 @@ class _RecordScreenState extends State<RecordScreen> {
     _recordViewModel = Provider.of<RecordViewModel>(context, listen: false);
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
 
+    fetchRecords();
+  }
+
+  void fetchRecords() {
     Map<String, String> data = {
       "cursorId": "0",
       "size": "0",
@@ -44,11 +63,11 @@ class _RecordScreenState extends State<RecordScreen> {
     };
 
     _recordViewModel.fetchRecordView(data).then((_) {
-      updateDateList();
+      updateDateList(context);
     });
   }
 
-  void updateDateList() {
+  void updateDateList(BuildContext context) {
     if (_recordViewModel.recordData.status == Status.complete) {
       List<DateTime> uniqueDates = [];
       for (var content in _recordViewModel.recordData.data?.data.content ?? []) {
@@ -172,10 +191,10 @@ class _RecordScreenState extends State<RecordScreen> {
       filteredContent = value.recordData.data?.data.content ?? [];
     } else {
       filteredContent = value.recordData.data?.data.content.where((item) {
-            return DateFormat('yyyy년 MM월')
-                    .format(DateTime.parse(item.uploadAt)) ==
-                _selectDate;
-          }).toList() ??
+        return DateFormat('yyyy년 MM월')
+                .format(DateTime.parse(item.uploadAt)) ==
+            _selectDate;
+      }).toList() ??
           [];
     }
 
@@ -197,11 +216,12 @@ class _RecordScreenState extends State<RecordScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => RecordFeedScreen(
-                          date: _selectDate!,
-                          pageIndex: index,
-                          selectTravelsIndex: _selectTravelsIndex,
-                        )),
+                  builder: (context) => RecordFeedScreen(
+                    date: _selectDate!,
+                    pageIndex: index,
+                    selectTravelsIndex: _selectTravelsIndex,
+                  ),
+                ),
               );
             },
             child: Image.network(
@@ -225,8 +245,8 @@ class _RecordScreenState extends State<RecordScreen> {
           child: Column(
             children: [
               SizedBox(
-                  height:
-                      ScreenUtil().statusBarHeight + ScreenUtil().setHeight(20)),
+                  height: ScreenUtil().statusBarHeight +
+                      ScreenUtil().setHeight(20)),
               _buildAppBarWidget(),
               SizedBox(height: ScreenUtil().setHeight(16)),
               _buildMainContent(),

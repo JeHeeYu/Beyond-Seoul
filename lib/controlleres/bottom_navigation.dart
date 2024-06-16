@@ -1,12 +1,10 @@
-import 'package:beyond_seoul/view/screens/home_screen.dart';
-import 'package:beyond_seoul/view/screens/profile_screen.dart';
-import 'package:beyond_seoul/view/screens/record_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
+import 'package:flutter/material.dart';
 import '../statics/images.dart';
 import '../statics/strings.dart';
+import '../view/screens/home_screen.dart';
+import '../view/screens/profile_screen.dart';
+import '../view/screens/record_screen.dart';
 
 class BottomNavigationController extends StatefulWidget {
   const BottomNavigationController({super.key});
@@ -27,6 +25,10 @@ class BottomNavigationControllerState
   ];
 
   void _onBottomTapped(int index) {
+    if (index == 1) {
+      final recordScreen = _pages[index] as RecordScreen;
+      recordScreen.fetchRecords(context);
+    }
     setState(() {
       _selectIndex = index;
     });
