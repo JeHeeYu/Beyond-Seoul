@@ -14,6 +14,7 @@ import '../../statics/images.dart';
 import '../../statics/strings.dart';
 import '../../view_model/home_view_model.dart';
 import '../../view_model/login_view_model.dart';
+import '../widgets/delete_dialog.dart';
 import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -49,6 +50,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       return 0;
     }
+  }
+
+  void showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteDialog(
+          titleText: Strings.logoutTitle,
+          guideText: Strings.logoutGuide,
+          yesCallback: () => onYesClicked(context),
+          noCallback: () => onNoClicked(context),
+        );
+      },
+    );
+  }
+
+  void onYesClicked(BuildContext context) {
+    _storage.deleteAll();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
+  }
+
+  void onNoClicked(BuildContext context) {
+    Navigator.pop(context);
   }
 
   Widget bgRectangle(double height, double radius) {
@@ -281,12 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.only(right: 35.0),
                 child: GestureDetector(
                   onTap: () {
-                    _storage.deleteAll();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
-                    );
+                    showDeleteDialog();
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

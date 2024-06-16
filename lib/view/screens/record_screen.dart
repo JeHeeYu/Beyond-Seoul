@@ -37,10 +37,10 @@ class _RecordScreenState extends State<RecordScreen> {
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
 
     Map<String, String> data = {
-      "cursorId": "120",
-      "size": "10",
+      "cursorId": "0",
+      "size": "0",
       "uid": _loginViewModel.getUid,
-      "travelId": "27"
+      "travelId": "0"
     };
 
     _recordViewModel.fetchRecordView(data).then((_) {
