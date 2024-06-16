@@ -1,4 +1,5 @@
 import 'package:beyond_seoul/network/network_manager.dart';
+import 'package:beyond_seoul/view/widgets/button_icon.dart';
 import 'package:beyond_seoul/view/widgets/infinity_button.dart';
 import 'package:beyond_seoul/view_model/onboarding_view_model.dart';
 import 'package:flutter/material.dart';
@@ -82,6 +83,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _travelEndDate = dateToStringFormat(time);
 
     setState(() {});
+  }
+
+  void _clearStartDate() {
+    setState(() {
+      _travelStartDate = "";
+    });
+  }
+
+  void _clearEndDate() {
+    setState(() {
+      _travelEndDate = "";
+    });
   }
 
   void _setThemeId(int index) {
@@ -377,7 +390,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         _themeId = _selectedIndex + 1;
         _selectedIndex += 1;
         Map<String, String> queryParams = {"themeId": _themeId.toString()};
-        
+
         _setThemeId(_selectedIndex);
         _onboardingViewModel.fetchDestinationListApi(queryParams).then((_) {
           _pageController.jumpToPage(Page.destionPage.index);
@@ -597,6 +610,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         showScheduleBottomSheet(
                           context,
                           _setTravelStartDate,
+                          endDateDisable: DateTime.tryParse(_travelEndDate),
                         );
                       },
                       child: Stack(
@@ -611,20 +625,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(
-                                left: ScreenUtil().setWidth(29)),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: ScreenUtil().setWidth(29)),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  _travelStartDate,
-                                  style: const TextStyle(
+                                Expanded(
+                                  child: Text(
+                                    _travelStartDate.isNotEmpty
+                                        ? _travelStartDate
+                                        : Strings.travelStartGuide,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
                                       color: Colors.black,
                                       fontFamily: "Pretendard",
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 16),
+                                      fontSize: 16,
+                                    ),
+                                  ),
                                 ),
-                                SizedBox(width: ScreenUtil().setWidth(29)),
+                                ButtonIcon(icon: Icons.close, iconColor: Colors.black, callback: ()=> _clearStartDate()),
                               ],
                             ),
                           ),
@@ -646,6 +666,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         showScheduleBottomSheet(
                           context,
                           _setTravelEndDate,
+                          startDate: DateTime.tryParse(_travelStartDate),
                         );
                       },
                       child: Stack(
@@ -660,20 +681,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(
-                                left: ScreenUtil().setWidth(29)),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: ScreenUtil().setWidth(29)),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  _travelEndDate,
-                                  style: const TextStyle(
+                                Expanded(
+                                  child: Text(
+                                    _travelEndDate.isNotEmpty
+                                        ? _travelEndDate
+                                        : Strings.travelEndGuide,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
                                       color: Colors.black,
                                       fontFamily: "Pretendard",
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 16),
+                                      fontSize: 16,
+                                    ),
+                                  ),
                                 ),
-                                SizedBox(width: ScreenUtil().setWidth(29)),
+                                ButtonIcon(icon: Icons.close, iconColor: Colors.black, callback: ()=> _clearEndDate()),
                               ],
                             ),
                           ),
@@ -695,16 +722,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   _nextClickEvent(Page.travelDatePage);
                 },
                 child: InfinityButton(
-                    height: 40,
-                    radius: 4,
-                    backgroundColor:
-                        (_travelStartDate.isEmpty || _travelEndDate.isEmpty)
-                            ? const Color(UserColors.disable)
-                            : const Color(UserColors.enable),
-                    text: Strings.next,
-                    textColor: Colors.white,
-                    textSize: 16,
-                    textWeight: FontWeight.w700),
+                  height: 40,
+                  radius: 4,
+                  backgroundColor:
+                      (_travelStartDate.isEmpty || _travelEndDate.isEmpty)
+                          ? const Color(UserColors.disable)
+                          : const Color(UserColors.enable),
+                  text: Strings.next,
+                  textColor: Colors.white,
+                  textSize: 16,
+                  textWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],

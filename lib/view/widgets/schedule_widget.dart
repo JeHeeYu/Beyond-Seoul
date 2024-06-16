@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../statics/colors.dart';
 
 class ScheduleWidget extends StatefulWidget {
   final void Function(DateTime selectedDay) onDaySelected;
   final DateTime? endDateDisable;
+  final DateTime? startDate;
 
   const ScheduleWidget({
     Key? key,
     required this.onDaySelected,
     this.endDateDisable,
+    this.startDate,
   }) : super(key: key);
 
   @override
@@ -18,16 +23,7 @@ class ScheduleWidget extends StatefulWidget {
 }
 
 class _ScheduleWidgetState extends State<ScheduleWidget> {
-  bool _endDayDisble(DateTime day) {
-    return day.isAfter(DateTime(0));
-  }
-
-  DateTime selectedDay = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day,
-  );
-
+  DateTime selectedDay = DateTime.now();
   DateTime focusedDay = DateTime.now();
 
   @override
@@ -73,7 +69,17 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
           shape: BoxShape.circle,
         ),
       ),
-      //enabledDayPredicate: _endDayDisble,
+      enabledDayPredicate: (DateTime day) {
+        if (widget.startDate != null && widget.endDateDisable != null) {
+          return day.isAfter(widget.startDate!.subtract(Duration(days: 1))) && 
+                 day.isBefore(widget.endDateDisable!.add(Duration(days: 1)));
+        } else if (widget.startDate != null) {
+          return day.isAfter(widget.startDate!.subtract(Duration(days: 1)));
+        } else if (widget.endDateDisable != null) {
+          return day.isBefore(widget.endDateDisable!.add(Duration(days: 1)));
+        }
+        return true;
+      },
       onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
         setState(() {
           this.selectedDay = selectedDay;
@@ -92,7 +98,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
 }
 
 void showScheduleBottomSheet(
-    BuildContext context, void Function(DateTime) callback) {
+    BuildContext context, void Function(DateTime) callback, {DateTime? startDate, DateTime? endDateDisable}) {
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
@@ -107,6 +113,8 @@ void showScheduleBottomSheet(
         heightFactor: 0.6,
         child: ScheduleWidget(
           onDaySelected: callback,
+          startDate: startDate,
+          endDateDisable: endDateDisable,
         ),
       );
     },

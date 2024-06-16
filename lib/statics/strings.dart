@@ -93,6 +93,8 @@ class Strings {
   static const String no = "아니요";
   static const String logoutTitle = "로그아웃";
   static const String logoutGuide = "로그아웃 하시겠습니까?";
+  static const String travelStartGuide = "도착 날짜를 선택해주세요";
+  static const String travelEndGuide = "돌아가는 날짜를 선택해주세요";
 
   static String helloName(String name) {
     return "안녕하세요, $name님";
