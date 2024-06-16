@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import '../../../app.dart';
 import '../../../network/api_response.dart';
 import '../../../network/api_url.dart';
+import '../../../routes/routes_name.dart';
 import '../../../statics/colors.dart';
 import '../../../statics/images.dart';
 import '../../../statics/strings.dart';
@@ -340,11 +341,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         _retryCallback = null;
 
         _writeStorage(Strings.loginKey, "true");
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const App()),
-        );
+        Navigator.of(context).pushReplacementNamed(RoutesName.app);
       } else {
         _retryCallback = () => _sendOnboardingComplete();
         _onboardingViewModel.setApiResponse(ApiResponse.error());

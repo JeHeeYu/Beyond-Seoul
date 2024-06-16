@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../network/network_manager.dart';
+import '../../routes/routes_name.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
 
@@ -52,8 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (mounted) {
           if (_loginViewModel.loginData.data?.data.registerYN == 'Y') {
             _writeStorage(Strings.loginKey, "true");
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => const App()));
+            Navigator.of(context).pushReplacementNamed(RoutesName.app);
           } else {
             _writeStorage(Strings.loginKey, "false");
             Navigator.push(

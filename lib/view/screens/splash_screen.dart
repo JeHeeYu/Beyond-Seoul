@@ -9,6 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 import '../../app.dart';
+import '../../routes/routes_name.dart';
 import '../../statics/colors.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
@@ -45,25 +46,16 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
     if (loginInfo == 'true' && uidInfo != null && uidInfo.isNotEmpty) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const App()),
-      );
+      Navigator.of(context).pushReplacementNamed(RoutesName.app);
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
+      Navigator.of(context).pushReplacementNamed(RoutesName.login);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     Future<void>.delayed(const Duration(seconds: 3)).then((_) async {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
+      Navigator.of(context).pushNamed(RoutesName.login);
     });
 
     double iconSize =
