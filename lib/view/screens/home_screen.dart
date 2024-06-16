@@ -31,6 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late HomeViewModel _homeViewModel;
   late LoginViewModel _loginViewModel;
   final String _foodMissionType = "food";
+  final String _tourMissionType = "tour";
+  final String _sosoMissionType = "food";
 
   @override
   void initState() {
@@ -262,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         title: value.homeData.data?.data.ongoingMission
                                 .tourMission ??
                             '',
-                        missionType: _foodMissionType,
+                        missionType: _tourMissionType,
                         missionId: value.homeData.data?.data.ongoingMission
                                 .tourMissionId ??
                             0,
@@ -287,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         title: value.homeData.data?.data.ongoingMission
                                 .sosoMission ??
                             '',
-                        missionType: _foodMissionType,
+                        missionType: _sosoMissionType,
                         missionId: value.homeData.data?.data.ongoingMission
                                 .sosoMissionId ??
                             0,
