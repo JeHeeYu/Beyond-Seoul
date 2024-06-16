@@ -15,6 +15,7 @@ import '../../network/api_response.dart';
 import '../../services/naver_map_service.dart';
 import '../../statics/images.dart';
 import '../../statics/strings.dart';
+import '../../view_model/home_view_model.dart';
 import '../../view_model/login_view_model.dart';
 import '../../view_model/record_view_model.dart';
 import '../widgets/button_icon.dart';
@@ -26,19 +27,23 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:http_parser/http_parser.dart';
 
+import 'home_screen.dart';
+
 class MissionDetailScreen extends StatefulWidget {
-  const MissionDetailScreen({
+  MissionDetailScreen({
     Key? key,
     required this.title,
     required this.missionType,
     required this.missionId,
     required this.travelId,
+    required this.missionValue,
   }) : super(key: key);
 
-  final String title;
+  String title;
   final String missionType;
-  final int missionId;
+  int missionId;
   final String travelId;
+  final MissionType missionValue;
 
   @override
   State<MissionDetailScreen> createState() => _MissionDetailScreenState();
@@ -53,12 +58,14 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   dynamic sendData;
   VoidCallback? _retryCallback;
   String _address = "";
+  late HomeViewModel _homeViewModel;
 
   @override
   void initState() {
     super.initState();
 
     _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+    _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchMissionDetail();
     });
@@ -78,6 +85,44 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
       _retryCallback = () => _fetchMissionDetail();
       _recordViewModel.setApiResponse(ApiResponse.error());
     }
+  }
+
+  void _missionRefresh() async {
+    Map<String, String> data = {
+      "missionId": widget.missionId.toString(),
+    };
+
+    NetworkManager.instance
+        .postQuery(ApiUrl.missionRefresh, data)
+        .then((response) {
+      print("POST 성공 145623: ${response}");
+      Map<String, String> queryParams = {"uid": _loginViewModel.getUid};
+      _homeViewModel.fetchTravelListApi(queryParams);
+      _updateMissionData();
+    }).catchError((error) {
+      print("에러 발생 123123: $error");
+    });
+  }
+
+  void _updateMissionData() {
+    if (widget.missionValue == MissionType.food) {
+      widget.title =
+          _homeViewModel.homeData.data?.data.ongoingMission.foodMission ?? '';
+      widget.missionId =
+          _homeViewModel.homeData.data?.data.ongoingMission.foodMissionId ?? 0;
+    } else if (widget.missionValue == MissionType.tour) {
+      widget.title =
+          _homeViewModel.homeData.data?.data.ongoingMission.tourMission ?? '';
+      widget.missionId =
+          _homeViewModel.homeData.data?.data.ongoingMission.tourMissionId ?? 0;
+    } else if (widget.missionValue == MissionType.soso) {
+      widget.title =
+          _homeViewModel.homeData.data?.data.ongoingMission.sosoMission ?? '';
+      widget.missionId =
+          _homeViewModel.homeData.data?.data.ongoingMission.sosoMissionId ?? 0;
+    }
+
+    setState(() {});
   }
 
   Future getImage(ImageSource imageSource) async {
@@ -144,6 +189,8 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   void _refresh() {
     setState(() {
       uploadImage = null;
+      _missionRefresh();
+      _commentController.clear();
     });
   }
 

@@ -20,6 +20,12 @@ import 'mate_code_screen.dart';
 import 'mission_detail.dart';
 import 'onboarding/onboarding_screen.dart';
 
+enum MissionType {
+  food,
+  tour,
+  soso,
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -247,6 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           travelId: value.homeData.data?.data.travel.travelId
                                   .toString() ??
                               '',
+                          missionValue: MissionType.food,
                         )),
               );
             },
@@ -271,6 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         travelId: value.homeData.data?.data.travel.travelId
                                 .toString() ??
                             '',
+                        missionValue: MissionType.tour,
                       )),
             );
           },
@@ -296,6 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         travelId: value.homeData.data?.data.travel.travelId
                                 .toString() ??
                             '',
+                        missionValue: MissionType.soso,
                       )),
             );
           },
