@@ -35,7 +35,7 @@ enum Page {
   destionPage
 }
 
-Map<int, String> ageMap = {0: "남", 1: "여"};
+Map<int, String> genderMap = {0: "남", 1: "여"};
 
 Map<int, String> withTravelMap = {0: "혼자", 1: "여행 메이트와 함께"};
 
@@ -63,7 +63,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   LoginViewModel _loginViewModel = LoginViewModel();
   final PageController _pageController = PageController(initialPage: 0);
   int _selectedIndex = -1;
-  String _age = "";
+  String _gender = "";
   String _birthday = "";
   String _withTravel = "";
   String _travelStartDate = "";
@@ -336,34 +336,51 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _sendOnboardingComplete() async {
     _onboardingViewModel.setApiResponse(ApiResponse.loading());
 
-    Map<String, dynamic> data = {
-      "age": _age,
+    Map<String, dynamic> commonData = {
+      "sex": _gender,
       "birth": _birthday,
-      "destination": _destination,
-      "lang": "한국어",
-      "role": _role,
-      "themaId": _themeId,
-      "travelEndDate": _travelEndDate,
-      "travelStartDate": _travelStartDate,
-      "travelWith": _withTravel,
       "uid": _loginViewModel.getUid,
     };
 
-    return NetworkManager.instance
-        .post(ApiUrl.onboardingComplete, data)
-        .then((response) {
-      if (response.statusCode == 200) {
-        _retryCallback = null;
+    Map<String, dynamic> readerData = {
+      ...commonData,
+      "destination": _destination,
+      "themaId": _themeId,
+      "travelEndDate": _travelEndDate,
+      "travelStartDate": _travelStartDate,
+    };
 
-        _writeStorage(Strings.loginKey, "true");
-        Navigator.of(context).pushReplacementNamed(RoutesName.app);
+    Map<String, dynamic> mateData = {
+      ...commonData,
+      "code": "3HQP9V",
+    };
+
+    Map<String, dynamic> soloData = readerData;
+
+    String url;
+    Map<String, dynamic> data;
+
+    if (_withTravel == Strings.withTravelMate) {
+      if (_role == Strings.togetherMage) {
+        url = ApiUrl.onboardingMate;
+        data = mateData;
       } else {
-        _retryCallback = () => _sendOnboardingComplete();
-        _onboardingViewModel.setApiResponse(ApiResponse.error());
+        url = ApiUrl.onboardingReader;
+        data = readerData;
       }
+    } else {
+      url = ApiUrl.onboardingSolo;
+      data = soloData;
+    }
+
+    _onboardingViewModel.onboardingComplete(url, data).then((_) {
+      _retryCallback = null;
+      Navigator.of(context).pushReplacementNamed(RoutesName.app);
+      _writeStorage(Strings.loginKey, "true");
     }).catchError((error) {
       _retryCallback = () => _sendOnboardingComplete();
       _onboardingViewModel.setApiResponse(ApiResponse.error());
+      print("오류 발생: $error");
     });
   }
 
@@ -372,26 +389,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     switch (page) {
       case Page.ageBirthPage:
-        _age = ageMap[_selectedIndex] ?? "";
+        _gender = genderMap[_selectedIndex] ?? "";
         _pageController.jumpToPage(Page.withTravelPage.index);
         break;
       case Page.withTravelPage:
         _withTravel = withTravelMap[_selectedIndex] ?? "";
 
         if (_selectedIndex == 0) {
-          _pageController.jumpToPage(Page.travelDatePage.index);
+          _pageController.jumpToPage(Page.travelDatePage.index - 1);
         } else {
-          _pageController.jumpToPage(Page.rolePage.index);
+          _pageController.jumpToPage(Page.rolePage.index - 1);
         }
         break;
       case Page.rolePage:
         _role = roleMap[_selectedIndex] ?? "";
-
         if (_selectedIndex == 0) {
-          _pageController.jumpToPage(Page.travelDatePage.index);
+          _pageController.jumpToPage(Page.travelDatePage.index - 1);
         } else {
-          // _sendOnboardingComplete();
-
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const MateReCodeScreen()),
@@ -399,7 +413,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         }
         break;
       case Page.travelDatePage:
-        _pageController.jumpToPage(Page.themaPage.index);
+        _pageController.jumpToPage(Page.themaPage.index - 1);
         break;
       case Page.themaPage:
         _themeId = _selectedIndex + 1;
@@ -408,7 +422,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
         _setThemeId(_selectedIndex);
         _onboardingViewModel.fetchDestinationListApi(queryParams).then((_) {
-          _pageController.jumpToPage(Page.destionPage.index);
+          _pageController.jumpToPage(Page.destionPage.index - 1);
         }).catchError((error) {});
 
         break;
@@ -571,8 +585,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               children: [
                                 buildOnboardingButton(
                                     0, Strings.man, ScreenUtil().setHeight(78)),
-                                buildOnboardingButton(
-                                    1, Strings.girl, ScreenUtil().setHeight(78)),
+                                buildOnboardingButton(1, Strings.girl,
+                                    ScreenUtil().setHeight(78)),
                               ],
                             ),
                             SizedBox(height: ScreenUtil().setHeight(131.0)),

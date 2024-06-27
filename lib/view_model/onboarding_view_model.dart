@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:beyond_seoul/models/onboarding/destination_list_model.dart';
+import 'package:beyond_seoul/models/onboarding/onboarding_complete_model.dart';
 import 'package:beyond_seoul/repository/onboarding_repository.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../models/onboarding/theme_list_model.dart';
 import '../network/api_response.dart';
@@ -24,6 +27,14 @@ class OnboardingViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  ApiResponse<OnboardingCompleteModel> onboardingReader = ApiResponse.loading();
+
+  void setOnboardingComplete(ApiResponse<OnboardingCompleteModel> response) {
+    onboardingReader = response;
+
+    notifyListeners();
+  }
+
   ApiResponse<DestinationListModel> destinationData = ApiResponse.loading();
 
   void setDestinationList(ApiResponse<DestinationListModel> response) {
@@ -37,7 +48,7 @@ class OnboardingViewModel with ChangeNotifier {
       if (value.code != 0) {
         setThemaList(
             ApiResponse.error("Error: Unexpected response code ${value.code}"));
-            setApiResponse(ApiResponse.error());
+        setApiResponse(ApiResponse.error());
       } else {
         setApiResponse(ApiResponse.complete());
         setThemaList(ApiResponse.complete(value));
@@ -54,13 +65,30 @@ class OnboardingViewModel with ChangeNotifier {
       if (value.code != 0) {
         setDestinationList(
             ApiResponse.error("Error: Unexpected response code ${value.code}"));
-            setApiResponse(ApiResponse.error());
+        setApiResponse(ApiResponse.error());
       } else {
         setDestinationList(ApiResponse.complete(value));
         setApiResponse(ApiResponse.complete());
       }
     }).onError((error, stackTrace) {
       setDestinationList(ApiResponse.error(error.toString()));
+      setApiResponse(ApiResponse.error());
+      return Future.value(null);
+    });
+  }
+
+  Future<void> onboardingComplete(String url, Map<String, dynamic> data) async {
+    await _onboardingRepo.onboardingComplete(url, data).then((value) {
+      if (value.code != 0) {
+        setOnboardingComplete(
+            ApiResponse.error("Error: Unexpected response code ${value.code}"));
+        setApiResponse(ApiResponse.error());
+      } else {
+        setOnboardingComplete(ApiResponse.complete(value));
+        setApiResponse(ApiResponse.complete());
+      }
+    }).onError((error, stackTrace) {
+      setOnboardingComplete(ApiResponse.error(error.toString()));
       setApiResponse(ApiResponse.error());
       return Future.value(null);
     });
