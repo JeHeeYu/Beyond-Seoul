@@ -17,7 +17,7 @@ class Routes {
       case RoutesName.app:
         return PageRouter(builder: (BuildContext context) => const App());
       case RoutesName.onboarding:
-        return PageRouter(builder: (BuildContext context) => const OnboardingScreen());
+        return PageRouter(builder: (BuildContext context) => const OnboardingScreen(isFirst: true));
       case RoutesName.login:
         return PageRouter(builder: (BuildContext context) => const LoginScreen());
       case RoutesName.splash:

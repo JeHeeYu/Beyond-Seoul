@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const OnboardingScreen()));
+                    builder: (context) => const OnboardingScreen(isFirst: true,)));
           }
         }
       }).catchError((error) {

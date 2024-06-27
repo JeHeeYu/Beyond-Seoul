@@ -239,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const OnboardingScreen()),
+                      builder: (context) => const OnboardingScreen(isFirst: true)),
                 );
               },
               child: Stack(

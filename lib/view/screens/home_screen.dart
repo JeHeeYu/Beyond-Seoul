@@ -572,7 +572,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const OnboardingScreen()),
+                    builder: (context) => const OnboardingScreen(isFirst: false)),
               );
             },
             child: const InfinityButton(

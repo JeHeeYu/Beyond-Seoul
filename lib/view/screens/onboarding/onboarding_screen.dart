@@ -2,7 +2,9 @@ import 'package:beyond_seoul/network/network_manager.dart';
 import 'package:beyond_seoul/view/screens/leader_code_screen.dart';
 import 'package:beyond_seoul/view/widgets/button_icon.dart';
 import 'package:beyond_seoul/view/widgets/infinity_button.dart';
+import 'package:beyond_seoul/view/widgets/user_container.dart';
 import 'package:beyond_seoul/view_model/onboarding_view_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -24,9 +26,16 @@ import '../error_screen.dart';
 import '../mate_code_screen.dart';
 import 'onboarding_button.dart';
 
-enum Page { withTravelPage, rolePage, travelDatePage, themaPage, destionPage }
+enum Page {
+  ageBirthPage,
+  withTravelPage,
+  rolePage,
+  travelDatePage,
+  themaPage,
+  destionPage
+}
 
-Map<int, String> sexMap = {0: "남", 1: "여"};
+Map<int, String> ageMap = {0: "남", 1: "여"};
 
 Map<int, String> withTravelMap = {0: "혼자", 1: "여행 메이트와 함께"};
 
@@ -42,7 +51,9 @@ Map<int, String> themeMap = {
 };
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  final bool isFirst;
+
+  const OnboardingScreen({super.key, required this.isFirst});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -52,6 +63,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   LoginViewModel _loginViewModel = LoginViewModel();
   final PageController _pageController = PageController(initialPage: 0);
   int _selectedIndex = -1;
+  String _age = "";
+  String _birthday = "";
   String _withTravel = "";
   String _travelStartDate = "";
   String _travelEndDate = "";
@@ -60,6 +73,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String _destination = "";
   late OnboardingViewModel _onboardingViewModel;
   VoidCallback? _retryCallback;
+  DateTime _birthdayDate = DateTime.now();
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   @override
@@ -323,7 +337,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _onboardingViewModel.setApiResponse(ApiResponse.loading());
 
     Map<String, dynamic> data = {
-      "age": "",
+      "age": _age,
+      "birth": _birthday,
       "destination": _destination,
       "lang": "한국어",
       "role": _role,
@@ -356,6 +371,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     switch (page) {
+      case Page.ageBirthPage:
+        _age = ageMap[_selectedIndex] ?? "";
+        _pageController.jumpToPage(Page.withTravelPage.index);
+        break;
       case Page.withTravelPage:
         _withTravel = withTravelMap[_selectedIndex] ?? "";
 
@@ -417,6 +436,47 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     }
+  }
+
+  void _showDatePickerBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: ScreenUtil().setHeight(250.0),
+          child: CupertinoTheme(
+            data: CupertinoThemeData(
+              textTheme: CupertinoTextThemeData(
+                dateTimePickerTextStyle: TextStyle(
+                  fontSize: ScreenUtil().setSp(18.0),
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  fontFamily: "Pretendard",
+                ),
+              ),
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: ScreenUtil().setHeight(200.0),
+                  child: CupertinoDatePicker(
+                    mode: CupertinoDatePickerMode.date,
+                    initialDateTime: DateTime.now(),
+                    onDateTimeChanged: (DateTime newDateTime) {
+                      setState(() {
+                        _birthdayDate = newDateTime;
+                        _birthday = dateToStringFormat(_birthdayDate);
+                      });
+                    },
+                    dateOrder: DatePickerDateOrder.ymd,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildOnboardingPage({
@@ -498,6 +558,60 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
+                  if (widget.isFirst)
+                    _buildOnboardingPage(
+                      progressImage: Images.onboardingProgress1,
+                      title: Strings.pleaseGender,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                buildOnboardingButton(
+                                    0, Strings.man, ScreenUtil().setHeight(78)),
+                                buildOnboardingButton(
+                                    1, Strings.girl, ScreenUtil().setHeight(78)),
+                              ],
+                            ),
+                            SizedBox(height: ScreenUtil().setHeight(131.0)),
+                            Text(
+                              Strings.pleaseBirthday,
+                              style: TextStyle(
+                                fontFamily: "Pretendard",
+                                fontSize: ScreenUtil().setSp(16.0),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            SizedBox(height: ScreenUtil().setHeight(32.0)),
+                            UserContainer(
+                                width: double.infinity,
+                                height: ScreenUtil().setHeight(78),
+                                backgroundColor: Colors.white,
+                                borderRadius: ScreenUtil().radius(4.0),
+                                callback: () =>
+                                    _showDatePickerBottomSheet(context),
+                                child: Center(
+                                  child: Text(
+                                    _birthday,
+                                    style: TextStyle(
+                                      fontFamily: "Pretendard",
+                                      fontSize: ScreenUtil().setSp(16.0),
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ],
+                      onNext: () {
+                        if (_selectedIndex != -1) {
+                          _nextClickEvent(Page.ageBirthPage);
+                        }
+                      },
+                      nextEnabled: _selectedIndex != -1 && _birthday.isNotEmpty,
+                    ),
                   _buildOnboardingPage(
                     progressImage: Images.onboardingProgress3,
                     title: Strings.howManyMate,
@@ -595,7 +709,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       ),
                                     ),
                                   ),
-                                  ButtonIcon(icon: Icons.close, iconColor: Colors.black, callback: ()=> _clearStartDate()),
+                                  ButtonIcon(
+                                      icon: Icons.close,
+                                      iconColor: Colors.black,
+                                      callback: () => _clearStartDate()),
                                 ],
                               ),
                             ),
@@ -651,7 +768,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       ),
                                     ),
                                   ),
-                                  ButtonIcon(icon: Icons.close, iconColor: Colors.black, callback: ()=> _clearEndDate()),
+                                  ButtonIcon(
+                                      icon: Icons.close,
+                                      iconColor: Colors.black,
+                                      callback: () => _clearEndDate()),
                                 ],
                               ),
                             ),
@@ -660,11 +780,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                     ],
                     onNext: () {
-                      if (_travelStartDate.isNotEmpty && _travelEndDate.isNotEmpty) {
+                      if (_travelStartDate.isNotEmpty &&
+                          _travelEndDate.isNotEmpty) {
                         _nextClickEvent(Page.travelDatePage);
                       }
                     },
-                    nextEnabled: _travelStartDate.isNotEmpty && _travelEndDate.isNotEmpty,
+                    nextEnabled: _travelStartDate.isNotEmpty &&
+                        _travelEndDate.isNotEmpty,
                   ),
                   _buildOnboardingPage(
                     progressImage: Images.onboardingProgress7,
